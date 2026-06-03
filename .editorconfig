@@ -17,3 +17,10 @@ indent_size = 2
 dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.CA2007.severity = none
 csharp_style_namespace_declarations = file_scoped:warning
+
+# EF Core auto-generated migrations use block-scoped namespaces; don't fight the tool.
+[**/Migrations/**.cs]
+dotnet_diagnostic.IDE0161.severity = none
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.IDE0005.severity = none
+generated_code = true
