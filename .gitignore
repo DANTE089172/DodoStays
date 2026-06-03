@@ -1,0 +1,31 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+.vs/
+artifacts/
+
+# Node
+node_modules/
+.next/
+out/
+.env*.local
+playwright-report/
+test-results/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Secrets
+*.pem
+*.key
+.env
+secrets/
