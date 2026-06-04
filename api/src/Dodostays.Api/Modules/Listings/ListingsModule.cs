@@ -35,7 +35,9 @@ public static class ListingsModule
         app.MapDeleteListing();
         app.MapPublishListing();
         app.MapUnpublishListing();
-        app.MapGetMyListings();      // BEFORE GetListing so /mine matches first
+        app.MapUploadPhoto();
+        app.MapDeletePhoto();
+        app.MapGetMyListings();
         app.MapGetListing();
         app.MapSearchListings();
         return app;
