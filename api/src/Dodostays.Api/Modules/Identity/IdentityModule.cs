@@ -38,6 +38,7 @@ public static class IdentityModule
 
         services.AddScoped<RefreshTokenStore>();
         services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
+        services.AddScoped<IValidator<SignInRequest>, SignInValidator>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<IUserContext, UserContext>();
@@ -48,6 +49,10 @@ public static class IdentityModule
     public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapSignUp();
+        app.MapSignIn();
+        app.MapRefresh();
+        app.MapSignOutEndpoint();
+        app.MapMe();
         return app;
     }
 }
