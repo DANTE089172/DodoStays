@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Dodostays.Api.Modules.Common.Database;
 using Dodostays.Api.Modules.Common.Health;
 using Dodostays.Api.Modules.Common.ProblemDetails;
+using Dodostays.Api.Modules.Identity;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ var connectionString = builder.Configuration.GetConnectionString("Postgres")
 
 builder.Services.AddDbContext<DodostaysDbContext>(opts =>
     opts.UseNpgsql(connectionString, npg => npg.UseNetTopologySuite()));
+
+builder.Services.AddIdentityModule(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
@@ -32,8 +35,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 app.UseDodostaysProblemDetails();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapHealthCheckEndpoints();
+app.MapIdentityEndpoints();
 
 app.Run();
 
