@@ -70,7 +70,7 @@ export function AiSearchBar({ initialText = "", initialFilters = null, preserveP
         p: 1.5,
         backgroundColor: "var(--color-card)",
         border: "2px solid var(--color-foreground)",
-        borderRadius: "2px",
+        borderRadius: "6px",
         boxShadow: "4px 4px 0 var(--color-foreground)",
       }}
     >

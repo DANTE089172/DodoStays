@@ -1,7 +1,6 @@
 "use client";
 
 import { IconButton, Tooltip } from "@mui/material";
-import MicNoneIcon from "@mui/icons-material/MicNone";
 
 interface Props {
   onTranscript?: (text: string) => void;
@@ -9,7 +8,9 @@ interface Props {
 }
 
 // Placeholder for Plan 02c: real Web Speech API integration lands then.
-// For now we render a styled, tooltipped, disabled-feel mic that doesn't fire.
+// For now we render a styled, tooltipped, disabled-feel mic with a CSS-only
+// 3-bar waveform — the cinematic "talk to me" cue lives entirely in CSS so
+// it works before any speech wiring exists.
 export function VoiceButton({ size = "large" }: Props) {
   const dim = size === "large" ? 56 : 44;
   return (
@@ -21,14 +22,23 @@ export function VoiceButton({ size = "large" }: Props) {
           sx={{
             width: dim,
             height: dim,
-            borderRadius: 0.5,
+            borderRadius: "6px",
             border: "1.5px solid var(--color-border)",
             backgroundColor: "var(--color-card)",
-            color: "var(--color-muted-foreground)",
+            color: "var(--color-accent)",
             "&:hover": { backgroundColor: "var(--color-muted)" },
+            "&.Mui-disabled": {
+              color: "var(--color-accent)",
+              border: "1.5px solid var(--color-border)",
+              backgroundColor: "var(--color-card)",
+            },
           }}
         >
-          <MicNoneIcon fontSize={size === "large" ? "medium" : "small"} />
+          <span className="ds-waveform" aria-hidden>
+            <span />
+            <span />
+            <span />
+          </span>
         </IconButton>
       </span>
     </Tooltip>

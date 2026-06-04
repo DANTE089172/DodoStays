@@ -2,10 +2,10 @@
 @import "mapbox-gl/dist/mapbox-gl.css";
 
 @theme {
-  /* --- Sega & Sand: Mauritian palette --- */
+  /* --- Sega & Sand × Cinema Maurice: Mauritian palette w/ warm-photo lift --- */
   --color-background: #F5EFE6;        /* warm sand — page bg */
   --color-foreground: #1A1410;        /* volcanic black — text */
-  --color-card: #FBF6EC;              /* lightly warmer sand */
+  --color-card: #FFFFFF;              /* pure white — listing cards lift cleanly */
   --color-card-foreground: #1A1410;
   --color-muted: #ECE2CF;
   --color-muted-foreground: #5A4A3A;  /* warm brown */
@@ -17,10 +17,10 @@
   --color-primary-hover: #182f6e;
   --color-secondary: #ECE2CF;
   --color-secondary-foreground: #1A1410;
-  --color-accent: #C73E1D;            /* flamboyant red */
-  --color-accent-foreground: #F5EFE6;
-  --color-accent-hover: #a0321a;
-  --color-destructive: #8B2715;
+  --color-accent: #E8633C;            /* warm terracotta — distinct from Airbnb coral */
+  --color-accent-foreground: #FFFFFF;
+  --color-accent-hover: #c14f2c;
+  --color-destructive: #B53017;       /* warmer destructive — harmonizes w/ terracotta */
   --color-destructive-foreground: #F5EFE6;
   --color-success: #6E8C3F;           /* sugar cane green */
   --color-success-foreground: #F5EFE6;
@@ -30,17 +30,26 @@
   --color-sand-deep: #ECE2CF;
   --color-ink: #1A1410;
   --color-cobalt: #1E3A8A;
-  --color-flamboyant: #C73E1D;
+  --color-flamboyant: #E8633C;        /* now terracotta — alias kept for badge variant */
   --color-ochre: #D4A24C;             /* warm gold */
   --color-lagoon: #2A8FA5;            /* turquoise */
   --color-cane: #6E8C3F;              /* sugar cane green */
 
-  /* Print-like radius — almost square */
-  --radius: 2px;
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 2px;
-  --radius-xl: 2px;
+  /* Sega & Sand DS-prefixed tokens (used by listing card etc.) */
+  --ds-ochre: #D4A24C;
+  --ds-lagoon: #2A8FA5;
+  --ds-cane: #6E8C3F;
+
+  /* Slightly softened radius — toward Airbnb DNA without becoming pill-shaped */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-card: 12px;                /* listing cards specifically */
+
+  /* Soft photo-lift shadow — listing cards on hover only */
+  --shadow-card-hover: 0 1px 2px rgba(20,12,8,0.06), 0 4px 16px rgba(20,12,8,0.06);
 
   /* Typography */
   --font-display: var(--font-fraunces), "Iowan Old Style", "Apple Garamond",
@@ -134,4 +143,75 @@
   .photo-warm {
     filter: contrast(1.05) saturate(1.1) hue-rotate(-2deg);
   }
+}
+
+/* --- Cinema Maurice: dark surface override (scoped, not global dark mode) --- */
+.surface-cinema {
+  --color-background: #0B0B0F;
+  --color-foreground: #F5EFE6;
+  --color-card: #16161B;
+  --color-muted: #1F1F26;
+  --color-muted-foreground: #A8A39A;
+  --color-border: #2A2A33;
+  --color-input: #2A2A33;
+  --color-primary: #E8633C;
+  --color-primary-foreground: #0B0B0F;
+  --color-accent: #E8633C;
+  --color-accent-foreground: #0B0B0F;
+  --color-ring: #E8633C;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Hero AI search bar gets a luminous terracotta halo on the dark stage.
+   The wrapper is applied only on the homepage hero context — the AiSearchBar
+   stays a single component; we layer the cinematic glow on top via the form
+   selector.  !important is intentional: MUI sx-generated styles win otherwise.
+
+   The wrapper itself re-establishes light tokens for its subtree so the bar's
+   internal surfaces stay sand/white against the dark hero behind it. The bar
+   becomes the centerpiece light element on a dark stage. */
+.hero-search-wrapper {
+  --color-background: #F5EFE6;
+  --color-foreground: #1A1410;
+  --color-card: #FFFFFF;
+  --color-muted: #ECE2CF;
+  --color-muted-foreground: #5A4A3A;
+  --color-border: #C9B89A;
+  --color-input: #C9B89A;
+  --color-primary: #1E3A8A;
+  --color-primary-foreground: #F5EFE6;
+  --color-accent: #E8633C;
+  --color-accent-foreground: #FFFFFF;
+  --color-ring: #1E3A8A;
+}
+.hero-search-wrapper > form {
+  border-color: rgba(232, 99, 60, 0.55) !important;
+  box-shadow: 0 0 32px rgba(232, 99, 60, 0.22), 4px 4px 0 #1A1410 !important;
+}
+
+/* --- ElevenLabs-flavoured 3-bar waveform for the voice button --- */
+.ds-waveform {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+.ds-waveform span {
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: currentColor;
+  border-radius: 1px;
+  animation: ds-wave 1.4s ease-in-out infinite;
+  transform-origin: center;
+}
+.ds-waveform span:nth-child(2) { animation-delay: 0.18s; }
+.ds-waveform span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes ds-wave {
+  0%, 100% { transform: scaleY(0.45); }
+  50%      { transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-waveform span { animation: none; transform: scaleY(1); }
 }

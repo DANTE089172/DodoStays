@@ -48,8 +48,9 @@ export default function Home() {
     <main className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      {/* Hero — full-bleed photograph, warm-graded with grain */}
-      <section className="relative">
+      {/* Hero — Cinema Maurice: full-bleed photograph, warm-graded with grain,
+          on a near-black surface so the AI bar reads as a luminous centerpiece */}
+      <section className="surface-cinema relative">
         <div className="relative h-[80vh] min-h-[560px] w-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -78,10 +79,14 @@ export default function Home() {
           </div>
         </div>
 
-        {/* AI search centerpiece — overlaps the hero bottom, sits dead-center */}
+        {/* AI search centerpiece — overlaps the hero bottom, sits dead-center.
+            The hero-search-wrapper layers a luminous terracotta halo on the
+            existing AiSearchBar without forking the component. */}
         <div className="absolute inset-x-0 -bottom-20 px-6 sm:px-10">
           <div className="mx-auto w-full max-w-3xl">
-            <AiSearchBar variant="hero" />
+            <div className="hero-search-wrapper">
+              <AiSearchBar variant="hero" />
+            </div>
             <ExampleQueries />
           </div>
         </div>

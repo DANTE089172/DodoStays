@@ -47,7 +47,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
     <>
       <SiteHeader />
       <main>
-        {/* Full-bleed hero photo */}
+        {/* Full-bleed hero photo (no overlay text — distinct from Airbnb) */}
         {heroPhoto ? (
           <section className="relative h-[60vh] min-h-[440px] w-full overflow-hidden bg-[var(--color-muted)]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -57,30 +57,8 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               className="photo-warm h-full w-full object-cover"
             />
             <GrainOverlay />
-            <div aria-hidden="true" className="absolute inset-0 editorial-gradient" />
-            <div className="absolute bottom-0 left-0 right-0 px-6 pb-12 sm:px-12 sm:pb-16">
-              <div className="mx-auto max-w-7xl">
-                <p className="font-script text-2xl text-[var(--color-ochre)]">
-                  {formatRegion(listing.region)}
-                </p>
-                <h1 className="mt-1 max-w-4xl font-display text-4xl leading-[1.05] tracking-[-0.02em] text-[var(--color-sand)] sm:text-6xl">
-                  {listing.title}
-                </h1>
-              </div>
-            </div>
           </section>
-        ) : (
-          <section className="border-b-[1.5px] border-[var(--color-ochre)]">
-            <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20">
-              <p className="font-script text-2xl text-[var(--color-ochre)]">
-                {formatRegion(listing.region)}
-              </p>
-              <h1 className="mt-1 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
-                {listing.title}
-              </h1>
-            </div>
-          </section>
-        )}
+        ) : null}
 
         <div className="mx-auto max-w-7xl px-6 sm:px-10">
           <div className="pt-6">
@@ -91,6 +69,16 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               &larr; All stays
             </Link>
           </div>
+
+          {/* Title block — editorial Mauritius, NOT overlaying the hero */}
+          <section className="pt-8 sm:pt-10">
+            <p className="font-script text-2xl text-[var(--color-ochre)]">
+              {formatRegion(listing.region)}
+            </p>
+            <h1 className="mt-1 max-w-4xl font-display text-4xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
+              {listing.title}
+            </h1>
+          </section>
 
           <div className="grid gap-16 pt-10 lg:grid-cols-[3fr_2fr] lg:gap-20">
             {/* Left column */}
@@ -118,7 +106,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 <Stat label="Max guests" value={listing.maxGuests} />
               </dl>
 
-              {/* Photo gallery (after the hero) */}
+              {/* Photo gallery (after the hero) — 12px radius, soft shadow, no border */}
               {restPhotos.length > 0 && (
                 <section className="mt-16">
                   <p className="font-script text-2xl text-[var(--color-ochre)]">
@@ -128,13 +116,14 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                     {restPhotos.map((p) => (
                       <div
                         key={p.id}
-                        className="relative aspect-[4/3] overflow-hidden border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-muted)]"
+                        className="relative aspect-[4/3] overflow-hidden rounded-[12px] bg-[var(--color-muted)]"
+                        style={{ boxShadow: "var(--shadow-card-hover)" }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={p.publicUrl}
                           alt={p.caption ?? listing.title}
-                          className="photo-warm h-full w-full object-cover"
+                          className="photo-warm h-full w-full object-cover transition-opacity duration-200 ease-out"
                         />
                       </div>
                     ))}
@@ -213,9 +202,12 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               </section>
             </div>
 
-            {/* Sticky booking sidebar */}
+            {/* Sticky booking sidebar — 12px radius, soft always-on shadow (feels like a card, not a bordered box) */}
             <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-card)] p-8 shadow-block">
+              <div
+                className="rounded-[12px] bg-[var(--color-card)] p-8"
+                style={{ boxShadow: "var(--shadow-card-hover)" }}
+              >
                 <p className="font-script text-xl text-[var(--color-ochre)]">
                   from
                 </p>
@@ -243,7 +235,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 <button
                   type="button"
                   disabled
-                  className="mt-8 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-[2px] bg-[var(--color-primary)] px-4 text-sm font-medium text-[var(--color-primary-foreground)] opacity-60"
+                  className="mt-8 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-[6px] bg-[var(--color-primary)] px-4 text-sm font-medium text-[var(--color-primary-foreground)] opacity-60"
                 >
                   Reserve
                 </button>
