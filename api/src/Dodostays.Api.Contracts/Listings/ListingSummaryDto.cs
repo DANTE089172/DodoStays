@@ -11,4 +11,9 @@ public sealed record ListingSummaryDto(
     int MaxGuests,
     decimal NightlyRateMur,
     string? PrimaryPhotoUrl,
-    DateTimeOffset CreatedAt);
+    DateTimeOffset CreatedAt,
+    double Latitude,
+    double Longitude,
+    ListingVibe Vibe,
+    PriceBand PriceBand,
+    int? DriveTimeMinutes);

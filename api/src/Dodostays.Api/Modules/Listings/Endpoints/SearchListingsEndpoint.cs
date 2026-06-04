@@ -19,6 +19,22 @@ internal static class SearchListingsEndpoint
         CancellationToken ct)
     {
         var amenities = ParseAmenities(query.Amenities);
+
+        Dodostays.Api.Contracts.Search.BoundingBox? bbox = null;
+        if (!string.IsNullOrWhiteSpace(query.Bbox)
+            && Dodostays.Api.Contracts.Search.BoundingBox.TryParse(query.Bbox, out var parsedBbox)
+            && parsedBbox is not null)
+        {
+            bbox = parsedBbox;
+        }
+
+        IReadOnlyList<Dodostays.Api.Contracts.Search.Anchor>? anchorList = null;
+        if (Dodostays.Api.Contracts.Search.Anchor.TryParseList(query.Anchors, out var parsedAnchors)
+            && parsedAnchors.Count > 0)
+        {
+            anchorList = parsedAnchors;
+        }
+
         var request = new ListingSearchRequest(
             Region: query.Region,
             PropertyType: query.PropertyType,
@@ -30,7 +46,9 @@ internal static class SearchListingsEndpoint
             VerifiedOnly: query.VerifiedOnly ?? false,
             Sort: query.Sort ?? "newest",
             Page: query.Page ?? 1,
-            PageSize: query.PageSize ?? 20);
+            PageSize: query.PageSize ?? 20,
+            BoundingBox: bbox,
+            Anchors: anchorList);
 
         var validation = await validator.ValidateAsync(request, ct);
         if (!validation.IsValid)
@@ -62,5 +80,7 @@ internal static class SearchListingsEndpoint
         bool? VerifiedOnly,
         string? Sort,
         int? Page,
-        int? PageSize);
+        int? PageSize,
+        string? Bbox,
+        string? Anchors);
 }

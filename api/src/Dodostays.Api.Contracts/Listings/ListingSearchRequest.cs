@@ -1,3 +1,5 @@
+using Dodostays.Api.Contracts.Search;
+
 namespace Dodostays.Api.Contracts.Listings;
 
 public sealed record ListingSearchRequest(
@@ -11,4 +13,6 @@ public sealed record ListingSearchRequest(
     bool VerifiedOnly = false,
     string Sort = "newest",
     int Page = 1,
-    int PageSize = 20);
+    int PageSize = 20,
+    BoundingBox? BoundingBox = null,
+    IReadOnlyList<Anchor>? Anchors = null);
