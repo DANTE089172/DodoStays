@@ -1,10 +1,13 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Dodostays.Api.Contracts.Identity;
 using Dodostays.Api.Modules.Common.Database;
 using Dodostays.Api.Modules.Identity.Auth;
 using Dodostays.Api.Modules.Identity.Domain;
+using Dodostays.Api.Modules.Identity.Endpoints;
 using Dodostays.Api.Modules.Identity.Kyc;
 using Dodostays.Api.Modules.Identity.Services;
+using Dodostays.Api.Modules.Identity.Validation;
 
 namespace Dodostays.Api.Modules.Identity;
 
@@ -29,13 +32,12 @@ public static class IdentityModule
         services.Configure<KycOptions>(configuration.GetSection("Kyc"));
         var kycProvider = configuration["Kyc:Provider"] ?? "InMemory";
         if (string.Equals(kycProvider, "Onfido", StringComparison.OrdinalIgnoreCase))
-        {
             services.AddHttpClient<IKycVerifier, OnfidoKycVerifier>();
-        }
         else
-        {
             services.AddSingleton<IKycVerifier, InMemoryKycVerifier>();
-        }
+
+        services.AddScoped<RefreshTokenStore>();
+        services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<IUserContext, UserContext>();
@@ -45,7 +47,7 @@ public static class IdentityModule
 
     public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder app)
     {
-        // Endpoints registered in Tasks 1.8-1.10. Module wiring keeps a single mount point.
+        app.MapSignUp();
         return app;
     }
 }

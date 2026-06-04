@@ -22,6 +22,12 @@ public sealed class PostgresFixture : IAsyncLifetime
         new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseSetting("ConnectionStrings:Postgres", ConnectionString);
+            builder.UseSetting("Jwt:Issuer", "dodostays-test");
+            builder.UseSetting("Jwt:Audience", "dodostays-test");
+            builder.UseSetting("Jwt:SigningKey", "test-signing-key-must-be-at-least-32-chars-long-please");
+            builder.UseSetting("Jwt:AccessTokenLifetime", "00:15:00");
+            builder.UseSetting("Jwt:RefreshTokenLifetime", "30.00:00:00");
+            builder.UseSetting("Kyc:Provider", "InMemory");
         });
 
     public async Task InitializeAsync()
