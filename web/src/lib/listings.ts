@@ -6,6 +6,8 @@ export type ListingStatus = "Draft" | "Published" | "Suspended" | "Archived";
 export type Amenity =
   | "Pool" | "BeachAccess" | "AirCon" | "Wifi" | "Kitchen" | "Parking"
   | "Tv" | "WashingMachine" | "Balcony" | "Garden" | "Bbq" | "Generator";
+export type ListingVibe = "Mixed" | "Wave" | "Mountain" | "Leaf" | "Town";
+export type PriceBand = "Budget" | "Mid" | "Premium";
 
 export interface ListingPhoto {
   id: string;
@@ -52,6 +54,12 @@ export interface ListingSummary {
   nightlyRateMur: number;
   primaryPhotoUrl: string | null;
   createdAt: string;
+  // NEW (Plan 02b):
+  latitude: number;
+  longitude: number;
+  vibe: ListingVibe;
+  priceBand: PriceBand;
+  driveTimeMinutes: number | null;
 }
 
 export interface ListingSearchResponse {

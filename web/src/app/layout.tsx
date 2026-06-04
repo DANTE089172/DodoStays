@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Caveat, Fraunces, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
+import { MuiProvider } from "@/components/mui-provider";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -36,7 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${fraunces.variable} ${caveat.variable} ${plex.variable}`}
     >
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        <MuiProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </MuiProvider>
       </body>
     </html>
   );
