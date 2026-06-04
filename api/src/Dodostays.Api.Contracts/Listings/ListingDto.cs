@@ -1,0 +1,26 @@
+namespace Dodostays.Api.Contracts.Listings;
+
+public sealed record ListingDto(
+    Guid Id,
+    Guid HostUserId,
+    string HostDisplayName,
+    string Title,
+    string Description,
+    PropertyType PropertyType,
+    ListingTier Tier,
+    ListingStatus Status,
+    string Region,
+    string AddressLine,
+    double Latitude,
+    double Longitude,
+    int Bedrooms,
+    int Beds,
+    int Bathrooms,
+    int MaxGuests,
+    decimal NightlyRateMur,
+    decimal CleaningFeeMur,
+    int MinStayNights,
+    IReadOnlyList<Amenity> Amenities,
+    IReadOnlyList<ListingPhotoDto> Photos,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset? PublishedAt);
