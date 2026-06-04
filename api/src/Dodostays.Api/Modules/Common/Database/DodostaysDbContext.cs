@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Dodostays.Api.Modules.Identity.Domain;
 
 namespace Dodostays.Api.Modules.Common.Database;
 
-public partial class DodostaysDbContext : DbContext
+public partial class DodostaysDbContext : IdentityDbContext<DodostaysUser, DodostaysRole, Guid>
 {
     public DodostaysDbContext(DbContextOptions<DodostaysDbContext> options) : base(options)
     {
@@ -10,7 +12,8 @@ public partial class DodostaysDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasPostgresExtension("postgis");
         base.OnModelCreating(modelBuilder);
+        modelBuilder.HasPostgresExtension("postgis");
+        OnModelCreatingIdentity(modelBuilder);
     }
 }
