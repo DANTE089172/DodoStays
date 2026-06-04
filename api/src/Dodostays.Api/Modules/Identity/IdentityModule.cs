@@ -39,6 +39,8 @@ public static class IdentityModule
         services.AddScoped<RefreshTokenStore>();
         services.AddScoped<IValidator<SignUpRequest>, SignUpValidator>();
         services.AddScoped<IValidator<SignInRequest>, SignInValidator>();
+        services.AddScoped<IValidator<HostProfileDto>, HostProfileValidator>();
+        services.AddScoped<HostOnboardingService>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<IUserContext, UserContext>();
@@ -53,6 +55,7 @@ public static class IdentityModule
         app.MapRefresh();
         app.MapSignOutEndpoint();
         app.MapMe();
+        app.MapHostProfile();
         return app;
     }
 }
