@@ -1,19 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { FlagDivider } from "@/components/decorations/flag-divider";
 import { WaveDivider } from "@/components/decorations/wave-divider";
 import { GrainOverlay } from "@/components/decorations/grain-overlay";
 import { BatikPattern } from "@/components/decorations/batik-pattern";
-import { REGIONS } from "@/lib/listings";
+import { AiSearchBar } from "@/components/search/ai-search-bar";
+import { ExampleQueries } from "@/components/search/example-queries";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1573548842355-73bb50e50323?w=2400&q=80";
@@ -48,20 +44,6 @@ const FEATURED = [
 ];
 
 export default function Home() {
-  const router = useRouter();
-  const [region, setRegion] = useState("");
-  const [dates, setDates] = useState("");
-  const [guests, setGuests] = useState("");
-
-  function onSearch(e: React.FormEvent) {
-    e.preventDefault();
-    const sp = new URLSearchParams();
-    if (region) sp.set("region", region);
-    if (guests) sp.set("minGuests", guests);
-    const query = sp.toString();
-    router.push(query ? `/listings?${query}` : "/listings");
-  }
-
   return (
     <main className="flex min-h-screen flex-col">
       <SiteHeader />
@@ -81,7 +63,7 @@ export default function Home() {
           />
           <GrainOverlay />
           <div aria-hidden="true" className="absolute inset-0 editorial-gradient" />
-          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-32 sm:px-12 lg:px-20 lg:pb-40">
+          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-44 sm:px-12 lg:px-20 lg:pb-52">
             <div className="max-w-2xl">
               <h1 className="font-display text-[clamp(3.5rem,9vw,6rem)] leading-[0.95] tracking-[-0.02em] text-[var(--color-sand)]">
                 Mauritius.
@@ -96,82 +78,20 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Search bar — sand strip with ochre border + hard offset shadow */}
-        <div className="relative mx-auto -mt-14 w-full max-w-5xl px-6 sm:px-10 lg:-mt-16">
-          <form
-            onSubmit={onSearch}
-            className="grid grid-cols-1 gap-x-0 gap-y-4 border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-sand)] p-2 shadow-block sm:grid-cols-[1.4fr_1.2fr_0.9fr_auto] sm:items-end sm:gap-y-0"
-          >
-            <div className="flex flex-col gap-1.5 px-4 py-3 sm:border-r-[1.5px] sm:border-[var(--color-ochre)]">
-              <Label htmlFor="hero-region">Where</Label>
-              <Select
-                id="hero-region"
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                className="h-9 border-0 bg-[var(--color-card)] px-2 focus-visible:ring-0"
-              >
-                <option value="">Anywhere in Mauritius</option>
-                {REGIONS.map((r) => (
-                  <option key={r.slug} value={r.slug}>
-                    {r.label}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1.5 px-4 py-3 sm:border-r-[1.5px] sm:border-[var(--color-ochre)]">
-              <Label htmlFor="hero-dates">When</Label>
-              <Input
-                id="hero-dates"
-                type="text"
-                placeholder="Add dates"
-                value={dates}
-                onChange={(e) => setDates(e.target.value)}
-                className="h-9 border-0 bg-[var(--color-card)] px-2 focus-visible:ring-0"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5 px-4 py-3 sm:border-r-[1.5px] sm:border-[var(--color-ochre)]">
-              <Label htmlFor="hero-guests">Guests</Label>
-              <Input
-                id="hero-guests"
-                type="number"
-                min={1}
-                placeholder="2"
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                className="h-9 border-0 bg-[var(--color-card)] px-2 focus-visible:ring-0"
-              />
-            </div>
-            <div className="flex items-stretch p-2">
-              <Button
-                type="submit"
-                size="lg"
-                className="h-12 w-full px-8 sm:w-auto"
-              >
-                Search stays
-              </Button>
-            </div>
-          </form>
-          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-[var(--color-muted-foreground)]">
-            <span className="small-caps text-[var(--color-ochre)]">Popular</span>
-            {["grand-baie", "flic-en-flac", "tamarin", "le-morne"].map((slug) => {
-              const r = REGIONS.find((x) => x.slug === slug);
-              if (!r) return null;
-              return (
-                <Link
-                  key={slug}
-                  href={`/listings?region=${slug}`}
-                  className="text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
-                >
-                  {r.label}
-                </Link>
-              );
-            })}
+        {/* AI search centerpiece — overlaps the hero bottom, sits dead-center */}
+        <div className="absolute inset-x-0 -bottom-20 px-6 sm:px-10">
+          <div className="mx-auto w-full max-w-3xl">
+            <AiSearchBar variant="hero" />
+            <ExampleQueries />
           </div>
         </div>
       </section>
 
+      {/* Spacer so the next section accounts for the search overlap */}
+      <div className="h-40 sm:h-48" aria-hidden />
+
       {/* Flag divider between hero and How it works */}
-      <div className="mx-auto mt-24 w-full max-w-7xl px-6 sm:px-10">
+      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
         <FlagDivider />
       </div>
 
