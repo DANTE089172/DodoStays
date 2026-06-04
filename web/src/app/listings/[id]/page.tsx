@@ -4,8 +4,6 @@ import { getListing, type Amenity } from "@/lib/listings";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
 export const dynamic = "force-dynamic";
 
@@ -22,21 +20,6 @@ const AMENITY_LABELS: Record<Amenity, string> = {
   Garden: "Garden",
   Bbq: "BBQ",
   Generator: "Generator",
-};
-
-const AMENITY_ICONS: Record<Amenity, string> = {
-  Pool: "🏊",
-  BeachAccess: "🏖️",
-  AirCon: "❄️",
-  Wifi: "📶",
-  Kitchen: "🍳",
-  Parking: "🅿️",
-  Tv: "📺",
-  WashingMachine: "🧺",
-  Balcony: "🌅",
-  Garden: "🌿",
-  Bbq: "🔥",
-  Generator: "⚡",
 };
 
 function formatRegion(slug: string): string {
@@ -56,174 +39,201 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
   }
 
   const heroPhoto = listing.photos[0];
-  const restPhotos = listing.photos.slice(1, 5);
+  const restPhotos = listing.photos.slice(1);
 
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mb-4">
-          <Link
-            href="/listings"
-            className="inline-flex items-center gap-1 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-primary)]"
-          >
-            <span aria-hidden="true">←</span> All listings
-          </Link>
-        </div>
-
-        {/* Hero gallery */}
-        {listing.photos.length > 0 && (
-          <div className="mb-8 grid gap-2 overflow-hidden rounded-2xl sm:grid-cols-4 sm:grid-rows-2">
-            {heroPhoto && (
-              <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-muted)] sm:col-span-2 sm:row-span-2 sm:aspect-auto">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={heroPhoto.publicUrl}
-                  alt={heroPhoto.caption ?? listing.title}
-                  className="h-full w-full object-cover"
-                />
+      <main>
+        {/* Full-bleed hero photo */}
+        {heroPhoto ? (
+          <section className="relative h-[60vh] min-h-[440px] w-full overflow-hidden bg-[var(--color-muted)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={heroPhoto.publicUrl}
+              alt={heroPhoto.caption ?? listing.title}
+              className="h-full w-full object-cover"
+            />
+            <div aria-hidden="true" className="absolute inset-0 editorial-gradient" />
+            <div className="absolute bottom-0 left-0 right-0 px-6 pb-12 sm:px-12 sm:pb-16">
+              <div className="mx-auto max-w-7xl">
+                <p className="small-caps text-xs text-[var(--color-sand)]/85">
+                  {formatRegion(listing.region)}
+                </p>
+                <h1 className="mt-4 max-w-4xl font-display text-4xl leading-[1.05] tracking-[-0.02em] text-[var(--color-sand)] sm:text-6xl">
+                  {listing.title}
+                </h1>
               </div>
-            )}
-            {restPhotos.map((p) => (
-              <div
-                key={p.id}
-                className="relative hidden aspect-[4/3] overflow-hidden bg-[var(--color-muted)] sm:block sm:aspect-auto"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={p.publicUrl}
-                  alt={p.caption ?? listing.title}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
+            </div>
+          </section>
+        ) : (
+          <section className="border-b border-[var(--color-border)]">
+            <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20">
+              <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+                {formatRegion(listing.region)}
+              </p>
+              <h1 className="mt-4 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
+                {listing.title}
+              </h1>
+            </div>
+          </section>
         )}
 
-        {/* Title + layout */}
-        <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">{listing.propertyType}</Badge>
-              {listing.tier === "Verified" && <Badge>✓ Verified host</Badge>}
-            </div>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-              {listing.title}
-            </h1>
-            <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
-              {formatRegion(listing.region)} · Hosted by{" "}
-              <span className="font-medium text-[var(--color-foreground)]">
-                {listing.hostDisplayName}
-              </span>
-            </p>
+        <div className="mx-auto max-w-7xl px-6 sm:px-10">
+          <div className="pt-6">
+            <Link
+              href="/listings"
+              className="text-sm text-[var(--color-muted-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+            >
+              &larr; All stays
+            </Link>
+          </div>
 
-            {/* Stats */}
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Stat label="Bedrooms" value={listing.bedrooms} />
-              <Stat label="Beds" value={listing.beds} />
-              <Stat label="Bathrooms" value={listing.bathrooms} />
-              <Stat label="Max guests" value={listing.maxGuests} />
-            </div>
-
-            <Separator className="my-8" />
-
-            {/* About */}
-            <section>
-              <h2 className="text-xl font-semibold">About this place</h2>
-              <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-[var(--color-foreground)]/90">
-                {listing.description}
+          <div className="grid gap-16 pt-10 lg:grid-cols-[3fr_2fr] lg:gap-20">
+            {/* Left column */}
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="outline">{listing.propertyType}</Badge>
+                {listing.tier === "Verified" && (
+                  <Badge variant="accent">Verified host</Badge>
+                )}
+              </div>
+              <p className="mt-4 text-sm text-[var(--color-muted-foreground)]">
+                Hosted by{" "}
+                <span className="font-medium text-[var(--color-foreground)]">
+                  {listing.hostDisplayName}
+                </span>
               </p>
-            </section>
 
-            {listing.amenities.length > 0 && (
-              <>
-                <Separator className="my-8" />
-                <section>
-                  <h2 className="text-xl font-semibold">What this place offers</h2>
-                  <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {/* Stats — row, not cards */}
+              <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 border-y border-[var(--color-border)] py-6 sm:grid-cols-4">
+                <Stat label="Bedrooms" value={listing.bedrooms} />
+                <Stat label="Beds" value={listing.beds} />
+                <Stat label="Bathrooms" value={listing.bathrooms} />
+                <Stat label="Max guests" value={listing.maxGuests} />
+              </dl>
+
+              {/* Photo gallery (after the hero) */}
+              {restPhotos.length > 0 && (
+                <section className="mt-16">
+                  <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+                    Inside the place
+                  </p>
+                  <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {restPhotos.map((p) => (
+                      <div
+                        key={p.id}
+                        className="relative aspect-[4/3] overflow-hidden bg-[var(--color-muted)]"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={p.publicUrl}
+                          alt={p.caption ?? listing.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* About */}
+              <section className="mt-16">
+                <h2 className="font-display text-3xl leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+                  About this place.
+                </h2>
+                <p className="mt-6 max-w-2xl whitespace-pre-line text-base leading-[1.75] text-[var(--color-foreground)]/90">
+                  {listing.description}
+                </p>
+              </section>
+
+              {listing.amenities.length > 0 && (
+                <section className="mt-16">
+                  <h2 className="font-display text-3xl leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+                    What this place offers.
+                  </h2>
+                  <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
                     {listing.amenities.map((a) => (
                       <li
                         key={a}
-                        className="flex items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2.5 text-sm"
+                        className="flex items-center gap-3 border-b border-[var(--color-border)] py-2.5 text-[var(--color-foreground)]"
                       >
-                        <span aria-hidden="true" className="text-base">
-                          {AMENITY_ICONS[a] ?? "·"}
-                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="h-1 w-1 rounded-full bg-[var(--color-accent)]"
+                        />
                         <span>{AMENITY_LABELS[a] ?? a}</span>
                       </li>
                     ))}
                   </ul>
                 </section>
-              </>
-            )}
+              )}
 
-            <Separator className="my-8" />
-
-            {/* Host card */}
-            <section>
-              <h2 className="text-xl font-semibold">Your host</h2>
-              <Card className="mt-4">
-                <CardContent className="flex items-center gap-4 p-5">
+              {/* Host */}
+              <section className="mt-16">
+                <h2 className="font-display text-3xl leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+                  Your host.
+                </h2>
+                <div className="mt-6 flex items-center gap-5">
                   <div
                     aria-hidden="true"
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)] text-base font-semibold text-[var(--color-primary-foreground)]"
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--color-muted)] font-display text-xl text-[var(--color-foreground)]"
                   >
                     {listing.hostDisplayName.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-semibold">{listing.hostDisplayName}</p>
+                    <p className="font-display text-xl tracking-[-0.01em]">
+                      {listing.hostDisplayName}
+                    </p>
                     <p className="text-sm text-[var(--color-muted-foreground)]">
                       Verified Mauritian host on DodoStays
                     </p>
                   </div>
-                </CardContent>
-              </Card>
-            </section>
-          </div>
+                </div>
+              </section>
+            </div>
 
-          {/* Sticky booking sidebar */}
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            <Card className="shadow-md">
-              <CardContent className="p-6">
-                <p className="text-3xl font-bold">
+            {/* Sticky booking sidebar — clean rectangle */}
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <div className="border border-[var(--color-border)] bg-[var(--color-card)] p-8">
+                <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+                  From
+                </p>
+                <p className="mt-2 font-display text-5xl leading-none tracking-[-0.02em]">
                   MUR {listing.nightlyRateMur.toLocaleString()}
-                  <span className="text-sm font-normal text-[var(--color-muted-foreground)]">
-                    {" "}/ night
-                  </span>
+                </p>
+                <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
+                  per night
                 </p>
 
-                <div className="mt-5 space-y-2 rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-muted)]/40 p-4 text-sm">
+                <dl className="mt-8 space-y-3 border-t border-[var(--color-border)] pt-6 text-sm">
                   <Row
-                    label={`Cleaning fee`}
+                    label="Cleaning fee"
                     value={`MUR ${listing.cleaningFeeMur.toLocaleString()}`}
                   />
                   <Row
                     label="Min stay"
-                    value={`${listing.minStayNights} night${listing.minStayNights === 1 ? "" : "s"}`}
+                    value={`${listing.minStayNights} night${
+                      listing.minStayNights === 1 ? "" : "s"
+                    }`}
                   />
                   <Row label="Max guests" value={String(listing.maxGuests)} />
-                </div>
+                </dl>
 
                 <button
                   type="button"
                   disabled
-                  className="mt-5 inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-md bg-[var(--color-primary)] px-4 text-sm font-semibold text-white opacity-60"
+                  className="mt-8 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-[4px] bg-[var(--color-primary)] px-4 text-sm font-medium text-[var(--color-primary-foreground)] opacity-50"
                 >
                   Reserve
                 </button>
 
-                <div className="mt-4 flex items-center justify-center">
-                  <Badge variant="accent" className="text-[11px]">
-                    Booking will be available soon
-                  </Badge>
-                </div>
-
                 <p className="mt-4 text-center text-xs text-[var(--color-muted-foreground)]">
-                  No charges until you book.
+                  Booking will be available soon. No charges until you book.
                 </p>
-              </CardContent>
-            </Card>
-          </aside>
+              </div>
+            </aside>
+          </div>
         </div>
       </main>
       <SiteFooter />
@@ -233,11 +243,11 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] p-4 text-center">
-      <p className="text-2xl font-bold tracking-tight">{value}</p>
-      <p className="mt-0.5 text-xs uppercase tracking-wide text-[var(--color-muted-foreground)]">
+    <div>
+      <dt className="small-caps text-xs text-[var(--color-muted-foreground)]">
         {label}
-      </p>
+      </dt>
+      <dd className="mt-2 font-display text-2xl tracking-[-0.01em]">{value}</dd>
     </div>
   );
 }
@@ -245,8 +255,8 @@ function Stat({ label, value }: { label: string; value: number }) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[var(--color-muted-foreground)]">{label}</span>
-      <span className="font-medium text-[var(--color-foreground)]">{value}</span>
+      <dt className="text-[var(--color-muted-foreground)]">{label}</dt>
+      <dd className="font-medium text-[var(--color-foreground)]">{value}</dd>
     </div>
   );
 }

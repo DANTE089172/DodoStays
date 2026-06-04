@@ -8,7 +8,6 @@ import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -33,59 +32,67 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col bg-gradient-to-b from-[var(--color-sand)] to-[var(--color-background)]">
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12">
-        <div className="mb-8 flex justify-center">
+    <main className="flex min-h-screen flex-col bg-[var(--color-background)]">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-16">
+        <div className="mb-10 flex justify-center">
           <BrandMark />
         </div>
-        <Card>
-          <CardHeader className="space-y-2 text-center">
-            <CardTitle className="text-2xl">Welcome back</CardTitle>
-            <CardDescription>Sign in to manage your bookings and listings.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  required
-                  placeholder="Email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  placeholder="Password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && (
-                <p
-                  role="alert"
-                  className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-                >
-                  {error}
-                </p>
-              )}
-              <Button type="submit" disabled={submitting} className="w-full" size="lg">
-                {submitting ? "Signing in…" : "Sign in"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-        <p className="mt-6 text-center text-sm text-[var(--color-muted-foreground)]">
+        <div className="border border-[var(--color-border)] bg-[var(--color-card)] p-10">
+          <div className="mb-8">
+            <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+              Account
+            </p>
+            <h1 className="mt-3 font-display text-3xl leading-[1.1] tracking-[-0.02em]">
+              Welcome back.
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+              Sign in to manage your bookings and listings.
+            </p>
+          </div>
+          <form onSubmit={onSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                required
+                placeholder="Email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                required
+                placeholder="Password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            {error && (
+              <p
+                role="alert"
+                className="border border-[var(--color-destructive)]/30 bg-[var(--color-destructive)]/5 px-3 py-2 text-sm text-[var(--color-destructive)]"
+              >
+                {error}
+              </p>
+            )}
+            <Button type="submit" disabled={submitting} className="w-full" size="lg">
+              {submitting ? "Signing in…" : "Sign in"}
+            </Button>
+          </form>
+        </div>
+        <p className="mt-8 text-center text-sm text-[var(--color-muted-foreground)]">
           New to DodoStays?{" "}
-          <Link href="/signup" className="font-medium text-[var(--color-primary)] hover:underline">
+          <Link
+            href="/signup"
+            className="text-[var(--color-foreground)] underline underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+          >
             Create an account
           </Link>
         </p>

@@ -1,23 +1,31 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Fraunces, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 
-const geist = Geist({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-fraunces",
   display: "swap",
+  axes: ["SOFT", "opsz"],
+});
+
+const plex = IBM_Plex_Sans({
+  subsets: ["latin"],
+  variable: "--font-plex",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
   title: "DodoStays",
-  description: "Mauritius. Real prices. Instant book.",
+  description: "Stay in Mauritius. Like a local.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={geist.variable}>
-      <body className="min-h-screen bg-background text-foreground antialiased">
+    <html lang="en" className={`${fraunces.variable} ${plex.variable}`}>
+      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

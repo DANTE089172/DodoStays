@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
 
 export function SearchForm() {
   const router = useRouter();
@@ -28,64 +27,62 @@ export function SearchForm() {
   }
 
   return (
-    <Card className="overflow-visible p-2 sm:p-3">
-      <form
-        onSubmit={submit}
-        className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_auto] lg:items-end"
-      >
-        <Field label="Region" htmlFor="search-region">
-          <Select
-            id="search-region"
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-          >
-            <option value="">Any region</option>
-            {REGIONS.map((r) => (
-              <option key={r.slug} value={r.slug}>
-                {r.label}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <Field label="Property type" htmlFor="search-type">
-          <Select
-            id="search-type"
-            value={propertyType}
-            onChange={(e) => setPropertyType(e.target.value as PropertyType | "")}
-          >
-            <option value="">Any type</option>
-            <option value="Villa">Villa</option>
-            <option value="Apartment">Apartment</option>
-            <option value="Guesthouse">Guesthouse</option>
-          </Select>
-        </Field>
-        <Field label="Min bedrooms" htmlFor="search-bedrooms">
-          <Input
-            id="search-bedrooms"
-            type="number"
-            min={0}
-            placeholder="Any"
-            value={minBedrooms}
-            onChange={(e) => setMinBedrooms(e.target.value)}
-          />
-        </Field>
-        <Field label="Max MUR / night" htmlFor="search-price">
-          <Input
-            id="search-price"
-            type="number"
-            min={1}
-            placeholder="Any"
-            value={maxNightly}
-            onChange={(e) => setMaxNightly(e.target.value)}
-          />
-        </Field>
-        <div className="lg:pt-[22px]">
-          <Button type="submit" className="w-full lg:w-auto" size="default">
-            Search
-          </Button>
-        </div>
-      </form>
-    </Card>
+    <form
+      onSubmit={submit}
+      className="grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-[1.2fr_1fr_1fr_1fr_auto] lg:items-end"
+    >
+      <Field label="Region" htmlFor="search-region">
+        <Select
+          id="search-region"
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
+        >
+          <option value="">Any region</option>
+          {REGIONS.map((r) => (
+            <option key={r.slug} value={r.slug}>
+              {r.label}
+            </option>
+          ))}
+        </Select>
+      </Field>
+      <Field label="Property type" htmlFor="search-type">
+        <Select
+          id="search-type"
+          value={propertyType}
+          onChange={(e) => setPropertyType(e.target.value as PropertyType | "")}
+        >
+          <option value="">Any type</option>
+          <option value="Villa">Villa</option>
+          <option value="Apartment">Apartment</option>
+          <option value="Guesthouse">Guesthouse</option>
+        </Select>
+      </Field>
+      <Field label="Min bedrooms" htmlFor="search-bedrooms">
+        <Input
+          id="search-bedrooms"
+          type="number"
+          min={0}
+          placeholder="Any"
+          value={minBedrooms}
+          onChange={(e) => setMinBedrooms(e.target.value)}
+        />
+      </Field>
+      <Field label="Max MUR / night" htmlFor="search-price">
+        <Input
+          id="search-price"
+          type="number"
+          min={1}
+          placeholder="Any"
+          value={maxNightly}
+          onChange={(e) => setMaxNightly(e.target.value)}
+        />
+      </Field>
+      <div className="col-span-2 lg:col-span-1">
+        <Button type="submit" className="w-full lg:w-auto" size="default">
+          Search
+        </Button>
+      </div>
+    </form>
   );
 }
 
@@ -99,10 +96,8 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-1.5 px-1 sm:px-2">
-      <Label htmlFor={htmlFor} className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-        {label}
-      </Label>
+    <div className="space-y-2">
+      <Label htmlFor={htmlFor}>{label}</Label>
       {children}
     </div>
   );

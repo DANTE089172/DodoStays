@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createListing } from "@/lib/listings";
 import { ListingForm } from "../listing-form";
 import { SiteHeader } from "@/components/site-header";
-import { Card, CardContent } from "@/components/ui/card";
+import { SiteFooter } from "@/components/site-footer";
 
 export default function NewListingPage() {
   const router = useRouter();
@@ -27,40 +27,38 @@ export default function NewListingPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-12">
-        <div className="mb-6">
-          <Link
-            href="/host/listings"
-            className="inline-flex items-center gap-1 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-primary)]"
-          >
-            <span aria-hidden="true">←</span> Back to my listings
-          </Link>
-        </div>
-        <div className="mb-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-primary)]">
+      <main className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-20">
+        <Link
+          href="/host/listings"
+          className="text-sm text-[var(--color-muted-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+        >
+          &larr; Back to my listings
+        </Link>
+        <div className="mt-10 max-w-3xl border-b border-[var(--color-border)] pb-10">
+          <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
             New listing
           </p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
-            Tell us about your place
+          <h1 className="mt-4 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
+            Tell us about your place.
           </h1>
-          <p className="mt-2 max-w-2xl text-sm text-[var(--color-muted-foreground)]">
-            Fill in the basics now. You can add photos and publish from the next screen.
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--color-muted-foreground)]">
+            Fill in the basics now. You can add photos and publish from the
+            next screen.
           </p>
         </div>
 
-        <Card>
-          <CardContent className="p-6 sm:p-8">
-            <ListingForm
-              submitLabel="Save as draft"
-              onSubmit={async (input) => {
-                if (!accessToken) throw new Error("Not authenticated");
-                const created = await createListing(accessToken, input);
-                router.push(`/host/listings/${created.id}/edit`);
-              }}
-            />
-          </CardContent>
-        </Card>
+        <div className="mt-14">
+          <ListingForm
+            submitLabel="Save as draft"
+            onSubmit={async (input) => {
+              if (!accessToken) throw new Error("Not authenticated");
+              const created = await createListing(accessToken, input);
+              router.push(`/host/listings/${created.id}/edit`);
+            }}
+          />
+        </div>
       </main>
+      <SiteFooter />
     </>
   );
 }

@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -57,10 +56,14 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10">
-      {/* Property */}
-      <Section title="Property" description="The basics guests see first.">
-        <div className="space-y-1.5">
+    <form onSubmit={handleSubmit} className="space-y-16">
+      {/* Property — title (1st input), description (textarea) */}
+      <Section
+        eyebrow="01"
+        title="Property"
+        description="The basics guests see first."
+      >
+        <div className="space-y-2">
           <Label htmlFor="lf-title">Title</Label>
           <Input
             id="lf-title"
@@ -71,7 +74,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <Label htmlFor="lf-description">Description</Label>
           <Textarea
             id="lf-description"
@@ -83,20 +86,28 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label htmlFor="lf-type">Property type</Label>
-            <Select
-              id="lf-type"
-              value={propertyType}
-              onChange={(e) => setPropertyType(e.target.value as PropertyType)}
-            >
-              <option value="Villa">Villa</option>
-              <option value="Apartment">Apartment</option>
-              <option value="Guesthouse">Guesthouse</option>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
+      </Section>
+
+      {/* Location — address must be the second text input overall */}
+      <Section
+        eyebrow="02"
+        title="Location"
+        description="Where is your place?"
+      >
+        <div className="space-y-2">
+          <Label htmlFor="lf-address">Address</Label>
+          <Input
+            id="lf-address"
+            type="text"
+            required
+            maxLength={500}
+            placeholder="Street, area, town"
+            value={addressLine}
+            onChange={(e) => setAddressLine(e.target.value)}
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="space-y-2">
             <Label htmlFor="lf-region">Region</Label>
             <Select
               id="lf-region"
@@ -110,27 +121,21 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
               ))}
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="lf-type">Property type</Label>
+            <Select
+              id="lf-type"
+              value={propertyType}
+              onChange={(e) => setPropertyType(e.target.value as PropertyType)}
+            >
+              <option value="Villa">Villa</option>
+              <option value="Apartment">Apartment</option>
+              <option value="Guesthouse">Guesthouse</option>
+            </Select>
+          </div>
         </div>
-      </Section>
-
-      <Separator />
-
-      {/* Location */}
-      <Section title="Location" description="Where is your place?">
-        <div className="space-y-1.5">
-          <Label htmlFor="lf-address">Address</Label>
-          <Input
-            id="lf-address"
-            type="text"
-            required
-            maxLength={500}
-            placeholder="Street, area, town"
-            value={addressLine}
-            onChange={(e) => setAddressLine(e.target.value)}
-          />
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="space-y-2">
             <Label htmlFor="lf-lat">Latitude</Label>
             <Input
               id="lf-lat"
@@ -140,7 +145,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
               onChange={(e) => setLatitude(parseFloat(e.target.value))}
             />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="lf-lng">Longitude</Label>
             <Input
               id="lf-lng"
@@ -153,33 +158,31 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
         </div>
       </Section>
 
-      <Separator />
-
-      {/* Capacity */}
-      <Section title="Capacity" description="Tell guests how many can stay.">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {/* Capacity & pricing */}
+      <Section
+        eyebrow="03"
+        title="Capacity & pricing"
+        description="How many can stay, and what does it cost? All amounts in Mauritian rupees."
+      >
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
           <NumField label="Bedrooms" value={bedrooms} onChange={setBedrooms} min={0} />
           <NumField label="Beds" value={beds} onChange={setBeds} min={1} />
           <NumField label="Bathrooms" value={bathrooms} onChange={setBathrooms} min={0} />
           <NumField label="Max guests" value={maxGuests} onChange={setMaxGuests} min={1} />
         </div>
-      </Section>
-
-      <Separator />
-
-      {/* Pricing */}
-      <Section title="Pricing" description="All amounts in Mauritian rupees.">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <NumField label="Nightly rate (MUR)" value={nightlyRateMur} onChange={setNightlyRateMur} min={1} step={1} />
           <NumField label="Cleaning fee (MUR)" value={cleaningFeeMur} onChange={setCleaningFeeMur} min={0} step={1} />
           <NumField label="Min stay (nights)" value={minStayNights} onChange={setMinStayNights} min={1} />
         </div>
       </Section>
 
-      <Separator />
-
       {/* Amenities */}
-      <Section title="Amenities" description="What does your place include?">
+      <Section
+        eyebrow="04"
+        title="Amenities"
+        description="What does your place include?"
+      >
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {AMENITY_OPTIONS.map((opt) => {
             const checked = amenities.includes(opt.value);
@@ -187,17 +190,17 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
               <label
                 key={opt.value}
                 className={cn(
-                  "flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors",
+                  "flex cursor-pointer items-center gap-2.5 border px-3 py-2.5 text-sm transition-colors duration-200 ease-out",
                   checked
-                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5 text-[var(--color-foreground)]"
-                    : "border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-primary)]/50"
+                    ? "border-[var(--color-foreground)] bg-[var(--color-foreground)] text-[var(--color-sand)]"
+                    : "border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-foreground)]"
                 )}
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleAmenity(opt.value)}
-                  className="h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] accent-[var(--color-primary)] focus:ring-[var(--color-ring)]"
+                  className="h-4 w-4 accent-[var(--color-accent)]"
                 />
                 <span>{opt.label}</span>
               </label>
@@ -209,13 +212,13 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
       {error && (
         <p
           role="alert"
-          className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          className="border border-[var(--color-destructive)]/30 bg-[var(--color-destructive)]/5 px-4 py-3 text-sm text-[var(--color-destructive)]"
         >
           {error}
         </p>
       )}
 
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end border-t border-[var(--color-border)] pt-8">
         <Button type="submit" disabled={submitting} size="lg">
           {submitting ? "Saving…" : submitLabel}
         </Button>
@@ -225,23 +228,32 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
 }
 
 function Section({
+  eyebrow,
   title,
   description,
   children,
 }: {
+  eyebrow: string;
   title: string;
   description?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="grid gap-6 md:grid-cols-[220px_1fr]">
+    <section className="grid gap-8 md:grid-cols-[200px_1fr] md:gap-12">
       <div>
-        <h3 className="text-base font-semibold">{title}</h3>
+        <p className="font-display text-4xl leading-none tracking-[-0.04em] text-[var(--color-foreground)]">
+          {eyebrow}
+        </p>
+        <h2 className="mt-4 font-display text-2xl tracking-[-0.01em]">
+          {title}
+        </h2>
         {description && (
-          <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">{description}</p>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+            {description}
+          </p>
         )}
       </div>
-      <div className="space-y-4">{children}</div>
+      <div className="space-y-6">{children}</div>
     </section>
   );
 }
@@ -260,7 +272,7 @@ function NumField({
   step?: number;
 }) {
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <Label>{label}</Label>
       <Input
         type="number"

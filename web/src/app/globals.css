@@ -1,38 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #fcfaf6;
-  --color-foreground: #0f172a;
-  --color-card: #ffffff;
-  --color-card-foreground: #0f172a;
-  --color-muted: #f1ede4;
-  --color-muted-foreground: #64748b;
-  --color-border: #e6e2d6;
-  --color-input: #e6e2d6;
-  --color-ring: #0d7d7e;
-  --color-primary: #0d7d7e;
-  --color-primary-foreground: #ffffff;
-  --color-primary-hover: #0a6364;
-  --color-secondary: #f1ede4;
-  --color-secondary-foreground: #0f172a;
-  --color-accent: #f4ddb1;
-  --color-accent-foreground: #0f172a;
-  --color-destructive: #dc2626;
-  --color-destructive-foreground: #ffffff;
-  --color-success: #16a34a;
-  --color-success-foreground: #ffffff;
-  --color-sand: #f7f1e3;
-  --color-sand-deep: #ebe2cc;
-  --color-lagoon: #0d7d7e;
-  --color-lagoon-deep: #0a6364;
-  --color-coral: #ec6f5a;
+  /* --- Editorial Mauritius palette --- */
+  --color-background: #F5EFE6;       /* warm sand — page bg */
+  --color-foreground: #0E1A2B;       /* deep ink — text */
+  --color-card: #FFFFFF;             /* warmer #FCFAF6 also acceptable */
+  --color-card-foreground: #0E1A2B;
+  --color-muted: #E8E0D2;            /* sand-darker */
+  --color-muted-foreground: #4A5568; /* slate-warm */
+  --color-border: #D9CFBE;           /* sand-1-step-darker */
+  --color-input: #D9CFBE;
+  --color-ring: #0E1A2B;
+  --color-primary: #0E1A2B;          /* deep ink — primary buttons */
+  --color-primary-foreground: #F5EFE6;
+  --color-primary-hover: #1c2a40;
+  --color-secondary: #E8E0D2;
+  --color-secondary-foreground: #0E1A2B;
+  --color-accent: #D9542B;           /* volcanic coral */
+  --color-accent-foreground: #F5EFE6;
+  --color-accent-hover: #b8451f;
+  --color-destructive: #B53E1B;
+  --color-destructive-foreground: #F5EFE6;
+  --color-success: #2F6F4A;
+  --color-success-foreground: #F5EFE6;
 
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Editorial-Mauritius semantic aliases */
+  --color-sand: #F5EFE6;
+  --color-sand-deep: #E8E0D2;
+  --color-ink: #0E1A2B;
+  --color-coral: #D9542B;
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+  /* Hard 4px ceiling on radius */
+  --radius: 4px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+
+  /* Typography */
+  --font-display: var(--font-fraunces), "Iowan Old Style", "Apple Garamond",
+    Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro",
+    serif;
+  --font-sans: var(--font-plex), ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -48,12 +57,57 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    line-height: 1.65;
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
+    background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
     color: var(--color-foreground);
+  }
+
+  /* Editorial defaults — Fraunces serif for hero/headings */
+  h1, h2 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-weight: 500;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .small-caps {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+  }
+  .tracking-editorial {
+    letter-spacing: -0.02em;
+  }
+  .editorial-gradient {
+    background-image: linear-gradient(
+      to top,
+      rgba(14, 26, 43, 0.6),
+      transparent 55%
+    );
   }
 }

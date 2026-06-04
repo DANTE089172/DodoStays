@@ -4,25 +4,24 @@ import { cn } from "@/lib/utils";
 interface Props {
   className?: string;
   href?: string;
+  tone?: "ink" | "sand";
 }
 
-export function BrandMark({ className, href = "/" }: Props) {
-  const inner = (
-    <span className="flex items-center gap-2 text-xl font-bold tracking-tight">
-      <span
-        aria-hidden="true"
-        className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--color-primary-foreground)] text-base font-bold shadow-sm"
-      >
-        D
-      </span>
-      <span>
-        Dodo<span className="text-[var(--color-primary)]">Stays</span>
-      </span>
-    </span>
-  );
+export function BrandMark({ className, href = "/", tone = "ink" }: Props) {
+  const colour =
+    tone === "sand"
+      ? "text-[var(--color-sand)]"
+      : "text-[var(--color-foreground)]";
   return (
-    <Link href={href} className={cn("inline-flex", className)}>
-      {inner}
+    <Link href={href} className={cn("inline-flex items-center", className)}>
+      <span
+        className={cn(
+          "font-display text-2xl tracking-[-0.02em]",
+          colour
+        )}
+      >
+        Dodo<span className="italic">Stays</span>
+      </span>
     </Link>
   );
 }

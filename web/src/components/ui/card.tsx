@@ -6,7 +6,7 @@ export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
     <div
       ref={ref}
       className={cn(
-        "rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-card-foreground)] shadow-sm",
+        "rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-card-foreground)]",
         className
       )}
       {...props}
@@ -28,7 +28,7 @@ export const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn("text-xl font-semibold leading-none tracking-tight", className)}
+    className={cn("font-display text-2xl tracking-editorial", className)}
     {...props}
   />
 ));
@@ -40,7 +40,7 @@ export const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-[var(--color-muted-foreground)]", className)}
+    className={cn("text-sm leading-relaxed text-[var(--color-muted-foreground)]", className)}
     {...props}
   />
 ));

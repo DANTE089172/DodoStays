@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -39,76 +38,90 @@ export default function AccountPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
-        <Card>
-          <CardHeader className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+      <main className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
+        <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+          Account
+        </p>
+        <div className="mt-12 grid gap-16 lg:grid-cols-[1fr_1.4fr]">
+          {/* Left: identity */}
+          <div className="flex flex-col items-start">
             <div
               aria-hidden="true"
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)] text-xl font-semibold text-[var(--color-primary-foreground)] shadow-sm"
+              className="flex h-28 w-28 items-center justify-center rounded-full bg-[var(--color-muted)] font-display text-4xl tracking-[-0.02em] text-[var(--color-foreground)]"
             >
               {initials(user.displayName)}
             </div>
-            <div className="flex-1">
-              <CardTitle className="text-2xl">Welcome, {user.displayName}</CardTitle>
-              <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">{user.email}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Badge variant="secondary">{user.role}</Badge>
-                <Badge variant={kycVariant}>KYC: {user.kycStatus}</Badge>
-              </div>
+            <h1 className="mt-8 font-display text-4xl leading-[1.05] tracking-[-0.02em] sm:text-5xl">
+              Welcome,{" "}
+              <span className="italic">{user.displayName}</span>.
+            </h1>
+            <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
+              {user.email}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Badge variant="outline">{user.role}</Badge>
+              <Badge variant={kycVariant}>KYC: {user.kycStatus}</Badge>
             </div>
-          </CardHeader>
-          <Separator />
-          <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-                Role
-              </p>
-              <p className="mt-1 text-sm">{user.role}</p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-                KYC status
-              </p>
-              <p className="mt-1 text-sm">{user.kycStatus}</p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-                Language
-              </p>
-              <p className="mt-1 text-sm">{user.preferredLanguage}</p>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {user.role === "Host" && (
-          <Card className="mt-6">
-            <CardContent className="flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-semibold">Hosting on DodoStays</p>
-                <p className="text-sm text-[var(--color-muted-foreground)]">
-                  Edit, publish and track your places.
+          {/* Right: details + actions */}
+          <div>
+            <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+              Profile
+            </p>
+            <dl className="mt-5 divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+              <DetailRow label="Role" value={user.role} />
+              <DetailRow label="KYC status" value={user.kycStatus} />
+              <DetailRow label="Language" value={user.preferredLanguage} />
+            </dl>
+
+            <div className="mt-12 flex flex-wrap gap-3">
+              {user.role === "Host" && (
+                <Link href="/host/listings">
+                  <Button>Manage my listings</Button>
+                </Link>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={async () => {
+                  await signOut();
+                  router.push("/");
+                }}
+              >
+                Sign out
+              </Button>
+            </div>
+
+            {user.role === "Host" && (
+              <div className="mt-16 border-t border-[var(--color-border)] pt-10">
+                <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+                  For hosts
+                </p>
+                <h2 className="mt-3 font-display text-2xl tracking-[-0.01em]">
+                  Hosting on DodoStays.
+                </h2>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+                  Edit, publish and track your places. Add photos, set
+                  prices in MUR, control your availability.
                 </p>
               </div>
-              <Link href="/host/listings">
-                <Button>Manage my listings</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="mt-8 flex justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={async () => {
-              await signOut();
-              router.push("/");
-            }}
-          >
-            Sign out
-          </Button>
+            )}
+          </div>
         </div>
       </main>
+      <SiteFooter />
     </>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid grid-cols-[140px_1fr] items-baseline gap-4 py-4">
+      <dt className="small-caps text-xs text-[var(--color-muted-foreground)]">
+        {label}
+      </dt>
+      <dd className="text-sm text-[var(--color-foreground)]">{value}</dd>
+    </div>
   );
 }

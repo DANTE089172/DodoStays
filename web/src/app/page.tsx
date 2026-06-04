@@ -9,21 +9,46 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { REGIONS } from "@/lib/listings";
+
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1571396726928-7bd1cae40f0f?w=2400&q=80";
+
+const FEATURED = [
+  {
+    title: "A coral villa above Tamarin Bay",
+    region: "Tamarin",
+    image:
+      "https://images.unsplash.com/photo-1505881502353-a1986add3762?w=1600&q=80",
+    href: "/listings?region=tamarin",
+  },
+  {
+    title: "Old colonial house, lagoon at the door",
+    region: "Mahebourg",
+    image:
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1600&q=80",
+    href: "/listings?region=mahebourg",
+  },
+  {
+    title: "A small apartment in Flic en Flac",
+    region: "Flic en Flac",
+    image:
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1600&q=80",
+    href: "/listings?region=flic-en-flac",
+  },
+];
 
 export default function Home() {
   const router = useRouter();
   const [region, setRegion] = useState("");
-  const [propertyType, setPropertyType] = useState("");
-  const [maxNightly, setMaxNightly] = useState("");
+  const [dates, setDates] = useState("");
+  const [guests, setGuests] = useState("");
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
     const sp = new URLSearchParams();
     if (region) sp.set("region", region);
-    if (propertyType) sp.set("propertyType", propertyType);
-    if (maxNightly) sp.set("maxNightlyMur", maxNightly);
+    if (guests) sp.set("minGuests", guests);
     const query = sp.toString();
     router.push(query ? `/listings?${query}` : "/listings");
   }
@@ -32,85 +57,101 @@ export default function Home() {
     <main className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-[var(--color-border)] bg-gradient-to-b from-[var(--color-sand)] via-[var(--color-background)] to-[var(--color-background)]">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-24 right-1/2 h-[420px] w-[420px] translate-x-1/2 rounded-full bg-[var(--color-accent)]/40 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 left-0 h-[320px] w-[320px] rounded-full bg-[var(--color-primary)]/15 blur-3xl"
-        />
-        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-card)]/80 px-3 py-1 text-xs font-medium text-[var(--color-muted-foreground)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]" />
-              Built for Mauritius
-            </span>
-            <h1 className="mt-6 text-balance text-5xl font-bold tracking-tight text-[var(--color-foreground)] sm:text-6xl lg:text-7xl">
-              Stay where the lagoon meets the trade winds.
+      {/* Hero — full-bleed photograph */}
+      <section className="relative">
+        <div className="relative h-[80vh] min-h-[560px] w-full overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={HERO_IMAGE}
+            alt="A Mauritian lagoon at sunset"
+            className="h-full w-full object-cover"
+          />
+          <div aria-hidden="true" className="absolute inset-0 editorial-gradient" />
+          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-32 sm:px-12 lg:px-20 lg:pb-40">
+            <p className="small-caps text-xs text-[var(--color-sand)]/85">
+              Editorial · Mauritius · Est. 2025
+            </p>
+            <h1 className="mt-4 max-w-4xl font-display text-[clamp(2.75rem,7vw,5rem)] leading-[1.02] tracking-[-0.02em] text-[var(--color-sand)]">
+              Stay in Mauritius.{" "}
+              <span className="italic text-[var(--color-sand)]/95">
+                Like a local.
+              </span>
             </h1>
-            <p className="mt-5 text-balance text-lg text-[var(--color-muted-foreground)] sm:text-xl">
-              Real prices in MUR. Verified hosts. No hidden fees. Find your
-              villa, apartment, or guesthouse from Grand Baie to Le Morne.
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--color-sand)]/85 sm:text-lg">
+              Real prices in rupees. Verified Mauritian hosts. From a
+              coral-shaded villa in Tamarin to a lagoon-side guesthouse in
+              Mahebourg.
             </p>
           </div>
+        </div>
 
-          {/* Search */}
-          <Card className="mx-auto mt-10 max-w-4xl">
-            <CardContent className="p-4 sm:p-6">
-              <form onSubmit={onSearch} className="grid grid-cols-1 gap-4 md:grid-cols-[1.2fr_1fr_1fr_auto] md:items-end">
-                <div className="space-y-1.5">
-                  <Label htmlFor="hero-region">Region</Label>
-                  <Select id="hero-region" value={region} onChange={(e) => setRegion(e.target.value)}>
-                    <option value="">Anywhere in Mauritius</option>
-                    {REGIONS.map((r) => (
-                      <option key={r.slug} value={r.slug}>
-                        {r.label}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hero-type">Property type</Label>
-                  <Select id="hero-type" value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
-                    <option value="">Any type</option>
-                    <option value="Villa">Villa</option>
-                    <option value="Apartment">Apartment</option>
-                    <option value="Guesthouse">Guesthouse</option>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="hero-price">Max MUR / night</Label>
-                  <Input
-                    id="hero-price"
-                    type="number"
-                    min={1}
-                    placeholder="e.g. 5000"
-                    value={maxNightly}
-                    onChange={(e) => setMaxNightly(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" size="lg" className="md:h-10">
-                  Search stays
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-[var(--color-muted-foreground)]">
-            <span className="font-medium text-[var(--color-foreground)]">Popular:</span>
+        {/* Search bar — overlaps the bottom of the hero */}
+        <div className="relative mx-auto -mt-14 w-full max-w-5xl px-6 sm:px-10 lg:-mt-16">
+          <form
+            onSubmit={onSearch}
+            className="grid grid-cols-1 gap-x-0 gap-y-4 border border-[var(--color-border)] bg-[var(--color-card)] p-2 sm:grid-cols-[1.4fr_1.2fr_0.9fr_auto] sm:items-end sm:gap-y-0"
+          >
+            <div className="flex flex-col gap-1.5 px-4 py-3 sm:border-r sm:border-[var(--color-border)]">
+              <Label htmlFor="hero-region">Where</Label>
+              <Select
+                id="hero-region"
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                className="h-9 border-0 bg-transparent px-0 focus-visible:ring-0"
+              >
+                <option value="">Anywhere in Mauritius</option>
+                {REGIONS.map((r) => (
+                  <option key={r.slug} value={r.slug}>
+                    {r.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5 px-4 py-3 sm:border-r sm:border-[var(--color-border)]">
+              <Label htmlFor="hero-dates">When</Label>
+              <Input
+                id="hero-dates"
+                type="text"
+                placeholder="Add dates"
+                value={dates}
+                onChange={(e) => setDates(e.target.value)}
+                className="h-9 border-0 bg-transparent px-0 focus-visible:ring-0"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5 px-4 py-3 sm:border-r sm:border-[var(--color-border)]">
+              <Label htmlFor="hero-guests">Guests</Label>
+              <Input
+                id="hero-guests"
+                type="number"
+                min={1}
+                placeholder="2"
+                value={guests}
+                onChange={(e) => setGuests(e.target.value)}
+                className="h-9 border-0 bg-transparent px-0 focus-visible:ring-0"
+              />
+            </div>
+            <div className="flex items-stretch p-2">
+              <Button
+                type="submit"
+                size="lg"
+                className="h-12 w-full px-8 sm:w-auto"
+              >
+                Search stays
+              </Button>
+            </div>
+          </form>
+          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-[var(--color-muted-foreground)]">
+            <span className="small-caps">Popular</span>
             {["grand-baie", "flic-en-flac", "tamarin", "le-morne"].map((slug) => {
-              const region = REGIONS.find((r) => r.slug === slug);
-              if (!region) return null;
+              const r = REGIONS.find((x) => x.slug === slug);
+              if (!r) return null;
               return (
                 <Link
                   key={slug}
                   href={`/listings?region=${slug}`}
-                  className="rounded-full border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-1 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                  className="text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
                 >
-                  {region.label}
+                  {r.label}
                 </Link>
               );
             })}
@@ -118,78 +159,137 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How DodoStays works</h2>
-          <p className="mt-3 text-[var(--color-muted-foreground)]">
-            We keep it simple, transparent, and 100% Mauritian.
-          </p>
-        </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {[
-            {
-              step: "01",
-              title: "Browse honest listings",
-              body:
-                "Real photos, real prices in rupees. No surge pricing, no foreign-currency surprises at checkout.",
-            },
-            {
-              step: "02",
-              title: "Book a verified host",
-              body:
-                "Every host is KYC-verified. Read past guest reviews and chat directly before you confirm.",
-            },
-            {
-              step: "03",
-              title: "Stay like a local",
-              body:
-                "Get tips on the best beaches, dholl puri spots, and snorkeling reefs from people who actually live here.",
-            },
-          ].map((item) => (
-            <Card key={item.step} className="h-full">
-              <CardContent className="flex h-full flex-col gap-3 p-8">
-                <span className="font-mono text-xs font-semibold uppercase tracking-widest text-[var(--color-primary)]">
-                  Step {item.step}
-                </span>
-                <h3 className="text-xl font-semibold">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+      {/* How DodoStays works — numbered editorial */}
+      <section className="mx-auto w-full max-w-7xl px-6 py-28 sm:px-10 lg:py-36">
+        <div className="grid gap-12 md:grid-cols-[1fr_2fr] md:gap-20">
+          <div>
+            <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+              How it works
+            </p>
+            <h2 className="mt-4 font-display text-4xl leading-[1.05] tracking-[-0.02em] sm:text-5xl">
+              How DodoStays works.
+            </h2>
+            <p className="mt-6 max-w-md text-base leading-relaxed text-[var(--color-muted-foreground)]">
+              We are not a global platform. We are a small team in Quatre
+              Bornes who built a booking site for the island we live on.
+            </p>
+          </div>
+          <ol className="grid gap-12 sm:grid-cols-3">
+            {[
+              {
+                step: "01",
+                title: "Honest listings.",
+                body:
+                  "Real photos and real prices in rupees. No surge pricing, no foreign-currency surprises at checkout.",
+              },
+              {
+                step: "02",
+                title: "Verified hosts.",
+                body:
+                  "Every host is KYC-verified. Read past guest reviews and chat directly before you confirm.",
+              },
+              {
+                step: "03",
+                title: "Local advice.",
+                body:
+                  "Tips on which beach to visit Tuesday, where to find dholl puri, and which reef to snorkel — from people who actually live here.",
+              },
+            ].map((item) => (
+              <li key={item.step}>
+                <p className="font-display text-6xl leading-none tracking-[-0.04em] text-[var(--color-foreground)]">
+                  {item.step}
+                </p>
+                <h3 className="mt-6 font-display text-xl tracking-[-0.01em]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
                   {item.body}
                 </p>
-              </CardContent>
-            </Card>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Featured stays — editorial photo+caption pairs */}
+      <section className="mx-auto w-full max-w-7xl px-6 pb-28 sm:px-10 lg:pb-36">
+        <div className="mb-14 flex items-end justify-between">
+          <div>
+            <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+              Featured stays
+            </p>
+            <h2 className="mt-4 font-display text-4xl tracking-[-0.02em] sm:text-5xl">
+              A few places we love.
+            </h2>
+          </div>
+          <Link
+            href="/listings"
+            className="hidden text-sm text-[var(--color-foreground)] underline underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-accent)] sm:inline"
+          >
+            All stays
+          </Link>
+        </div>
+        <div className="grid gap-x-10 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+          {FEATURED.map((f, i) => (
+            <Link
+              key={f.title}
+              href={f.href}
+              className={`group block ${
+                i === 0 ? "md:col-span-2 lg:col-span-2" : ""
+              }`}
+            >
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-muted)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={f.image}
+                  alt={f.title}
+                  className="h-full w-full object-cover transition-opacity duration-200 ease-out group-hover:opacity-95"
+                />
+              </div>
+              <div className="mt-5 max-w-md">
+                <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+                  {f.region}
+                </p>
+                <h3 className="mt-2 font-display text-2xl leading-[1.15] tracking-[-0.01em] text-[var(--color-foreground)] transition-colors duration-200 ease-out group-hover:text-[var(--color-accent)]">
+                  {f.title}
+                </h3>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
-        <Card className="overflow-hidden border-0 bg-[var(--color-primary)] text-[var(--color-primary-foreground)] shadow-lg">
-          <CardContent className="grid gap-6 p-8 md:grid-cols-[1fr_auto] md:items-center md:p-12">
-            <div>
-              <h2 className="text-2xl font-bold sm:text-3xl">Hosting in Mauritius?</h2>
-              <p className="mt-2 max-w-xl text-sm text-white/85 sm:text-base">
-                Reach guests who actually want to come here. Set your own prices in MUR, keep your direct guests, and pay one flat commission.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/signup">
-                <Button variant="secondary" size="lg">
-                  List your place
-                </Button>
-              </Link>
-              <Link href="/listings">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-white/30 bg-transparent text-white hover:bg-white/10"
-                >
-                  Browse stays
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Hosting CTA — left-aligned editorial */}
+      <section className="border-t border-[var(--color-border)] bg-[var(--color-muted)]">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-24 sm:px-10 md:grid-cols-[2fr_1fr] md:items-end">
+          <div>
+            <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+              For Mauritian hosts
+            </p>
+            <h2 className="mt-4 max-w-2xl font-display text-4xl leading-[1.1] tracking-[-0.02em] sm:text-5xl">
+              Hosting in Mauritius?{" "}
+              <span className="italic text-[var(--color-accent)]">
+                Reach guests who actually want to come here.
+              </span>
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--color-muted-foreground)]">
+              Set your own prices in MUR. Keep your direct guests. Pay one
+              flat commission. No fine print.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 md:justify-end">
+            <Link href="/signup">
+              <Button variant="accent" size="lg">
+                List your place
+              </Button>
+            </Link>
+            <Link href="/listings">
+              <Button variant="outline" size="lg">
+                Browse stays
+              </Button>
+            </Link>
+          </div>
+        </div>
       </section>
 
       <SiteFooter />
