@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 
 export default function AccountPage() {
@@ -24,6 +25,11 @@ export default function AccountPage() {
         <dt className="font-semibold">KYC</dt><dd>{user.kycStatus}</dd>
         <dt className="font-semibold">Language</dt><dd>{user.preferredLanguage}</dd>
       </dl>
+      {user.role === "Host" && (
+        <p className="mt-4">
+          <Link href="/host/listings" className="underline">Manage my listings →</Link>
+        </p>
+      )}
       <button
         type="button"
         onClick={async () => {
