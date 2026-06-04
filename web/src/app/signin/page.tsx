@@ -8,6 +8,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { BatikPattern } from "@/components/decorations/batik-pattern";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -32,17 +33,21 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col bg-[var(--color-background)]">
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-16">
-        <div className="mb-10 flex justify-center">
+    <main className="relative flex min-h-screen flex-col bg-[var(--color-background)]">
+      <BatikPattern opacity={0.025} />
+      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-16">
+        <div className="mb-4 flex flex-col items-center">
           <BrandMark />
+          <p className="mt-3 font-script text-2xl text-[var(--color-ochre)]">
+            welcome to Maurice.
+          </p>
         </div>
-        <div className="border border-[var(--color-border)] bg-[var(--color-card)] p-10">
+        <div className="border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-card)] p-10 shadow-block">
           <div className="mb-8">
-            <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
-              Account
+            <p className="font-script text-2xl text-[var(--color-ochre)]">
+              bonzour ankor
             </p>
-            <h1 className="mt-3 font-display text-3xl leading-[1.1] tracking-[-0.02em]">
+            <h1 className="mt-1 font-display text-3xl leading-[1.1] tracking-[-0.02em]">
               Welcome back.
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
@@ -77,12 +82,17 @@ export default function SignInPage() {
             {error && (
               <p
                 role="alert"
-                className="border border-[var(--color-destructive)]/30 bg-[var(--color-destructive)]/5 px-3 py-2 text-sm text-[var(--color-destructive)]"
+                className="border-[1.5px] border-[var(--color-destructive)]/40 bg-[var(--color-destructive)]/5 px-3 py-2 text-sm text-[var(--color-destructive)]"
               >
                 {error}
               </p>
             )}
-            <Button type="submit" disabled={submitting} className="w-full" size="lg">
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="w-full shadow-block"
+              size="lg"
+            >
               {submitting ? "Signing in…" : "Sign in"}
             </Button>
           </form>
@@ -91,7 +101,7 @@ export default function SignInPage() {
           New to DodoStays?{" "}
           <Link
             href="/signup"
-            className="text-[var(--color-foreground)] underline underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+            className="text-[var(--color-primary)] underline underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
           >
             Create an account
           </Link>

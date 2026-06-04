@@ -4,6 +4,8 @@ import { getListing, type Amenity } from "@/lib/listings";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Badge } from "@/components/ui/badge";
+import { GrainOverlay } from "@/components/decorations/grain-overlay";
+import { WaveDivider } from "@/components/decorations/wave-divider";
 
 export const dynamic = "force-dynamic";
 
@@ -52,27 +54,28 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
             <img
               src={heroPhoto.publicUrl}
               alt={heroPhoto.caption ?? listing.title}
-              className="h-full w-full object-cover"
+              className="photo-warm h-full w-full object-cover"
             />
+            <GrainOverlay />
             <div aria-hidden="true" className="absolute inset-0 editorial-gradient" />
             <div className="absolute bottom-0 left-0 right-0 px-6 pb-12 sm:px-12 sm:pb-16">
               <div className="mx-auto max-w-7xl">
-                <p className="small-caps text-xs text-[var(--color-sand)]/85">
+                <p className="font-script text-2xl text-[var(--color-ochre)]">
                   {formatRegion(listing.region)}
                 </p>
-                <h1 className="mt-4 max-w-4xl font-display text-4xl leading-[1.05] tracking-[-0.02em] text-[var(--color-sand)] sm:text-6xl">
+                <h1 className="mt-1 max-w-4xl font-display text-4xl leading-[1.05] tracking-[-0.02em] text-[var(--color-sand)] sm:text-6xl">
                   {listing.title}
                 </h1>
               </div>
             </div>
           </section>
         ) : (
-          <section className="border-b border-[var(--color-border)]">
+          <section className="border-b-[1.5px] border-[var(--color-ochre)]">
             <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20">
-              <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
+              <p className="font-script text-2xl text-[var(--color-ochre)]">
                 {formatRegion(listing.region)}
               </p>
-              <h1 className="mt-4 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
+              <h1 className="mt-1 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
                 {listing.title}
               </h1>
             </div>
@@ -95,7 +98,9 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline">{listing.propertyType}</Badge>
                 {listing.tier === "Verified" && (
-                  <Badge variant="accent">Verified host</Badge>
+                  <span className="border-[1.5px] border-[var(--color-cane)] px-2.5 font-script text-base text-[var(--color-cane)]">
+                    verified host
+                  </span>
                 )}
               </div>
               <p className="mt-4 text-sm text-[var(--color-muted-foreground)]">
@@ -105,8 +110,8 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 </span>
               </p>
 
-              {/* Stats — row, not cards */}
-              <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 border-y border-[var(--color-border)] py-6 sm:grid-cols-4">
+              {/* Stats — row */}
+              <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 border-y-[1.5px] border-[var(--color-ochre)] py-6 sm:grid-cols-4">
                 <Stat label="Bedrooms" value={listing.bedrooms} />
                 <Stat label="Beds" value={listing.beds} />
                 <Stat label="Bathrooms" value={listing.bathrooms} />
@@ -116,20 +121,20 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               {/* Photo gallery (after the hero) */}
               {restPhotos.length > 0 && (
                 <section className="mt-16">
-                  <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
-                    Inside the place
+                  <p className="font-script text-2xl text-[var(--color-ochre)]">
+                    inside the place
                   </p>
                   <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {restPhotos.map((p) => (
                       <div
                         key={p.id}
-                        className="relative aspect-[4/3] overflow-hidden bg-[var(--color-muted)]"
+                        className="relative aspect-[4/3] overflow-hidden border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-muted)]"
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={p.publicUrl}
                           alt={p.caption ?? listing.title}
-                          className="h-full w-full object-cover"
+                          className="photo-warm h-full w-full object-cover"
                         />
                       </div>
                     ))}
@@ -137,8 +142,13 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 </section>
               )}
 
+              {/* Wave divider */}
+              <div className="mt-16">
+                <WaveDivider />
+              </div>
+
               {/* About */}
-              <section className="mt-16">
+              <section className="mt-12">
                 <h2 className="font-display text-3xl leading-[1.1] tracking-[-0.02em] sm:text-4xl">
                   About this place.
                 </h2>
@@ -148,36 +158,46 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               </section>
 
               {listing.amenities.length > 0 && (
-                <section className="mt-16">
-                  <h2 className="font-display text-3xl leading-[1.1] tracking-[-0.02em] sm:text-4xl">
-                    What this place offers.
-                  </h2>
-                  <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
-                    {listing.amenities.map((a) => (
-                      <li
-                        key={a}
-                        className="flex items-center gap-3 border-b border-[var(--color-border)] py-2.5 text-[var(--color-foreground)]"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="h-1 w-1 rounded-full bg-[var(--color-accent)]"
-                        />
-                        <span>{AMENITY_LABELS[a] ?? a}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
+                <>
+                  <div className="mt-16">
+                    <WaveDivider />
+                  </div>
+                  <section className="mt-12">
+                    <h2 className="font-display text-3xl leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+                      What this place offers.
+                    </h2>
+                    <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                      {listing.amenities.map((a) => (
+                        <li
+                          key={a}
+                          className="flex items-center gap-3 border-b-[1.5px] border-[var(--color-border)] py-2.5 text-[var(--color-foreground)]"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="h-1.5 w-1.5 rounded-full bg-[var(--color-ochre)]"
+                          />
+                          <span>{AMENITY_LABELS[a] ?? a}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                </>
               )}
 
+              {/* Wave divider */}
+              <div className="mt-16">
+                <WaveDivider />
+              </div>
+
               {/* Host */}
-              <section className="mt-16">
+              <section className="mt-12">
                 <h2 className="font-display text-3xl leading-[1.1] tracking-[-0.02em] sm:text-4xl">
                   Your host.
                 </h2>
                 <div className="mt-6 flex items-center gap-5">
                   <div
                     aria-hidden="true"
-                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--color-muted)] font-display text-xl text-[var(--color-foreground)]"
+                    className="flex h-16 w-16 shrink-0 items-center justify-center border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-sand)] font-display text-2xl text-[var(--color-foreground)]"
                   >
                     {listing.hostDisplayName.charAt(0).toUpperCase()}
                   </div>
@@ -185,28 +205,28 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                     <p className="font-display text-xl tracking-[-0.01em]">
                       {listing.hostDisplayName}
                     </p>
-                    <p className="text-sm text-[var(--color-muted-foreground)]">
-                      Verified Mauritian host on DodoStays
+                    <p className="font-script text-base text-[var(--color-cane)]">
+                      verified Mauritian host
                     </p>
                   </div>
                 </div>
               </section>
             </div>
 
-            {/* Sticky booking sidebar — clean rectangle */}
+            {/* Sticky booking sidebar */}
             <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="border border-[var(--color-border)] bg-[var(--color-card)] p-8">
-                <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
-                  From
+              <div className="border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-card)] p-8 shadow-block">
+                <p className="font-script text-xl text-[var(--color-ochre)]">
+                  from
                 </p>
-                <p className="mt-2 font-display text-5xl leading-none tracking-[-0.02em]">
+                <p className="mt-1 font-display text-5xl leading-none tracking-[-0.02em]">
                   MUR {listing.nightlyRateMur.toLocaleString()}
                 </p>
                 <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
-                  per night
+                  / night
                 </p>
 
-                <dl className="mt-8 space-y-3 border-t border-[var(--color-border)] pt-6 text-sm">
+                <dl className="mt-8 space-y-3 border-t-[1.5px] border-[var(--color-border)] pt-6 text-sm">
                   <Row
                     label="Cleaning fee"
                     value={`MUR ${listing.cleaningFeeMur.toLocaleString()}`}
@@ -223,7 +243,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 <button
                   type="button"
                   disabled
-                  className="mt-8 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-[4px] bg-[var(--color-primary)] px-4 text-sm font-medium text-[var(--color-primary-foreground)] opacity-50"
+                  className="mt-8 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-[2px] bg-[var(--color-primary)] px-4 text-sm font-medium text-[var(--color-primary-foreground)] opacity-60"
                 >
                   Reserve
                 </button>
@@ -244,10 +264,10 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div>
-      <dt className="small-caps text-xs text-[var(--color-muted-foreground)]">
+      <dt className="font-script text-base text-[var(--color-ochre)]">
         {label}
       </dt>
-      <dd className="mt-2 font-display text-2xl tracking-[-0.01em]">{value}</dd>
+      <dd className="mt-1 font-display text-2xl tracking-[-0.01em]">{value}</dd>
     </div>
   );
 }

@@ -1,46 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  /* --- Editorial Mauritius palette --- */
-  --color-background: #F5EFE6;       /* warm sand — page bg */
-  --color-foreground: #0E1A2B;       /* deep ink — text */
-  --color-card: #FFFFFF;             /* warmer #FCFAF6 also acceptable */
-  --color-card-foreground: #0E1A2B;
-  --color-muted: #E8E0D2;            /* sand-darker */
-  --color-muted-foreground: #4A5568; /* slate-warm */
-  --color-border: #D9CFBE;           /* sand-1-step-darker */
-  --color-input: #D9CFBE;
-  --color-ring: #0E1A2B;
-  --color-primary: #0E1A2B;          /* deep ink — primary buttons */
+  /* --- Sega & Sand: Mauritian palette --- */
+  --color-background: #F5EFE6;        /* warm sand — page bg */
+  --color-foreground: #1A1410;        /* volcanic black — text */
+  --color-card: #FBF6EC;              /* lightly warmer sand */
+  --color-card-foreground: #1A1410;
+  --color-muted: #ECE2CF;
+  --color-muted-foreground: #5A4A3A;  /* warm brown */
+  --color-border: #C9B89A;            /* faded ochre — visible */
+  --color-input: #C9B89A;
+  --color-ring: #1E3A8A;
+  --color-primary: #1E3A8A;           /* deep cobalt */
   --color-primary-foreground: #F5EFE6;
-  --color-primary-hover: #1c2a40;
-  --color-secondary: #E8E0D2;
-  --color-secondary-foreground: #0E1A2B;
-  --color-accent: #D9542B;           /* volcanic coral */
+  --color-primary-hover: #182f6e;
+  --color-secondary: #ECE2CF;
+  --color-secondary-foreground: #1A1410;
+  --color-accent: #C73E1D;            /* flamboyant red */
   --color-accent-foreground: #F5EFE6;
-  --color-accent-hover: #b8451f;
-  --color-destructive: #B53E1B;
+  --color-accent-hover: #a0321a;
+  --color-destructive: #8B2715;
   --color-destructive-foreground: #F5EFE6;
-  --color-success: #2F6F4A;
+  --color-success: #6E8C3F;           /* sugar cane green */
   --color-success-foreground: #F5EFE6;
 
-  /* Editorial-Mauritius semantic aliases */
+  /* Sega & Sand semantic aliases */
   --color-sand: #F5EFE6;
-  --color-sand-deep: #E8E0D2;
-  --color-ink: #0E1A2B;
-  --color-coral: #D9542B;
+  --color-sand-deep: #ECE2CF;
+  --color-ink: #1A1410;
+  --color-cobalt: #1E3A8A;
+  --color-flamboyant: #C73E1D;
+  --color-ochre: #D4A24C;             /* warm gold */
+  --color-lagoon: #2A8FA5;            /* turquoise */
+  --color-cane: #6E8C3F;              /* sugar cane green */
 
-  /* Hard 4px ceiling on radius */
-  --radius: 4px;
+  /* Print-like radius — almost square */
+  --radius: 2px;
   --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 4px;
-  --radius-xl: 4px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
 
   /* Typography */
   --font-display: var(--font-fraunces), "Iowan Old Style", "Apple Garamond",
     Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro",
     serif;
+  --font-script: var(--font-caveat), "Brush Script MT", cursive;
   --font-sans: var(--font-plex), ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -64,16 +69,17 @@
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
     color: var(--color-foreground);
   }
 
-  /* Editorial defaults — Fraunces serif for hero/headings */
+  /* Fraunces serif w/ soft axis 100, opsz 144, wght 600 — feels hand-cut */
   h1, h2 {
     font-family: var(--font-display);
+    font-variation-settings: "opsz" 144, "SOFT" 100, "wght" 600;
     letter-spacing: -0.02em;
     line-height: 1.05;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   /* Reduced motion */
@@ -92,8 +98,14 @@
 @layer utilities {
   .font-display {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-variation-settings: "opsz" 144, "SOFT" 100, "wght" 600;
+    font-weight: 600;
     letter-spacing: -0.02em;
+  }
+  .font-script {
+    font-family: var(--font-script);
+    font-weight: 500;
+    letter-spacing: 0;
   }
   .small-caps {
     font-variant-caps: all-small-caps;
@@ -106,8 +118,19 @@
   .editorial-gradient {
     background-image: linear-gradient(
       to top,
-      rgba(14, 26, 43, 0.6),
+      rgba(26, 20, 16, 0.65),
       transparent 55%
     );
+  }
+  /* Hard 2px offset shadow — block-printed feel, no blur */
+  .shadow-block {
+    box-shadow: 2px 2px 0 var(--color-foreground);
+  }
+  .shadow-block-cobalt {
+    box-shadow: 2px 2px 0 var(--color-primary);
+  }
+  /* Warm photographic treatment */
+  .photo-warm {
+    filter: contrast(1.05) saturate(1.1) hue-rotate(-2deg);
   }
 }

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { FlagDivider } from "@/components/decorations/flag-divider";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -59,7 +60,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
     <form onSubmit={handleSubmit} className="space-y-16">
       {/* Property — title (1st input), description (textarea) */}
       <Section
-        eyebrow="01"
+        eyebrow="kombien gran sa lakaz?"
         title="Property"
         description="The basics guests see first."
       >
@@ -90,7 +91,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
 
       {/* Location — address must be the second text input overall */}
       <Section
-        eyebrow="02"
+        eyebrow="kot li ete?"
         title="Location"
         description="Where is your place?"
       >
@@ -160,7 +161,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
 
       {/* Capacity & pricing */}
       <Section
-        eyebrow="03"
+        eyebrow="konbien sa kut?"
         title="Capacity & pricing"
         description="How many can stay, and what does it cost? All amounts in Mauritian rupees."
       >
@@ -179,7 +180,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
 
       {/* Amenities */}
       <Section
-        eyebrow="04"
+        eyebrow="ki bann services?"
         title="Amenities"
         description="What does your place include?"
       >
@@ -190,17 +191,17 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
               <label
                 key={opt.value}
                 className={cn(
-                  "flex cursor-pointer items-center gap-2.5 border px-3 py-2.5 text-sm transition-colors duration-200 ease-out",
+                  "flex cursor-pointer items-center gap-2.5 border-[1.5px] px-3 py-2.5 text-sm transition-colors duration-200 ease-out",
                   checked
-                    ? "border-[var(--color-foreground)] bg-[var(--color-foreground)] text-[var(--color-sand)]"
-                    : "border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-foreground)]"
+                    ? "border-[var(--color-primary)] bg-[var(--color-card)] text-[var(--color-primary)]"
+                    : "border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-foreground)] hover:border-[var(--color-primary)]"
                 )}
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleAmenity(opt.value)}
-                  className="h-4 w-4 accent-[var(--color-accent)]"
+                  className="h-4 w-4 accent-[var(--color-primary)]"
                 />
                 <span>{opt.label}</span>
               </label>
@@ -212,14 +213,19 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
       {error && (
         <p
           role="alert"
-          className="border border-[var(--color-destructive)]/30 bg-[var(--color-destructive)]/5 px-4 py-3 text-sm text-[var(--color-destructive)]"
+          className="border-[1.5px] border-[var(--color-destructive)]/40 bg-[var(--color-destructive)]/5 px-4 py-3 text-sm text-[var(--color-destructive)]"
         >
           {error}
         </p>
       )}
 
-      <div className="flex justify-end border-t border-[var(--color-border)] pt-8">
-        <Button type="submit" disabled={submitting} size="lg">
+      <div className="flex justify-end border-t-[1.5px] border-[var(--color-ochre)] pt-8">
+        <Button
+          type="submit"
+          disabled={submitting}
+          size="lg"
+          className="shadow-block"
+        >
           {submitting ? "Saving…" : submitLabel}
         </Button>
       </div>
@@ -239,21 +245,24 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="grid gap-8 md:grid-cols-[200px_1fr] md:gap-12">
-      <div>
-        <p className="font-display text-4xl leading-none tracking-[-0.04em] text-[var(--color-foreground)]">
-          {eyebrow}
-        </p>
-        <h2 className="mt-4 font-display text-2xl tracking-[-0.01em]">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
-            {description}
+    <section className="space-y-8">
+      <FlagDivider />
+      <div className="grid gap-8 md:grid-cols-[260px_1fr] md:gap-12">
+        <div>
+          <p className="font-script text-2xl italic text-[var(--color-ochre)]">
+            {eyebrow}
           </p>
-        )}
+          <h2 className="mt-1 font-display text-3xl tracking-[-0.01em]">
+            {title}
+          </h2>
+          {description && (
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+              {description}
+            </p>
+          )}
+        </div>
+        <div className="space-y-6">{children}</div>
       </div>
-      <div className="space-y-6">{children}</div>
     </section>
   );
 }

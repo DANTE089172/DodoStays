@@ -29,10 +29,10 @@ export function RolePicker({ value, onChange }: Props) {
           <label
             key={opt.value}
             className={cn(
-              "group relative flex cursor-pointer flex-col gap-1 border p-4 text-left transition-colors duration-200 ease-out",
+              "group relative flex cursor-pointer flex-col gap-1 border-[1.5px] p-4 text-left transition-colors duration-200 ease-out",
               selected
-                ? "border-[var(--color-foreground)] bg-[var(--color-foreground)] text-[var(--color-sand)]"
-                : "border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-foreground)]"
+                ? "border-[var(--color-primary)] bg-[var(--color-card)] text-[var(--color-primary)]"
+                : "border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-muted-foreground)] hover:border-[var(--color-primary)]"
             )}
           >
             <input
@@ -46,7 +46,9 @@ export function RolePicker({ value, onChange }: Props) {
             <span
               className={cn(
                 "font-display text-lg tracking-[-0.01em]",
-                selected ? "text-[var(--color-sand)]" : "text-[var(--color-foreground)]"
+                selected
+                  ? "text-[var(--color-primary)]"
+                  : "text-[var(--color-foreground)]"
               )}
             >
               {opt.title}
@@ -55,7 +57,7 @@ export function RolePicker({ value, onChange }: Props) {
               className={cn(
                 "text-xs",
                 selected
-                  ? "text-[var(--color-sand)]/75"
+                  ? "text-[var(--color-primary)]/80"
                   : "text-[var(--color-muted-foreground)]"
               )}
             >

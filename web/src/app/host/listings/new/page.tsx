@@ -8,6 +8,7 @@ import { createListing } from "@/lib/listings";
 import { ListingForm } from "../listing-form";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { FlagDivider } from "@/components/decorations/flag-divider";
 
 export default function NewListingPage() {
   const router = useRouter();
@@ -34,11 +35,11 @@ export default function NewListingPage() {
         >
           &larr; Back to my listings
         </Link>
-        <div className="mt-10 max-w-3xl border-b border-[var(--color-border)] pb-10">
-          <p className="small-caps text-xs text-[var(--color-muted-foreground)]">
-            New listing
+        <div className="mt-10 max-w-3xl pb-10">
+          <p className="font-script text-2xl text-[var(--color-ochre)]">
+            enn nouvo lakaz
           </p>
-          <h1 className="mt-4 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
+          <h1 className="mt-1 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
             Tell us about your place.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--color-muted-foreground)]">
@@ -46,6 +47,7 @@ export default function NewListingPage() {
             next screen.
           </p>
         </div>
+        <FlagDivider />
 
         <div className="mt-14">
           <ListingForm
