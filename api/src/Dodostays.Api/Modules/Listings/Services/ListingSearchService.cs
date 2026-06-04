@@ -37,14 +37,6 @@ public sealed class ListingSearchService
             query = query.Where(l => l.NightlyRateMur >= request.MinNightlyMur.Value);
         if (request.VerifiedOnly)
             query = query.Where(l => l.Tier == ListingTier.Verified);
-        if (request.RequiredAmenities is { Count: > 0 })
-        {
-            foreach (var amenity in request.RequiredAmenities)
-            {
-                var a = amenity;
-                query = query.Where(l => l.Amenities.Contains(a));
-            }
-        }
 
         query = request.Sort switch
         {
@@ -53,8 +45,20 @@ public sealed class ListingSearchService
             _ => query.OrderByDescending(l => l.CreatedAt)
         };
 
-        var total = await query.CountAsync(ct);
-        var items = await query
+        // Materialize so we can apply the amenity filter client-side: List<Amenity> is mapped to
+        // an integer[] column via a value converter, which prevents Npgsql from translating
+        // collection LINQ operators against the Amenities property.
+        var materialized = await query.ToListAsync(ct);
+        if (request.RequiredAmenities is { Count: > 0 })
+        {
+            var required = request.RequiredAmenities;
+            materialized = materialized
+                .Where(l => required.All(a => l.Amenities.Contains(a)))
+                .ToList();
+        }
+
+        var total = materialized.Count;
+        var items = materialized
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(l => new ListingSummaryDto(
@@ -69,7 +73,7 @@ public sealed class ListingSearchService
                 l.NightlyRateMur,
                 l.Photos.OrderBy(p => p.SortOrder).Select(p => p.PublicUrl).FirstOrDefault(),
                 l.CreatedAt))
-            .ToListAsync(ct);
+            .ToList();
 
         var totalPages = (int)Math.Ceiling(total / (double)pageSize);
         return new ListingSearchResponse(items, page, pageSize, total, Math.Max(1, totalPages));

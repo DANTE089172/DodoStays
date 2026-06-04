@@ -28,6 +28,10 @@ public sealed class PostgresFixture : IAsyncLifetime
             builder.UseSetting("Jwt:AccessTokenLifetime", "00:15:00");
             builder.UseSetting("Jwt:RefreshTokenLifetime", "30.00:00:00");
             builder.UseSetting("Kyc:Provider", "InMemory");
+            builder.UseSetting("PhotoStorage:Provider", "Local");
+            builder.UseSetting("PhotoStorage:LocalRoot", Path.Combine(Path.GetTempPath(), $"ds-photos-{Guid.NewGuid():N}"));
+            builder.UseSetting("PhotoStorage:PublicBaseUrl", "http://localhost:0/photos");
+            builder.UseSetting("PhotoStorage:MaxFileSizeBytes", "8388608");
         });
 
     public async Task InitializeAsync()
