@@ -22,5 +22,6 @@
     <PackageVersion Include="FluentAssertions" Version="6.12.2" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
+    <PackageVersion Include="Anthropic.SDK" Version="5.5.1" />
   </ItemGroup>
 </Project>
