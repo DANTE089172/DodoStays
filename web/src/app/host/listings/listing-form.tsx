@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { AMENITY_OPTIONS, REGIONS, type Amenity, type CreateOrUpdateListingInput, type PropertyType } from "@/lib/listings";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 interface Props {
   initial?: Partial<CreateOrUpdateListingInput>;
@@ -50,91 +57,218 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-semibold">Title</label>
-        <input className="w-full rounded border border-gray-300 p-2" required maxLength={200}
-               value={title} onChange={(e) => setTitle(e.target.value)} />
-      </div>
-      <div>
-        <label className="block text-sm font-semibold">Description</label>
-        <textarea className="w-full rounded border border-gray-300 p-2" required rows={5} maxLength={5000}
-                  value={description} onChange={(e) => setDescription(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold">Property type</label>
-          <select className="w-full rounded border border-gray-300 p-2"
-                  value={propertyType} onChange={(e) => setPropertyType(e.target.value as PropertyType)}>
-            <option value="Villa">Villa</option>
-            <option value="Apartment">Apartment</option>
-            <option value="Guesthouse">Guesthouse</option>
-          </select>
+    <form onSubmit={handleSubmit} className="space-y-10">
+      {/* Property */}
+      <Section title="Property" description="The basics guests see first.">
+        <div className="space-y-1.5">
+          <Label htmlFor="lf-title">Title</Label>
+          <Input
+            id="lf-title"
+            required
+            maxLength={200}
+            placeholder="Sunny 3-bed villa with pool"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
-        <div>
-          <label className="block text-sm font-semibold">Region</label>
-          <select className="w-full rounded border border-gray-300 p-2"
-                  value={region} onChange={(e) => setRegion(e.target.value)}>
-            {REGIONS.map((r) => <option key={r.slug} value={r.slug}>{r.label}</option>)}
-          </select>
+        <div className="space-y-1.5">
+          <Label htmlFor="lf-description">Description</Label>
+          <Textarea
+            id="lf-description"
+            required
+            rows={6}
+            maxLength={5000}
+            placeholder="Tell guests what makes your place special…"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </div>
-      </div>
-      <div>
-        <label className="block text-sm font-semibold">Address</label>
-        <input className="w-full rounded border border-gray-300 p-2" required maxLength={500}
-               value={addressLine} onChange={(e) => setAddressLine(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold">Latitude</label>
-          <input type="number" step="0.0001" className="w-full rounded border border-gray-300 p-2"
-                 value={latitude} onChange={(e) => setLatitude(parseFloat(e.target.value))} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="lf-type">Property type</Label>
+            <Select
+              id="lf-type"
+              value={propertyType}
+              onChange={(e) => setPropertyType(e.target.value as PropertyType)}
+            >
+              <option value="Villa">Villa</option>
+              <option value="Apartment">Apartment</option>
+              <option value="Guesthouse">Guesthouse</option>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="lf-region">Region</Label>
+            <Select
+              id="lf-region"
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+            >
+              {REGIONS.map((r) => (
+                <option key={r.slug} value={r.slug}>
+                  {r.label}
+                </option>
+              ))}
+            </Select>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-semibold">Longitude</label>
-          <input type="number" step="0.0001" className="w-full rounded border border-gray-300 p-2"
-                 value={longitude} onChange={(e) => setLongitude(parseFloat(e.target.value))} />
+      </Section>
+
+      <Separator />
+
+      {/* Location */}
+      <Section title="Location" description="Where is your place?">
+        <div className="space-y-1.5">
+          <Label htmlFor="lf-address">Address</Label>
+          <Input
+            id="lf-address"
+            type="text"
+            required
+            maxLength={500}
+            placeholder="Street, area, town"
+            value={addressLine}
+            onChange={(e) => setAddressLine(e.target.value)}
+          />
         </div>
-      </div>
-      <div className="grid grid-cols-4 gap-4">
-        <NumField label="Bedrooms" value={bedrooms} onChange={setBedrooms} min={0} />
-        <NumField label="Beds" value={beds} onChange={setBeds} min={1} />
-        <NumField label="Bathrooms" value={bathrooms} onChange={setBathrooms} min={0} />
-        <NumField label="Max guests" value={maxGuests} onChange={setMaxGuests} min={1} />
-      </div>
-      <div className="grid grid-cols-3 gap-4">
-        <NumField label="Nightly rate (MUR)" value={nightlyRateMur} onChange={setNightlyRateMur} min={1} step={1} />
-        <NumField label="Cleaning fee (MUR)" value={cleaningFeeMur} onChange={setCleaningFeeMur} min={0} step={1} />
-        <NumField label="Min stay (nights)" value={minStayNights} onChange={setMinStayNights} min={1} />
-      </div>
-      <div>
-        <label className="block text-sm font-semibold">Amenities</label>
-        <div className="grid grid-cols-3 gap-2">
-          {AMENITY_OPTIONS.map((opt) => (
-            <label key={opt.value} className="flex cursor-pointer items-center gap-2 text-sm">
-              <input type="checkbox" checked={amenities.includes(opt.value)} onChange={() => toggleAmenity(opt.value)} />
-              {opt.label}
-            </label>
-          ))}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="lf-lat">Latitude</Label>
+            <Input
+              id="lf-lat"
+              type="number"
+              step="0.0001"
+              value={latitude}
+              onChange={(e) => setLatitude(parseFloat(e.target.value))}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="lf-lng">Longitude</Label>
+            <Input
+              id="lf-lng"
+              type="number"
+              step="0.0001"
+              value={longitude}
+              onChange={(e) => setLongitude(parseFloat(e.target.value))}
+            />
+          </div>
         </div>
+      </Section>
+
+      <Separator />
+
+      {/* Capacity */}
+      <Section title="Capacity" description="Tell guests how many can stay.">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <NumField label="Bedrooms" value={bedrooms} onChange={setBedrooms} min={0} />
+          <NumField label="Beds" value={beds} onChange={setBeds} min={1} />
+          <NumField label="Bathrooms" value={bathrooms} onChange={setBathrooms} min={0} />
+          <NumField label="Max guests" value={maxGuests} onChange={setMaxGuests} min={1} />
+        </div>
+      </Section>
+
+      <Separator />
+
+      {/* Pricing */}
+      <Section title="Pricing" description="All amounts in Mauritian rupees.">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <NumField label="Nightly rate (MUR)" value={nightlyRateMur} onChange={setNightlyRateMur} min={1} step={1} />
+          <NumField label="Cleaning fee (MUR)" value={cleaningFeeMur} onChange={setCleaningFeeMur} min={0} step={1} />
+          <NumField label="Min stay (nights)" value={minStayNights} onChange={setMinStayNights} min={1} />
+        </div>
+      </Section>
+
+      <Separator />
+
+      {/* Amenities */}
+      <Section title="Amenities" description="What does your place include?">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {AMENITY_OPTIONS.map((opt) => {
+            const checked = amenities.includes(opt.value);
+            return (
+              <label
+                key={opt.value}
+                className={cn(
+                  "flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors",
+                  checked
+                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5 text-[var(--color-foreground)]"
+                    : "border-[var(--color-border)] bg-[var(--color-card)] hover:border-[var(--color-primary)]/50"
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => toggleAmenity(opt.value)}
+                  className="h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] accent-[var(--color-primary)] focus:ring-[var(--color-ring)]"
+                />
+                <span>{opt.label}</span>
+              </label>
+            );
+          })}
+        </div>
+      </Section>
+
+      {error && (
+        <p
+          role="alert"
+          className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {error}
+        </p>
+      )}
+
+      <div className="flex justify-end pt-2">
+        <Button type="submit" disabled={submitting} size="lg">
+          {submitting ? "Saving…" : submitLabel}
+        </Button>
       </div>
-      {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-      <button type="submit" disabled={submitting}
-              className="rounded bg-black px-4 py-2 text-white disabled:opacity-50">
-        {submitting ? "Saving…" : submitLabel}
-      </button>
     </form>
   );
 }
 
-function NumField({ label, value, onChange, min, step = 1 }: { label: string; value: number; onChange: (n: number) => void; min: number; step?: number }) {
+function Section({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div>
-      <label className="block text-sm font-semibold">{label}</label>
-      <input type="number" step={step} min={min}
-             className="w-full rounded border border-gray-300 p-2"
-             value={value}
-             onChange={(e) => onChange(parseFloat(e.target.value))} />
+    <section className="grid gap-6 md:grid-cols-[220px_1fr]">
+      <div>
+        <h3 className="text-base font-semibold">{title}</h3>
+        {description && (
+          <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">{description}</p>
+        )}
+      </div>
+      <div className="space-y-4">{children}</div>
+    </section>
+  );
+}
+
+function NumField({
+  label,
+  value,
+  onChange,
+  min,
+  step = 1,
+}: {
+  label: string;
+  value: number;
+  onChange: (n: number) => void;
+  min: number;
+  step?: number;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      <Input
+        type="number"
+        step={step}
+        min={min}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+      />
     </div>
   );
 }

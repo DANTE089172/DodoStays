@@ -4,6 +4,18 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
 export default function AccountPage() {
   const router = useRouter();
@@ -13,33 +25,90 @@ export default function AccountPage() {
     if (!loading && !user) router.replace("/signin");
   }, [loading, user, router]);
 
-  if (loading) return <main className="p-8">Loading…</main>;
+  if (loading)
+    return (
+      <main className="flex min-h-screen items-center justify-center p-8 text-sm text-[var(--color-muted-foreground)]">
+        Loading…
+      </main>
+    );
   if (!user) return null;
 
+  const kycVariant: "success" | "muted" | "accent" =
+    user.kycStatus === "Verified" ? "success" : user.kycStatus === "Pending" ? "accent" : "muted";
+
   return (
-    <main className="mx-auto max-w-2xl p-8">
-      <h1 className="mb-6 text-3xl font-bold">Welcome, {user.displayName}</h1>
-      <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 text-sm">
-        <dt className="font-semibold">Email</dt><dd>{user.email}</dd>
-        <dt className="font-semibold">Role</dt><dd>{user.role}</dd>
-        <dt className="font-semibold">KYC</dt><dd>{user.kycStatus}</dd>
-        <dt className="font-semibold">Language</dt><dd>{user.preferredLanguage}</dd>
-      </dl>
-      {user.role === "Host" && (
-        <p className="mt-4">
-          <Link href="/host/listings" className="underline">Manage my listings →</Link>
-        </p>
-      )}
-      <button
-        type="button"
-        onClick={async () => {
-          await signOut();
-          router.push("/");
-        }}
-        className="mt-8 rounded border border-black px-4 py-2"
-      >
-        Sign out
-      </button>
-    </main>
+    <>
+      <SiteHeader />
+      <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
+        <Card>
+          <CardHeader className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <div
+              aria-hidden="true"
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)] text-xl font-semibold text-[var(--color-primary-foreground)] shadow-sm"
+            >
+              {initials(user.displayName)}
+            </div>
+            <div className="flex-1">
+              <CardTitle className="text-2xl">Welcome, {user.displayName}</CardTitle>
+              <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">{user.email}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Badge variant="secondary">{user.role}</Badge>
+                <Badge variant={kycVariant}>KYC: {user.kycStatus}</Badge>
+              </div>
+            </div>
+          </CardHeader>
+          <Separator />
+          <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
+                Role
+              </p>
+              <p className="mt-1 text-sm">{user.role}</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
+                KYC status
+              </p>
+              <p className="mt-1 text-sm">{user.kycStatus}</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
+                Language
+              </p>
+              <p className="mt-1 text-sm">{user.preferredLanguage}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {user.role === "Host" && (
+          <Card className="mt-6">
+            <CardContent className="flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold">Hosting on DodoStays</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
+                  Edit, publish and track your places.
+                </p>
+              </div>
+              <Link href="/host/listings">
+                <Button>Manage my listings</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+
+        <div className="mt-8 flex justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={async () => {
+              await signOut();
+              router.push("/");
+            }}
+          >
+            Sign out
+          </Button>
+        </div>
+      </main>
+    </>
   );
 }

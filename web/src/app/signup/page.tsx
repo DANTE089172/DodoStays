@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { RolePicker } from "./role-picker";
+import { BrandMark } from "@/components/brand-mark";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -32,56 +38,97 @@ export default function SignUpPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center p-8">
-      <h1 className="mb-6 text-3xl font-bold">Create your DodoStays account</h1>
-      <form onSubmit={onSubmit} className="space-y-4">
-        <RolePicker value={role} onChange={setRole} />
-        <input
-          type="email"
-          required
-          placeholder="Email"
-          className="w-full rounded border border-gray-300 p-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="text"
-          required
-          placeholder="Display name"
-          className="w-full rounded border border-gray-300 p-3"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-        <select
-          className="w-full rounded border border-gray-300 p-3"
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-        >
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-          <option value="mfe">Kreol Morisien</option>
-        </select>
-        <input
-          type="password"
-          required
-          minLength={10}
-          placeholder="Password (10+ chars, mixed case, digit)"
-          className="w-full rounded border border-gray-300 p-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded bg-black p-3 text-white disabled:opacity-50"
-        >
-          {submitting ? "Creating…" : "Create account"}
-        </button>
-      </form>
-      <p className="mt-6 text-center text-sm">
-        Already have an account? <Link href="/signin" className="underline">Sign in</Link>
-      </p>
+    <main className="flex min-h-screen flex-col bg-gradient-to-b from-[var(--color-sand)] to-[var(--color-background)]">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12">
+        <div className="mb-8 flex justify-center">
+          <BrandMark />
+        </div>
+        <Card>
+          <CardHeader className="space-y-2 text-center">
+            <CardTitle className="text-2xl">Create your account</CardTitle>
+            <CardDescription>
+              Join DodoStays to book or host stays across Mauritius.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={onSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label>I am</Label>
+                <RolePicker value={role} onChange={setRole} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="signup-email">Email</Label>
+                <Input
+                  id="signup-email"
+                  type="email"
+                  required
+                  placeholder="Email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="signup-name">Display name</Label>
+                <Input
+                  id="signup-name"
+                  type="text"
+                  required
+                  placeholder="Display name"
+                  autoComplete="name"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="signup-lang">Preferred language</Label>
+                <Select
+                  id="signup-lang"
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                >
+                  <option value="en">English</option>
+                  <option value="fr">Français</option>
+                  <option value="mfe">Kreol Morisien</option>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="signup-password">Password</Label>
+                <Input
+                  id="signup-password"
+                  type="password"
+                  required
+                  minLength={10}
+                  placeholder="Password (10+ chars, mixed case, digit)"
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <p className="text-xs text-[var(--color-muted-foreground)]">
+                  At least 10 characters with mixed case and a digit.
+                </p>
+              </div>
+              {error && (
+                <p
+                  role="alert"
+                  className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+                >
+                  {error}
+                </p>
+              )}
+              <Button type="submit" disabled={submitting} className="w-full" size="lg">
+                {submitting ? "Creating…" : "Create account"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+        <p className="mt-6 text-center text-sm text-[var(--color-muted-foreground)]">
+          Already have an account?{" "}
+          <Link href="/signin" className="font-medium text-[var(--color-primary)] hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </div>
     </main>
   );
 }

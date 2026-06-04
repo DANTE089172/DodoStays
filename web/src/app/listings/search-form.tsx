@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { REGIONS, type PropertyType } from "@/lib/listings";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
 
 export function SearchForm() {
   const router = useRouter();
@@ -23,23 +28,82 @@ export function SearchForm() {
   }
 
   return (
-    <form onSubmit={submit} className="grid grid-cols-1 gap-3 rounded border border-gray-200 p-4 sm:grid-cols-5">
-      <select className="rounded border border-gray-300 p-2" value={region} onChange={(e) => setRegion(e.target.value)}>
-        <option value="">Any region</option>
-        {REGIONS.map((r) => <option key={r.slug} value={r.slug}>{r.label}</option>)}
-      </select>
-      <select className="rounded border border-gray-300 p-2"
-              value={propertyType} onChange={(e) => setPropertyType(e.target.value as PropertyType | "")}>
-        <option value="">Any type</option>
-        <option value="Villa">Villa</option>
-        <option value="Apartment">Apartment</option>
-        <option value="Guesthouse">Guesthouse</option>
-      </select>
-      <input type="number" min={0} placeholder="Min bedrooms" className="rounded border border-gray-300 p-2"
-             value={minBedrooms} onChange={(e) => setMinBedrooms(e.target.value)} />
-      <input type="number" min={1} placeholder="Max MUR/night" className="rounded border border-gray-300 p-2"
-             value={maxNightly} onChange={(e) => setMaxNightly(e.target.value)} />
-      <button type="submit" className="rounded bg-black p-2 text-white">Search</button>
-    </form>
+    <Card className="overflow-visible p-2 sm:p-3">
+      <form
+        onSubmit={submit}
+        className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_auto] lg:items-end"
+      >
+        <Field label="Region" htmlFor="search-region">
+          <Select
+            id="search-region"
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+          >
+            <option value="">Any region</option>
+            {REGIONS.map((r) => (
+              <option key={r.slug} value={r.slug}>
+                {r.label}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field label="Property type" htmlFor="search-type">
+          <Select
+            id="search-type"
+            value={propertyType}
+            onChange={(e) => setPropertyType(e.target.value as PropertyType | "")}
+          >
+            <option value="">Any type</option>
+            <option value="Villa">Villa</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Guesthouse">Guesthouse</option>
+          </Select>
+        </Field>
+        <Field label="Min bedrooms" htmlFor="search-bedrooms">
+          <Input
+            id="search-bedrooms"
+            type="number"
+            min={0}
+            placeholder="Any"
+            value={minBedrooms}
+            onChange={(e) => setMinBedrooms(e.target.value)}
+          />
+        </Field>
+        <Field label="Max MUR / night" htmlFor="search-price">
+          <Input
+            id="search-price"
+            type="number"
+            min={1}
+            placeholder="Any"
+            value={maxNightly}
+            onChange={(e) => setMaxNightly(e.target.value)}
+          />
+        </Field>
+        <div className="lg:pt-[22px]">
+          <Button type="submit" className="w-full lg:w-auto" size="default">
+            Search
+          </Button>
+        </div>
+      </form>
+    </Card>
+  );
+}
+
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5 px-1 sm:px-2">
+      <Label htmlFor={htmlFor} className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
+        {label}
+      </Label>
+      {children}
+    </div>
   );
 }
