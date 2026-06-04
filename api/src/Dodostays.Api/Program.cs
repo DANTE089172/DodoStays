@@ -3,6 +3,7 @@ using Dodostays.Api.Modules.Common.Database;
 using Dodostays.Api.Modules.Common.Health;
 using Dodostays.Api.Modules.Common.ProblemDetails;
 using Dodostays.Api.Modules.Identity;
+using Dodostays.Api.Modules.Listings;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<DodostaysDbContext>(opts =>
     opts.UseNpgsql(connectionString, npg => npg.UseNetTopologySuite()));
 
 builder.Services.AddIdentityModule(builder.Configuration);
+builder.Services.AddListingsModule(builder.Configuration);
 
 const string CorsPolicyName = "DodostaysFrontend";
 builder.Services.AddCors(opts =>
@@ -52,6 +54,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var photosPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "photos");
+Directory.CreateDirectory(photosPath);
+app.UseStaticFiles();
+
 app.UseSerilogRequestLogging();
 app.UseDodostaysProblemDetails();
 app.UseCors(CorsPolicyName);
@@ -60,6 +66,7 @@ app.UseAuthorization();
 
 app.MapHealthCheckEndpoints();
 app.MapIdentityEndpoints();
+app.MapListingsEndpoints();
 
 app.Run();
 
