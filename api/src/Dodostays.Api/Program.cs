@@ -4,6 +4,7 @@ using Dodostays.Api.Modules.Common.Health;
 using Dodostays.Api.Modules.Common.ProblemDetails;
 using Dodostays.Api.Modules.Identity;
 using Dodostays.Api.Modules.Listings;
+using Dodostays.Api.Modules.Search;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<DodostaysDbContext>(opts =>
     opts.UseNpgsql(connectionString, npg => npg.UseNetTopologySuite()));
 
 builder.Services.AddIdentityModule(builder.Configuration);
+builder.Services.AddSearchModule(builder.Configuration);
 builder.Services.AddListingsModule(builder.Configuration);
 
 const string CorsPolicyName = "DodostaysFrontend";
@@ -67,6 +69,7 @@ app.UseAuthorization();
 app.MapHealthCheckEndpoints();
 app.MapIdentityEndpoints();
 app.MapListingsEndpoints();
+app.MapSearchEndpoints();
 
 app.Run();
 
