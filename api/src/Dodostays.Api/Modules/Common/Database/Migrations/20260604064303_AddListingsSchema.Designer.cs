@@ -3,6 +3,7 @@ using System;
 using Dodostays.Api.Modules.Common.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dodostays.Api.Modules.Common.Database.Migrations
 {
     [DbContext(typeof(DodostaysDbContext))]
-    partial class DodostaysDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260604064303_AddListingsSchema")]
+    partial class AddListingsSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

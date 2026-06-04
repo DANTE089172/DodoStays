@@ -15,5 +15,6 @@ public partial class DodostaysDbContext : IdentityDbContext<DodostaysUser, Dodos
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasPostgresExtension("postgis");
         OnModelCreatingIdentity(modelBuilder);
+        OnModelCreatingListings(modelBuilder);
     }
 }
