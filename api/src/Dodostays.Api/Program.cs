@@ -19,6 +19,20 @@ builder.Services.AddDbContext<DodostaysDbContext>(opts =>
 
 builder.Services.AddIdentityModule(builder.Configuration);
 
+const string CorsPolicyName = "DodostaysFrontend";
+builder.Services.AddCors(opts =>
+{
+    opts.AddPolicy(CorsPolicyName, policy =>
+    {
+        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+            ?? new[] { "http://localhost:3000" };
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 builder.Services.AddProblemDetails();
 builder.Services.ConfigureHttpJsonOptions(opts =>
 {
@@ -40,6 +54,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 app.UseDodostaysProblemDetails();
+app.UseCors(CorsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
 
