@@ -20,6 +20,11 @@ builder.Services.AddDbContext<DodostaysDbContext>(opts =>
 builder.Services.AddIdentityModule(builder.Configuration);
 
 builder.Services.AddProblemDetails();
+builder.Services.ConfigureHttpJsonOptions(opts =>
+{
+    opts.SerializerOptions.Converters.Add(
+        new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
 builder.Services.AddHealthChecks();
 
 builder.Services.AddEndpointsApiExplorer();

@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace Dodostays.Api.Contracts.Identity;
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum UserRole
 {
     Guest = 0,
