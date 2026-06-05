@@ -20,11 +20,19 @@ export function SiteHeader() {
             Browse
           </Link>
           {!loading && user ? (
-            <Link href="/account">
-              <Button variant="outline" size="sm">
-                Account
-              </Button>
-            </Link>
+            <>
+              <Link
+                href="/bookings"
+                className="hidden sm:inline-flex h-9 items-center px-2 text-sm text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+              >
+                Bookings
+              </Link>
+              <Link href="/account">
+                <Button variant="outline" size="sm">
+                  Account
+                </Button>
+              </Link>
+            </>
           ) : (
             <>
               <Link
