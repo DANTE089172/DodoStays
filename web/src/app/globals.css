@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "mapbox-gl/dist/mapbox-gl.css";
+@import "maplibre-gl/dist/maplibre-gl.css";
 
 @theme {
   /* --- Peach Orb: peach-primary, cobalt-secondary, flamboyant-for-stamps ---

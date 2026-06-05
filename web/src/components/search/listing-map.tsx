@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import mapboxgl, { LngLatBoundsLike, Map as MapboxMap } from "mapbox-gl";
+import maplibregl, { LngLatBoundsLike, Map as MaplibreMap } from "maplibre-gl";
 import { Alert, Snackbar } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MAURITIUS_BOUNDS, bboxToString } from "@/lib/geo";
@@ -9,6 +9,10 @@ import { anchorsToString, parseAnchors, MAX_ANCHORS, type Anchor } from "@/lib/a
 import { lifestylePinElement } from "./lifestyle-pin";
 import { anchorPinElement } from "./anchor-pin";
 import type { ListingSummary } from "@/lib/listings";
+
+// Carto Voyager — open-source, BSD-licensed vector style. No access token
+// required; clean cartography that pairs well with the Peach Orb palette.
+const MAP_STYLE_URL = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json";
 
 interface Props {
   listings: ListingSummary[];
@@ -18,7 +22,7 @@ interface Props {
 
 interface ListingMarker {
   id: string;
-  marker: mapboxgl.Marker;
+  marker: maplibregl.Marker;
   el: HTMLElement;
 }
 
@@ -26,35 +30,33 @@ export function ListingMap({ listings, highlightId, onPinHover }: Props) {
   const router = useRouter();
   const sp = useSearchParams();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<MapboxMap | null>(null);
+  const mapRef = useRef<MaplibreMap | null>(null);
   const listingMarkersRef = useRef<ListingMarker[]>([]);
-  const anchorMarkersRef = useRef<mapboxgl.Marker[]>([]);
+  const anchorMarkersRef = useRef<maplibregl.Marker[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showSearchHere, setShowSearchHere] = useState(false);
   const [snack, setSnack] = useState<string | null>(null);
 
   const liveSearch = sp.get("liveSearch") !== "off";
-  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
   // ---- Initialise the map exactly once ----
   useEffect(() => {
-    if (!containerRef.current || !token) return;
-    mapboxgl.accessToken = token;
-    const map = new mapboxgl.Map({
+    if (!containerRef.current) return;
+    const map = new maplibregl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: MAP_STYLE_URL,
       bounds: MAURITIUS_BOUNDS,
       maxBounds: [[56.5, -20.9], [58.2, -19.5]],
       attributionControl: false,
     });
     mapRef.current = map;
-    map.addControl(new mapboxgl.AttributionControl({ compact: true }));
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+    map.addControl(new maplibregl.AttributionControl({ compact: true }));
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
 
     // Click empty area = drop an anchor
     map.on("click", (ev) => {
       const target = ev.originalEvent.target as HTMLElement | null;
-      if (target?.closest(".mapboxgl-marker")) return;
+      if (target?.closest(".maplibregl-marker")) return;
       const current = parseAnchors(new URLSearchParams(window.location.search).get("anchors"));
       if (current.length >= MAX_ANCHORS) {
         setSnack(`You can drop up to ${MAX_ANCHORS} anchors`);
@@ -94,7 +96,7 @@ export function ListingMap({ listings, highlightId, onPinHover }: Props) {
     };
     // intentionally omit `liveSearch` — re-reading inside the handler keeps the listener stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
 
   // ---- Re-render anchors when URL ?anchors= changes ----
   useEffect(() => {
@@ -106,7 +108,7 @@ export function ListingMap({ listings, highlightId, onPinHover }: Props) {
     const anchors = parseAnchors(sp.get("anchors"));
     for (const a of anchors) {
       const el = anchorPinElement(a.name);
-      const marker = new mapboxgl.Marker({ element: el, draggable: true })
+      const marker = new maplibregl.Marker({ element: el, draggable: true })
         .setLngLat([a.lng, a.lat])
         .addTo(map);
       marker.on("dragend", () => {
@@ -132,13 +134,13 @@ export function ListingMap({ listings, highlightId, onPinHover }: Props) {
 
     if (listings.length === 0) return;
 
-    const bounds = new mapboxgl.LngLatBounds();
+    const bounds = new maplibregl.LngLatBounds();
     for (const l of listings) {
       const el = lifestylePinElement({ vibe: l.vibe, priceBand: l.priceBand, priceMur: l.nightlyRateMur });
       el.addEventListener("click", () => router.push(`/listings/${l.id}`));
       el.addEventListener("mouseenter", () => onPinHover?.(l.id));
       el.addEventListener("mouseleave", () => onPinHover?.(null));
-      const marker = new mapboxgl.Marker({ element: el }).setLngLat([l.longitude, l.latitude]).addTo(map);
+      const marker = new maplibregl.Marker({ element: el }).setLngLat([l.longitude, l.latitude]).addTo(map);
       listingMarkersRef.current.push({ id: l.id, marker, el });
       bounds.extend([l.longitude, l.latitude]);
     }
@@ -167,29 +169,6 @@ export function ListingMap({ listings, highlightId, onPinHover }: Props) {
     params.set("bbox", bbox);
     router.push(`/listings?${params.toString()}`);
     setShowSearchHere(false);
-  }
-
-  if (!token) {
-    return (
-      <Alert
-        severity="info"
-        variant="outlined"
-        sx={{
-          height: "100%",
-          minHeight: 384,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          fontFamily: "var(--font-plex)",
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-card)",
-          borderRadius: "2px",
-        }}
-      >
-        Map unavailable — set <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> in <code>web/.env.local</code> and restart the dev server.
-      </Alert>
-    );
   }
 
   return (
