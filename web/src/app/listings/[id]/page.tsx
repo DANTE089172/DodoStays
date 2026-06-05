@@ -4,8 +4,8 @@ import { getListing, type Amenity } from "@/lib/listings";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Badge } from "@/components/ui/badge";
-import { GrainOverlay } from "@/components/decorations/grain-overlay";
 import { WaveDivider } from "@/components/decorations/wave-divider";
+import { PhotoGallery } from "@/components/listings/photo-gallery";
 import { BookingSidebar } from "./booking-sidebar";
 
 export const dynamic = "force-dynamic";
@@ -41,23 +41,19 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  const heroPhoto = listing.photos[0];
-  const restPhotos = listing.photos.slice(1);
+  const galleryPhotos = listing.photos.map((p) => ({
+    url: p.publicUrl,
+    caption: p.caption ?? listing.title,
+  }));
 
   return (
     <>
       <SiteHeader />
       <main>
-        {/* Full-bleed hero photo (no overlay text — distinct from Airbnb) */}
-        {heroPhoto ? (
-          <section className="relative h-[60vh] min-h-[440px] w-full overflow-hidden bg-[var(--color-muted)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={heroPhoto.publicUrl}
-              alt={heroPhoto.caption ?? listing.title}
-              className="photo-warm h-full w-full object-cover"
-            />
-            <GrainOverlay />
+        {/* Photo carousel — edge-to-edge on mobile, contained on desktop. */}
+        {galleryPhotos.length > 0 ? (
+          <section className="w-full sm:mx-auto sm:max-w-7xl sm:px-10 sm:pb-2 sm:pt-6">
+            <PhotoGallery photos={galleryPhotos} aspectRatio="16/9" />
           </section>
         ) : null}
 
@@ -106,31 +102,6 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 <Stat label="Bathrooms" value={listing.bathrooms} />
                 <Stat label="Max guests" value={listing.maxGuests} />
               </dl>
-
-              {/* Photo gallery (after the hero) — 12px radius, soft shadow, no border */}
-              {restPhotos.length > 0 && (
-                <section className="mt-16">
-                  <p className="font-script text-2xl text-[var(--color-ochre)]">
-                    inside the place
-                  </p>
-                  <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {restPhotos.map((p) => (
-                      <div
-                        key={p.id}
-                        className="relative aspect-[4/3] overflow-hidden rounded-[12px] bg-[var(--color-muted)]"
-                        style={{ boxShadow: "var(--shadow-card-hover)" }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={p.publicUrl}
-                          alt={p.caption ?? listing.title}
-                          className="photo-warm h-full w-full object-cover transition-opacity duration-200 ease-out"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
 
               {/* Wave divider */}
               <div className="mt-16">
