@@ -1,4 +1,5 @@
 using Dodostays.Api.Contracts.Bookings;
+using Dodostays.Api.Contracts.Payments;
 
 namespace Dodostays.Api.Modules.Bookings.Domain;
 
@@ -9,6 +10,7 @@ public class Booking
     public Guid GuestUserId { get; set; }
     public Guid HostUserId { get; set; }
     public BookingState State { get; set; } = BookingState.PendingPayment;
+    public PayoutStatus PayoutStatus { get; set; } = PayoutStatus.NotEligible;
 
     public DateOnly CheckIn { get; set; }
     public DateOnly CheckOut { get; set; }

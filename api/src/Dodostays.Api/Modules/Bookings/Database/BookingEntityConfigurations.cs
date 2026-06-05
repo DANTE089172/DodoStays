@@ -11,6 +11,7 @@ internal static class BookingEntityConfigurations
         {
             b.HasKey(x => x.Id);
             b.Property(x => x.State).HasConversion<int>();
+            b.Property(x => x.PayoutStatus).HasConversion<int>();
             b.Property(x => x.CheckIn).HasColumnType("date");
             b.Property(x => x.CheckOut).HasColumnType("date");
             b.Property(x => x.NightlyRateMur).HasPrecision(12, 2);
