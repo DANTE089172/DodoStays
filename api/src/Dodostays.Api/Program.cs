@@ -53,6 +53,19 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    var recurringJobManager = app.Services.GetService<global::Hangfire.IRecurringJobManager>();
+    if (recurringJobManager is not null)
+    {
+        global::Hangfire.RecurringJobManagerExtensions.AddOrUpdate<Dodostays.Api.Modules.Bookings.Ical.IcalSyncJob>(
+            recurringJobManager,
+            "ical-sync",
+            job => job.RunAsync(CancellationToken.None),
+            "*/15 * * * *");
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

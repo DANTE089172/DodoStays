@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 using Dodostays.Api.Modules.Common.Database;
@@ -21,6 +22,7 @@ public sealed class PostgresFixture : IAsyncLifetime
     public WebApplicationFactory<Program> CreateFactory() =>
         new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
+            builder.UseEnvironment("Testing");
             builder.UseSetting("ConnectionStrings:Postgres", ConnectionString);
             builder.UseSetting("Jwt:Issuer", "dodostays-test");
             builder.UseSetting("Jwt:Audience", "dodostays-test");
@@ -33,6 +35,9 @@ public sealed class PostgresFixture : IAsyncLifetime
             builder.UseSetting("PhotoStorage:PublicBaseUrl", "http://localhost:0/photos");
             builder.UseSetting("PhotoStorage:MaxFileSizeBytes", "8388608");
             builder.UseSetting("Hangfire:DashboardEnabled", "false");
+            builder.UseSetting("Ical:SigningKey", "test-ical-signing-key-must-be-at-least-32-chars-long");
+            builder.UseSetting("Ical:FeedBaseUrl", "http://localhost:0");
+            builder.UseSetting("Ical:FetchTimeout", "00:00:05");
         });
 
     public async Task InitializeAsync()

@@ -2,6 +2,7 @@ using FluentValidation;
 using Dodostays.Api.Contracts.Bookings;
 using Dodostays.Api.Modules.Bookings.Endpoints;
 using Dodostays.Api.Modules.Bookings.Hangfire;
+using Dodostays.Api.Modules.Bookings.Ical;
 using Dodostays.Api.Modules.Bookings.Services;
 using Dodostays.Api.Modules.Bookings.Validation;
 
@@ -12,6 +13,15 @@ public static class BookingsModule
     public static IServiceCollection AddBookingsModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHangfireWithPostgres(configuration);
+
+        services.Configure<IcalOptions>(configuration.GetSection("Ical"));
+        services.AddHttpClient<IIcalFeedFetcher, HttpIcalFeedFetcher>();
+        services.AddSingleton<IcalFeedParser>();
+        services.AddSingleton<IcalFeedEmitter>();
+        services.AddSingleton<SignedIcalUrlGenerator>();
+        services.AddScoped<IcalSyncJob>();
+        services.AddScoped<IValidator<AddExternalFeedRequest>, AddExternalFeedValidator>();
+
         services.AddScoped<PricingService>();
         services.AddScoped<AvailabilityService>();
         services.AddScoped<BookingHoldService>();
@@ -34,6 +44,9 @@ public static class BookingsModule
         app.MapCheckInBooking();
         app.MapGetAvailability();
         app.MapGetCalendar();
+        app.MapAddExternalFeed();
+        app.MapRemoveExternalFeed();
+        app.MapListExternalFeeds();
         return app;
     }
 }
