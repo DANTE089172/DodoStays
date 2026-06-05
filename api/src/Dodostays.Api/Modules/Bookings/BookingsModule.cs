@@ -1,6 +1,7 @@
 using FluentValidation;
 using Dodostays.Api.Contracts.Bookings;
 using Dodostays.Api.Modules.Bookings.Endpoints;
+using Dodostays.Api.Modules.Bookings.Hangfire;
 using Dodostays.Api.Modules.Bookings.Services;
 using Dodostays.Api.Modules.Bookings.Validation;
 
@@ -10,6 +11,7 @@ public static class BookingsModule
 {
     public static IServiceCollection AddBookingsModule(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHangfireWithPostgres(configuration);
         services.AddScoped<PricingService>();
         services.AddScoped<AvailabilityService>();
         services.AddScoped<BookingHoldService>();

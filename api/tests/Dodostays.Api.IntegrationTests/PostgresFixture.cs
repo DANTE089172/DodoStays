@@ -32,6 +32,7 @@ public sealed class PostgresFixture : IAsyncLifetime
             builder.UseSetting("PhotoStorage:LocalRoot", Path.Combine(Path.GetTempPath(), $"ds-photos-{Guid.NewGuid():N}"));
             builder.UseSetting("PhotoStorage:PublicBaseUrl", "http://localhost:0/photos");
             builder.UseSetting("PhotoStorage:MaxFileSizeBytes", "8388608");
+            builder.UseSetting("Hangfire:DashboardEnabled", "false");
         });
 
     public async Task InitializeAsync()

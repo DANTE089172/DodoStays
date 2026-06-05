@@ -3,6 +3,7 @@ using Dodostays.Api.Modules.Common.Database;
 using Dodostays.Api.Modules.Common.Health;
 using Dodostays.Api.Modules.Common.ProblemDetails;
 using Dodostays.Api.Modules.Bookings;
+using Dodostays.Api.Modules.Bookings.Hangfire;
 using Dodostays.Api.Modules.Identity;
 using Dodostays.Api.Modules.Listings;
 using Dodostays.Api.Modules.Search;
@@ -67,6 +68,7 @@ app.UseDodostaysProblemDetails();
 app.UseCors(CorsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHangfireDashboardIfEnabled();
 
 app.MapHealthCheckEndpoints();
 app.MapIdentityEndpoints();
