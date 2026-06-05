@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FlagDivider } from "@/components/decorations/flag-divider";
+import { Stack } from "@mui/material";
+import { ExternalFeedList } from "@/components/bookings/external-feed-list";
+import { CopyIcalUrlCard } from "@/components/bookings/copy-ical-url-card";
 
 export default function EditListingPage() {
   const router = useRouter();
@@ -226,6 +229,31 @@ export default function EditListingPage() {
                   />
                 </label>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Channels — external iCal feeds */}
+        <section className="mt-14 space-y-8">
+          <FlagDivider />
+          <div className="grid gap-8 md:grid-cols-[260px_1fr] md:gap-12">
+            <div>
+              <p className="font-script text-2xl italic text-[var(--color-ochre)]">
+                ki kote li parey?
+              </p>
+              <h2 className="mt-1 font-display text-3xl tracking-[-0.01em]">
+                Channels
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+                Sync your calendar with Airbnb, Booking.com and others so the
+                same dates stay blocked everywhere.
+              </p>
+            </div>
+            <div>
+              <Stack spacing={3}>
+                <CopyIcalUrlCard listingId={listing.id} />
+                <ExternalFeedList listingId={listing.id} />
+              </Stack>
             </div>
           </div>
         </section>
