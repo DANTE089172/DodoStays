@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Badge } from "@/components/ui/badge";
 import { GrainOverlay } from "@/components/decorations/grain-overlay";
 import { WaveDivider } from "@/components/decorations/wave-divider";
+import { BookingSidebar } from "./booking-sidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -202,49 +203,13 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               </section>
             </div>
 
-            {/* Sticky booking sidebar — 12px radius, soft always-on shadow (feels like a card, not a bordered box) */}
-            <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div
-                className="rounded-[12px] bg-[var(--color-card)] p-8"
-                style={{ boxShadow: "var(--shadow-card-hover)" }}
-              >
-                <p className="font-script text-xl text-[var(--color-ochre)]">
-                  from
-                </p>
-                <p className="mt-1 font-display text-5xl leading-none tracking-[-0.02em]">
-                  MUR {listing.nightlyRateMur.toLocaleString()}
-                </p>
-                <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
-                  / night
-                </p>
-
-                <dl className="mt-8 space-y-3 border-t-[1.5px] border-[var(--color-border)] pt-6 text-sm">
-                  <Row
-                    label="Cleaning fee"
-                    value={`MUR ${listing.cleaningFeeMur.toLocaleString()}`}
-                  />
-                  <Row
-                    label="Min stay"
-                    value={`${listing.minStayNights} night${
-                      listing.minStayNights === 1 ? "" : "s"
-                    }`}
-                  />
-                  <Row label="Max guests" value={String(listing.maxGuests)} />
-                </dl>
-
-                <button
-                  type="button"
-                  disabled
-                  className="mt-8 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-[6px] bg-[var(--color-primary)] px-4 text-sm font-medium text-[var(--color-primary-foreground)] opacity-60"
-                >
-                  Reserve
-                </button>
-
-                <p className="mt-4 text-center text-xs text-[var(--color-muted-foreground)]">
-                  Booking will be available soon. No charges until you book.
-                </p>
-              </div>
-            </aside>
+            <BookingSidebar
+              listingId={listing.id}
+              nightlyMur={listing.nightlyRateMur}
+              cleaningMur={listing.cleaningFeeMur}
+              maxGuests={listing.maxGuests}
+              minStayNights={listing.minStayNights}
+            />
           </div>
         </div>
       </main>
@@ -260,15 +225,6 @@ function Stat({ label, value }: { label: string; value: number }) {
         {label}
       </dt>
       <dd className="mt-1 font-display text-2xl tracking-[-0.01em]">{value}</dd>
-    </div>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between">
-      <dt className="text-[var(--color-muted-foreground)]">{label}</dt>
-      <dd className="font-medium text-[var(--color-foreground)]">{value}</dd>
     </div>
   );
 }
