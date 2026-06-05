@@ -7,6 +7,8 @@ import { SearchAcknowledgement } from "@/components/search/search-acknowledgemen
 import { ListingsExplorer } from "./listings-explorer";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
 
 export const dynamic = "force-dynamic";
 
@@ -43,33 +45,41 @@ export default async function ListingsPage({
       ].filter(Boolean).join(", ")}`
     : null;
 
+  const headingText = initialText.trim().length > 0 ? initialText.trim() : "Curated stays";
+
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-6 py-6">
-        <header className="mb-4 text-center">
-          <h1 className="font-display text-4xl">Browse Mauritius</h1>
-          <p className="font-script text-xl text-[var(--ds-ochre,_#D4A24C)]">kot ou trouve nou.</p>
-        </header>
+      <main className="bg-[var(--color-sand)]">
+        <div className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-14">
+          <header className="mb-8 max-w-3xl">
+            <Eyebrow tone="peach">Stays in Mauritius</Eyebrow>
+            <DisplayHeading level={2} className="mt-3">
+              {headingText}
+            </DisplayHeading>
+          </header>
 
-        <AiSearchBar
-          initialText={initialText}
-          initialFilters={filters}
-          preserveParams={["anchors", "bbox", "liveSearch"]}
-        />
-        <SearchAcknowledgement text={ack} />
-        {!initialText && <ExampleQueries />}
+          <AiSearchBar
+            initialText={initialText}
+            initialFilters={filters}
+            preserveParams={["anchors", "bbox", "liveSearch"]}
+          />
+          <SearchAcknowledgement text={ack} />
+          {!initialText && <ExampleQueries />}
 
-        <FilterChips filters={filters} preserveParams={["anchors", "bbox", "liveSearch"]} />
+          <FilterChips filters={filters} preserveParams={["anchors", "bbox", "liveSearch"]} />
 
-        <p className="my-3 text-sm text-[var(--color-muted-foreground)]">{results.totalCount} listings</p>
-        {error && (
-          <p role="alert" className="mb-4 text-sm text-[var(--color-destructive)]">
-            {error}
+          <p className="my-4 ds-eyebrow text-[var(--color-muted-foreground)]">
+            {results.totalCount} {results.totalCount === 1 ? "stay" : "stays"}
           </p>
-        )}
+          {error && (
+            <p role="alert" className="mb-4 text-sm text-[var(--color-destructive)]">
+              {error}
+            </p>
+          )}
 
-        <ListingsExplorer items={results.items} />
+          <ListingsExplorer items={results.items} />
+        </div>
       </main>
       <SiteFooter />
     </>

@@ -37,12 +37,45 @@ export function FilterChips({ filters, preserveParams = [] }: Props) {
           variant="outlined"
           deleteIcon={<CloseIcon />}
           onDelete={() => removeChip(c.remove)}
-          sx={{ fontFamily: "var(--font-plex)", borderColor: "var(--color-foreground)" }}
+          sx={chipSx}
         />
       ))}
     </Stack>
   );
 }
+
+// Onepirate-flavoured filter chip:
+//   - cream surface (var(--color-card)), ink text
+//   - 1px peach border (active state — chip is, by definition, an active filter)
+//   - rounded-full pill shape, Plex Sans 13px, tracked
+//   - subtle peach tint on hover
+const chipSx = {
+  fontFamily: "var(--font-plex)",
+  fontSize: "0.8125rem",
+  letterSpacing: "0.04em",
+  height: 32,
+  borderRadius: "9999px",
+  backgroundColor: "var(--color-card)",
+  color: "var(--color-foreground)",
+  borderColor: "var(--color-primary)",
+  borderWidth: "1px",
+  transition: "background-color 180ms ease-out, border-color 180ms ease-out",
+  "& .MuiChip-label": {
+    px: 1.5,
+  },
+  "& .MuiChip-deleteIcon": {
+    color: "color-mix(in srgb, var(--color-foreground) 65%, transparent)",
+    fontSize: "1rem",
+    transition: "color 180ms ease-out",
+  },
+  "&:hover": {
+    backgroundColor: "color-mix(in srgb, var(--color-primary) 8%, var(--color-card))",
+    borderColor: "var(--color-primary)",
+  },
+  "&:hover .MuiChip-deleteIcon": {
+    color: "var(--color-foreground)",
+  },
+};
 
 function buildChips(f: ParsedFilters): { key: string; label: string; remove: (f: ParsedFilters) => ParsedFilters }[] {
   const c: { key: string; label: string; remove: (f: ParsedFilters) => ParsedFilters }[] = [];

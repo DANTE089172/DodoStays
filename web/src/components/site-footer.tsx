@@ -1,82 +1,71 @@
 import Link from "next/link";
-import { BrandMark } from "@/components/brand-mark";
+import { Section } from "@/components/marketing/section";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+
+const FOOTER_NAV: { label: string; href: string }[] = [
+  { label: "Browse", href: "/listings" },
+  { label: "Hosts", href: "/host/listings" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
 
 export function SiteFooter() {
+  const year = new Date().getFullYear();
   return (
-    <footer className="mt-24 bg-[var(--color-foreground)] text-[var(--color-sand)]">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 sm:px-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <div className="max-w-sm">
-          <BrandMark tone="sand" />
-          <p
-            className="mt-6 font-script text-2xl text-[var(--color-ochre)]"
+    <Section tone="ink" size="md" className="mt-0">
+      <div className="grid gap-12 md:grid-cols-3 md:gap-16">
+        {/* Column 1 — wordmark + tagline */}
+        <div>
+          <Link
+            href="/"
+            className="inline-block font-display text-3xl tracking-[0.005em] text-[var(--color-foreground)]"
+            style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100, "wght" 700' }}
           >
-            Mauritius. Honestly priced.
-          </p>
-          <p className="mt-4 text-sm leading-relaxed text-[var(--color-sand)]/75">
-            A small Mauritian booking site. Real prices in rupees, verified
-            hosts, no foreign-currency surprises at checkout.
-          </p>
-        </div>
-        <FooterColumn
-          title="Explore"
-          links={[
-            { label: "Grand Baie", href: "/listings?region=grand-baie" },
-            { label: "Flic en Flac", href: "/listings?region=flic-en-flac" },
-            { label: "Tamarin", href: "/listings?region=tamarin" },
-            { label: "Le Morne", href: "/listings?region=le-morne" },
-          ]}
-        />
-        <FooterColumn
-          title="Hosting"
-          links={[
-            { label: "Become a host", href: "/signup" },
-            { label: "Manage listings", href: "/host/listings" },
-          ]}
-        />
-        <FooterColumn
-          title="Account"
-          links={[
-            { label: "Sign in", href: "/signin" },
-            { label: "Create account", href: "/signup" },
-          ]}
-        />
-      </div>
-      <div className="border-t-[1.5px] border-[var(--color-sand)]/20">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-2 px-6 py-6 text-xs text-[var(--color-sand)]/60 sm:flex-row sm:items-center sm:px-10">
-          <p>&copy; {new Date().getFullYear()} DodoStays. All prices in MUR.</p>
-          <p className="font-script text-base text-[var(--color-ochre)]">
-            Made in Maurice 🇲🇺
+            DodoStays
+          </Link>
+          <p className="mt-4 max-w-xs text-sm leading-[1.6] text-[var(--color-muted-foreground)]">
+            Honestly priced stays in Mauritius. Real rupees, verified hosts.
           </p>
         </div>
-      </div>
-    </footer>
-  );
-}
 
-function FooterColumn({
-  title,
-  links,
-}: {
-  title: string;
-  links: { label: string; href: string }[];
-}) {
-  return (
-    <div>
-      <p className="mb-4 small-caps text-xs text-[var(--color-ochre)]">
-        {title}
-      </p>
-      <ul className="space-y-2.5 text-sm text-[var(--color-sand)]/85">
-        {links.map((l) => (
-          <li key={l.href}>
-            <Link
-              className="transition-colors duration-200 ease-out hover:text-[var(--color-ochre)]"
-              href={l.href}
-            >
-              {l.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+        {/* Column 2 — nav */}
+        <div>
+          <Eyebrow tone="peach">Explore</Eyebrow>
+          <ul className="mt-5 space-y-3">
+            {FOOTER_NAV.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="text-sm tracking-[0.04em] text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-primary)]"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Column 3 — legal + locale */}
+        <div>
+          <Eyebrow tone="peach">Locale</Eyebrow>
+          <p className="mt-5 text-[13px] leading-[1.7] text-[var(--color-muted-foreground)]">
+            Made in Mauritius.
+          </p>
+          <p className="mt-1 text-[13px] leading-[1.7] text-[var(--color-muted-foreground)]">
+            All prices in MUR.
+          </p>
+          <p className="mt-1 text-[13px] leading-[1.7] text-[var(--color-muted-foreground)]">
+            &copy; {year} DodoStays.
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom rule — peach 20% line + tiny copyright */}
+      <div className="mt-14 border-t border-[color-mix(in_srgb,var(--color-primary)_20%,transparent)] pt-6">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-[var(--color-muted-foreground)]">
+          DodoStays &middot; {year}
+        </p>
+      </div>
+    </Section>
   );
 }

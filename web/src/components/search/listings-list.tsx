@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Box, Typography } from "@mui/material";
 import type { ListingSummary } from "@/lib/listings";
+import { Eyebrow } from "@/components/marketing/eyebrow";
 
 interface Props {
   items: ListingSummary[];
@@ -15,24 +16,51 @@ export function ListingsList({ items, highlightId, onCardHover }: Props) {
     return (
       <Box
         sx={{
-          border: "1.5px dashed var(--color-border)",
-          borderRadius: "6px",
-          p: 5,
+          border: "1px dashed color-mix(in srgb, var(--color-foreground) 20%, transparent)",
+          borderRadius: "4px",
+          p: 6,
           textAlign: "center",
+          backgroundColor: "var(--color-card)",
         }}
       >
-        <Typography sx={{ fontFamily: "var(--font-caveat)", fontSize: "1.5rem", color: "var(--color-muted-foreground)" }}>
-          pa enkor de listings…
+        <Typography
+          sx={{
+            fontFamily: "var(--font-fraunces)",
+            fontSize: "1.5rem",
+            color: "var(--color-foreground)",
+            fontWeight: 600,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          No stays match these filters.
         </Typography>
-        <Typography sx={{ mt: 1, fontFamily: "var(--font-plex)", fontSize: "0.875rem", color: "var(--color-muted-foreground)" }}>
-          No listings match your filters. Try removing a chip, dropping an anchor, or panning the map.
+        <Typography
+          sx={{
+            mt: 1.5,
+            fontFamily: "var(--font-plex)",
+            fontSize: "0.9rem",
+            color: "var(--color-muted-foreground)",
+            lineHeight: 1.6,
+          }}
+        >
+          Try removing a chip, dropping an anchor, or panning the map.
         </Typography>
       </Box>
     );
   }
 
   return (
-    <Box component="ul" sx={{ listStyle: "none", p: 0, m: 0, display: "flex", flexDirection: "column", gap: 2.5 }}>
+    <Box
+      component="ul"
+      sx={{
+        listStyle: "none",
+        p: 0,
+        m: 0,
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
+        gap: 3,
+      }}
+    >
       {items.map((l) => {
         const highlighted = highlightId === l.id;
         return (
@@ -42,32 +70,29 @@ export function ListingsList({ items, highlightId, onCardHover }: Props) {
             onMouseEnter={() => onCardHover(l.id)}
             onMouseLeave={() => onCardHover(null)}
             sx={{
-              borderRadius: "var(--radius-card, 12px)",
-              transition: "box-shadow 200ms ease-out, outline-color 200ms ease-out",
-              outline: highlighted ? "2px solid var(--color-foreground)" : "2px solid transparent",
-              outlineOffset: 2,
-              "&:hover": {
-                boxShadow: "var(--shadow-card-hover)",
-              },
+              borderRadius: "4px",
+              border: "1px solid color-mix(in srgb, var(--color-foreground) 10%, transparent)",
+              overflow: "hidden",
+              transition: "border-color 200ms ease-out",
+              outline: highlighted ? "1px solid var(--color-primary)" : "1px solid transparent",
+              outlineOffset: 0,
+              backgroundColor: "var(--color-card)",
               "&:hover .ds-card-photo img": {
-                opacity: 0.95,
-                filter: "contrast(1.05) saturate(1.08)",
-              },
-              "&:hover .ds-card-title": {
-                textDecoration: "underline",
+                transform: "scale(1.02)",
               },
             }}
           >
-            <Link href={`/listings/${l.id}`} style={{ display: "flex", gap: 14, textDecoration: "none", color: "inherit" }}>
+            <Link
+              href={`/listings/${l.id}`}
+              style={{ display: "block", textDecoration: "none", color: "inherit" }}
+            >
               <Box
                 className="ds-card-photo"
                 sx={{
-                  flexShrink: 0,
-                  width: 180,
-                  aspectRatio: "4/3",
+                  width: "100%",
+                  aspectRatio: "4 / 5",
                   backgroundColor: "var(--color-muted)",
                   overflow: "hidden",
-                  borderRadius: "var(--radius-card, 12px)",
                 }}
               >
                 {l.primaryPhotoUrl && (
@@ -79,41 +104,57 @@ export function ListingsList({ items, highlightId, onCardHover }: Props) {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
-                      opacity: 1,
-                      transition: "opacity 200ms ease-out, filter 200ms ease-out",
+                      transition: "transform 400ms ease-out",
                     }}
                   />
                 )}
               </Box>
-              <Box sx={{ minWidth: 0, flex: 1, py: 0.5 }}>
+              <Box sx={{ p: 2.5 }}>
+                <Eyebrow tone="muted">
+                  {l.region.replace(/-/g, " ")} · {l.vibe}
+                </Eyebrow>
                 <Typography
                   component="h3"
                   className="ds-card-title"
                   sx={{
+                    mt: 1.5,
                     fontFamily: "var(--font-fraunces)",
                     fontWeight: 600,
-                    fontSize: "1.125rem",
-                    lineHeight: 1.25,
+                    fontSize: "1.375rem",
+                    lineHeight: 1.2,
+                    letterSpacing: "-0.01em",
+                    color: "var(--color-foreground)",
                   }}
                 >
                   {l.title}
                 </Typography>
-                <Typography sx={{ fontFamily: "var(--font-caveat)", fontSize: "0.85rem", color: "var(--ds-ochre, #D4A24C)" }}>
-                  {l.region.replace(/-/g, " ")}
-                </Typography>
-                <Typography sx={{ mt: 0.5, fontFamily: "var(--font-plex)", fontSize: "0.9rem", fontWeight: 600 }}>
-                  MUR {l.nightlyRateMur.toLocaleString()}
-                  <Box component="span" sx={{ fontWeight: 400, color: "var(--color-muted-foreground)" }}>{" "}/ night</Box>
+                <Typography
+                  sx={{
+                    mt: 1.5,
+                    fontFamily: "var(--font-plex)",
+                    fontSize: "0.875rem",
+                    color: "var(--color-muted-foreground)",
+                  }}
+                >
+                  <Box
+                    component="span"
+                    sx={{ color: "var(--color-foreground)", fontWeight: 600 }}
+                  >
+                    MUR {l.nightlyRateMur.toLocaleString()}
+                  </Box>
+                  {" · per night"}
                 </Typography>
                 {l.driveTimeMinutes !== null && (
                   <Typography
                     sx={{
-                      mt: 0.5,
+                      mt: 1,
                       display: "inline-flex",
                       alignItems: "center",
                       fontFamily: "var(--font-plex)",
                       fontSize: "0.75rem",
                       color: "var(--color-muted-foreground)",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.12em",
                     }}
                   >
                     <Box
@@ -121,17 +162,15 @@ export function ListingsList({ items, highlightId, onCardHover }: Props) {
                       aria-hidden
                       sx={{
                         display: "inline-block",
-                        width: 6,
-                        height: 6,
+                        width: 5,
+                        height: 5,
                         borderRadius: "50%",
-                        // Drive-time is anchor-related wayfinding, so it
-                        // tracks the cobalt-secondary anchor-pin color
-                        // rather than the flamboyant status-stamp accent.
+                        // Drive-time tracks the cobalt anchor-pin colour.
                         backgroundColor: "var(--color-secondary)",
-                        mr: 0.75,
+                        mr: 1,
                       }}
                     />
-                    ~{l.driveTimeMinutes} min from your anchor
+                    {l.driveTimeMinutes} min from anchor
                   </Typography>
                 )}
               </Box>

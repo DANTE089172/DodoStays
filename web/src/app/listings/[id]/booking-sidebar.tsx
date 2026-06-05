@@ -10,6 +10,30 @@ import { PriceSummary } from "@/components/bookings/price-summary";
 import { HoldCountdown } from "@/components/bookings/hold-countdown";
 import { confirmBooking, getAvailability, holdBooking, type HoldBookingResponse } from "@/lib/bookings";
 
+// Peach pill button styling — Onepirate-flavoured arched CTA shape.
+// Applied to MUI <Button> via sx so we keep MUI's component={Link} support
+// and the e2e role="button" selectors intact.
+const pillSx = {
+  fontFamily: "var(--font-plex)",
+  fontWeight: 500,
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.12em",
+  fontSize: "0.8125rem",
+  borderRadius: "9999px",
+  py: 1.5,
+  backgroundColor: "var(--color-primary)",
+  color: "var(--color-primary-foreground)",
+  boxShadow: "none",
+  "&:hover": {
+    backgroundColor: "var(--color-primary-hover)",
+    boxShadow: "none",
+  },
+  "&.Mui-disabled": {
+    backgroundColor: "color-mix(in srgb, var(--color-primary) 40%, transparent)",
+    color: "color-mix(in srgb, var(--color-primary-foreground) 60%, transparent)",
+  },
+};
+
 interface Props {
   listingId: string;
   nightlyMur: number;
@@ -103,19 +127,38 @@ export function BookingSidebar({ listingId, nightlyMur, cleaningMur, maxGuests, 
       sx={{
         position: { lg: "sticky" },
         top: { lg: 24 },
-        border: "1.5px solid var(--color-border)",
-        borderRadius: "12px",
-        p: 3,
-        backgroundColor: "var(--color-card)",
-        boxShadow: "var(--shadow-card-hover, 0 1px 2px rgba(20,12,8,0.06), 0 4px 16px rgba(20,12,8,0.06))",
+        border: "1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent)",
+        borderRadius: "4px",
+        p: 3.5,
+        backgroundColor: "var(--color-sand)",
+        height: "fit-content",
       }}
     >
-      <Stack spacing={2}>
+      <Stack spacing={2.5}>
         <Box>
-          <Typography component="span" sx={{ fontFamily: "var(--font-fraunces)", fontSize: "2rem", fontWeight: 600 }}>
+          <Typography
+            component="span"
+            sx={{
+              fontFamily: "var(--font-fraunces)",
+              fontSize: "2.25rem",
+              fontWeight: 600,
+              letterSpacing: "-0.01em",
+              fontVariationSettings: '"opsz" 144, "SOFT" 100, "wght" 600',
+            }}
+          >
             MUR {nightlyMur.toLocaleString()}
           </Typography>
-          <Typography component="span" sx={{ fontFamily: "var(--font-plex)", fontSize: "0.875rem", color: "var(--color-muted-foreground)", ml: 1 }}>
+          <Typography
+            component="span"
+            sx={{
+              fontFamily: "var(--font-plex)",
+              fontSize: "0.75rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.18em",
+              color: "var(--color-muted-foreground)",
+              ml: 1.5,
+            }}
+          >
             / night
           </Typography>
         </Box>
@@ -170,6 +213,7 @@ export function BookingSidebar({ listingId, nightlyMur, cleaningMur, maxGuests, 
                 color="primary"
                 size="large"
                 fullWidth
+                sx={pillSx}
               >
                 Sign in to book
               </Button>
@@ -181,6 +225,7 @@ export function BookingSidebar({ listingId, nightlyMur, cleaningMur, maxGuests, 
                 color="primary"
                 size="large"
                 fullWidth
+                sx={pillSx}
               >
                 {stateKind === "holding" ? "Holding…" : "Hold dates"}
               </Button>
@@ -197,10 +242,10 @@ export function BookingSidebar({ listingId, nightlyMur, cleaningMur, maxGuests, 
               cleaningMur={state.hold.cleaningFeeMur}
             />
             <HoldCountdown expiresAt={state.hold.holdExpiresAt} onExpire={onExpire} />
-            <Button onClick={onConfirm} variant="contained" color="primary" size="large" fullWidth>
+            <Button onClick={onConfirm} variant="contained" color="primary" size="large" fullWidth sx={pillSx}>
               Confirm booking
             </Button>
-            <Button onClick={reset} variant="text" size="small" color="secondary">
+            <Button onClick={reset} variant="text" size="small" color="secondary" sx={{ fontFamily: "var(--font-plex)", textTransform: "uppercase", letterSpacing: "0.12em", fontSize: "0.75rem" }}>
               Pick different dates
             </Button>
             <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.75rem", color: "var(--color-muted-foreground)", textAlign: "center" }}>
