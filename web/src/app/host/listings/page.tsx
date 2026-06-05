@@ -80,7 +80,7 @@ export default function HostListingsPage() {
             </p>
           </div>
           <Link href="/host/listings/new">
-            <Button variant="accent" size="lg" className="shadow-block">
+            <Button size="lg" className="shadow-block">
               + Add listing
             </Button>
           </Link>
@@ -110,7 +110,7 @@ export default function HostListingsPage() {
               It only takes a few minutes.
             </p>
             <Link href="/host/listings/new" className="mt-6">
-              <Button variant="accent" size="lg" className="shadow-block">
+              <Button size="lg" className="shadow-block">
                 Create your first listing
               </Button>
             </Link>

@@ -2,43 +2,61 @@
 @import "mapbox-gl/dist/mapbox-gl.css";
 
 @theme {
-  /* --- Sega & Sand × Cinema Maurice: Mauritian palette w/ warm-photo lift --- */
-  --color-background: #F5EFE6;        /* warm sand — page bg */
+  /* --- Peach Orb: peach-primary, cobalt-secondary, flamboyant-for-stamps ---
+     The Tailwind v4 @theme block exposes the canonical --color-* tokens that
+     CSS classes (bg-[var(--color-primary)] etc.) reference.  Values warm up
+     versus the previous Sega & Sand palette: sand becomes a warmer #FAF3EA,
+     primary swaps from cobalt to peach, accent now means status-stamp red
+     (Confirmed / Published), and cobalt downgrades to secondary. */
+  --color-background: #FAF3EA;        /* warm sand */
   --color-foreground: #1A1410;        /* volcanic black — text */
-  --color-card: #FFFFFF;              /* pure white — listing cards lift cleanly */
+  --color-card: #FFFFFF;
   --color-card-foreground: #1A1410;
   --color-muted: #ECE2CF;
-  --color-muted-foreground: #5A4A3A;  /* warm brown */
-  --color-border: #C9B89A;            /* faded ochre — visible */
-  --color-input: #C9B89A;
-  --color-ring: #1E3A8A;
-  --color-primary: #1E3A8A;           /* deep cobalt */
-  --color-primary-foreground: #F5EFE6;
-  --color-primary-hover: #182f6e;
-  --color-secondary: #ECE2CF;
-  --color-secondary-foreground: #1A1410;
-  --color-accent: #E8633C;            /* warm terracotta — distinct from Airbnb coral */
+  --color-muted-foreground: #5A4A3A;
+  --color-border: #E5D6C2;            /* slightly lighter ochre line */
+  --color-input: #E5D6C2;
+  --color-ring: #FF9F6A;              /* peach focus ring */
+
+  /* PRIMARY (peach — the orb color) */
+  --color-primary: #FF9F6A;
+  --color-primary-foreground: #1A1410;  /* ink-on-peach for high contrast */
+  --color-primary-hover: #FF8C50;       /* slightly darker peach */
+
+  /* SECONDARY (downgraded cobalt — anchor pins, "Sign in" link) */
+  --color-secondary: #1E3A8A;
+  --color-secondary-foreground: #F5EFE6;
+
+  /* ACCENT (status stamps only — Confirmed / Published) */
+  --color-accent: #C73E1D;            /* flamboyant red, used sparingly */
   --color-accent-foreground: #FFFFFF;
-  --color-accent-hover: #c14f2c;
-  --color-destructive: #B53017;       /* warmer destructive — harmonizes w/ terracotta */
+  --color-accent-hover: #A22F12;
+
+  --color-destructive: #B53017;
   --color-destructive-foreground: #F5EFE6;
   --color-success: #6E8C3F;           /* sugar cane green */
   --color-success-foreground: #F5EFE6;
 
-  /* Sega & Sand semantic aliases */
-  --color-sand: #F5EFE6;
+  /* Mauritian semantic aliases */
+  --color-sand: #FAF3EA;
   --color-sand-deep: #ECE2CF;
   --color-ink: #1A1410;
-  --color-cobalt: #1E3A8A;
-  --color-flamboyant: #E8633C;        /* now terracotta — alias kept for badge variant */
+  --color-cobalt: #1E3A8A;            /* still cobalt for flag + anchors */
+  --color-flamboyant: #C73E1D;        /* alias used by stamps + flag stripe */
   --color-ochre: #D4A24C;             /* warm gold */
   --color-lagoon: #2A8FA5;            /* turquoise */
   --color-cane: #6E8C3F;              /* sugar cane green */
 
-  /* Sega & Sand DS-prefixed tokens (used by listing card etc.) */
+  /* DS-prefixed tokens (used by listing card etc.) */
   --ds-ochre: #D4A24C;
   --ds-lagoon: #2A8FA5;
   --ds-cane: #6E8C3F;
+
+  /* === Peach orb gradient + shadow === */
+  --color-peach-50: #FFEFE0;
+  --color-peach-200: #FFCDA8;
+  --color-peach-400: #FF9F6A;
+  --color-peach-600: #E0673A;
 
   /* Slightly softened radius — toward Airbnb DNA without becoming pill-shaped */
   --radius: 6px;
@@ -60,6 +78,25 @@
     BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* :root mirrors the @theme tokens for non-Tailwind consumers (raw var(--peach-glow)
+   refs, MUI sx blocks that read CSS variables, etc.) and adds the orb-specific
+   gradient + glow shadow.  Keeping them on :root ensures the peach-glow var
+   resolves on dark surfaces (.surface-cinema) too — the orb's color stays the
+   same across surfaces; only the surrounding chrome changes. */
+:root {
+  --peach-50: #FFEFE0;
+  --peach-200: #FFCDA8;
+  --peach-400: #FF9F6A;
+  --peach-600: #E0673A;
+  --peach-glow: radial-gradient(circle at 30% 30%,
+                  #FFCDA8 0%,
+                  #FF9F6A 35%,
+                  #E0673A 65%,
+                  transparent 80%);
+  --orb-shadow: 0 0 120px rgba(255, 159, 106, 0.5),
+                0 0 240px rgba(224, 103, 58, 0.3);
+}
+
 @layer base {
   *,
   *::before,
@@ -79,7 +116,7 @@
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    background-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
     color: var(--color-foreground);
   }
 
@@ -137,7 +174,7 @@
     box-shadow: 2px 2px 0 var(--color-foreground);
   }
   .shadow-block-cobalt {
-    box-shadow: 2px 2px 0 var(--color-primary);
+    box-shadow: 2px 2px 0 var(--color-secondary);
   }
   /* Warm photographic treatment */
   .photo-warm {
@@ -145,25 +182,27 @@
   }
 }
 
-/* --- Cinema Maurice: dark surface override (scoped, not global dark mode) --- */
+/* --- Cinema Maurice: dark surface override (scoped, not global dark mode) ---
+   Now ember-warm (charcoal w/ a hint of warmth) so the peach orb reads as
+   the same hue against either light or dark surfaces. */
 .surface-cinema {
-  --color-background: #0B0B0F;
-  --color-foreground: #F5EFE6;
-  --color-card: #16161B;
-  --color-muted: #1F1F26;
-  --color-muted-foreground: #A8A39A;
-  --color-border: #2A2A33;
-  --color-input: #2A2A33;
-  --color-primary: #E8633C;
-  --color-primary-foreground: #0B0B0F;
-  --color-accent: #E8633C;
-  --color-accent-foreground: #0B0B0F;
-  --color-ring: #E8633C;
+  --color-background: #0A0908;        /* ember-black w/ warmth */
+  --color-foreground: #F5E6D3;        /* warm cream */
+  --color-card: #161210;              /* ember panel */
+  --color-muted: #28201D;
+  --color-muted-foreground: #A8978A;
+  --color-border: #3D2F2A;            /* warm-grey */
+  --color-input: #3D2F2A;
+  --color-primary: #FF9F6A;           /* peach stays the primary on dark too */
+  --color-primary-foreground: #1A1410;
+  --color-accent: #FF9F6A;            /* peach also serves as accent on dark */
+  --color-accent-foreground: #1A1410;
+  --color-ring: #FF9F6A;
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
 
-/* Hero AI search bar gets a luminous terracotta halo on the dark stage.
+/* Hero AI search bar gets a luminous peach halo on the dark stage.
    The wrapper is applied only on the homepage hero context — the AiSearchBar
    stays a single component; we layer the cinematic glow on top via the form
    selector.  !important is intentional: MUI sx-generated styles win otherwise.
@@ -172,22 +211,43 @@
    internal surfaces stay sand/white against the dark hero behind it. The bar
    becomes the centerpiece light element on a dark stage. */
 .hero-search-wrapper {
-  --color-background: #F5EFE6;
+  --color-background: #FAF3EA;
   --color-foreground: #1A1410;
   --color-card: #FFFFFF;
   --color-muted: #ECE2CF;
   --color-muted-foreground: #5A4A3A;
-  --color-border: #C9B89A;
-  --color-input: #C9B89A;
-  --color-primary: #1E3A8A;
-  --color-primary-foreground: #F5EFE6;
-  --color-accent: #E8633C;
+  --color-border: #E5D6C2;
+  --color-input: #E5D6C2;
+  --color-primary: #FF9F6A;             /* peach primary in hero subtree */
+  --color-primary-foreground: #1A1410;
+  --color-accent: #C73E1D;
   --color-accent-foreground: #FFFFFF;
-  --color-ring: #1E3A8A;
+  --color-ring: #FF9F6A;
+  position: relative;
+  z-index: 10;
 }
 .hero-search-wrapper > form {
-  border-color: rgba(232, 99, 60, 0.55) !important;
-  box-shadow: 0 0 32px rgba(232, 99, 60, 0.22), 4px 4px 0 #1A1410 !important;
+  border-color: rgba(255, 159, 106, 0.6) !important;
+  box-shadow:
+    0 0 32px rgba(255, 159, 106, 0.28),
+    4px 4px 0 var(--color-foreground) !important;
+}
+
+/* --- Peach Orb — luminous radial gradient behind the hero search bar ---
+   Sits at zIndex 0 inside the hero <section>; the photo paints over it at
+   zIndex 1, the gradient overlay at 2, the headline + search at 10. The
+   orb is decorative (aria-hidden) and pointer-events:none so it never
+   intercepts interaction.  The pulse animation is gated on
+   prefers-reduced-motion: no-preference so motion-sensitive users see a
+   static orb. */
+@media (prefers-reduced-motion: no-preference) {
+  .ds-peach-orb {
+    animation: ds-orb-pulse 8s ease-in-out infinite alternate;
+  }
+}
+@keyframes ds-orb-pulse {
+  from { transform: scale(1);    opacity: 0.85; }
+  to   { transform: scale(1.05); opacity: 1; }
 }
 
 /* --- ElevenLabs-flavoured 3-bar waveform for the voice button --- */

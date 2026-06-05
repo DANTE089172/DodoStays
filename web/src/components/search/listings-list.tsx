@@ -124,7 +124,10 @@ export function ListingsList({ items, highlightId, onCardHover }: Props) {
                         width: 6,
                         height: 6,
                         borderRadius: "50%",
-                        backgroundColor: "var(--color-accent)",
+                        // Drive-time is anchor-related wayfinding, so it
+                        // tracks the cobalt-secondary anchor-pin color
+                        // rather than the flamboyant status-stamp accent.
+                        backgroundColor: "var(--color-secondary)",
                         mr: 0.75,
                       }}
                     />

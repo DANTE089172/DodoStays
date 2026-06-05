@@ -49,14 +49,52 @@ export default function Home() {
       <SiteHeader />
 
       {/* Hero — Cinema Maurice: full-bleed photograph, warm-graded with grain,
-          on a near-black surface so the AI bar reads as a luminous centerpiece */}
-      <section className="surface-cinema relative">
-        <div className="relative h-[80vh] min-h-[560px] w-full overflow-hidden">
+          on a near-black surface.  The Peach Orb sits behind everything as a
+          luminous radial gradient bleeding off the bottom-right edge, so the
+          AI search bar reads as a centerpiece lit from below.
+
+          Layering (z-index):
+            0  ds-peach-orb         (decorative glow, pointer-events: none)
+            1  hero photo
+            2  GrainOverlay + editorial gradient overlay
+           10  headline + AI search wrapper (takes interaction) */}
+      <section
+        className="surface-cinema relative"
+        style={{ position: "relative", overflow: "hidden" }}
+      >
+        {/* Peach Orb — radial-gradient halo bleeding off the bottom-right.
+            aria-hidden because it carries no semantic meaning; pointer-events
+            none so it never intercepts interaction with the search bar. */}
+        <div
+          aria-hidden
+          className="ds-peach-orb"
+          style={{
+            position: "absolute",
+            right: "-15%",
+            bottom: "-25%",
+            width: "70vw",
+            height: "70vw",
+            maxWidth: 900,
+            maxHeight: 900,
+            borderRadius: "50%",
+            background: "var(--peach-glow)",
+            boxShadow: "var(--orb-shadow)",
+            filter: "blur(20px)",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
+
+        <div
+          className="relative h-[80vh] min-h-[560px] w-full overflow-hidden"
+          style={{ zIndex: 1 }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={HERO_IMAGE}
             alt="A Mauritian beach with mountains beyond"
             className="photo-warm h-full w-full object-cover"
+            style={{ filter: "contrast(1.05) saturate(1.1) hue-rotate(-2deg) brightness(0.9)" }}
             onError={(e) => {
               const img = e.currentTarget;
               if (img.src !== HERO_FALLBACK) img.src = HERO_FALLBACK;
@@ -64,7 +102,7 @@ export default function Home() {
           />
           <GrainOverlay />
           <div aria-hidden="true" className="absolute inset-0 editorial-gradient" />
-          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-44 sm:px-12 lg:px-20 lg:pb-52">
+          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-44 sm:px-12 lg:px-20 lg:pb-52" style={{ zIndex: 10 }}>
             <div className="max-w-2xl">
               <h1 className="font-display text-[clamp(3.5rem,9vw,6rem)] leading-[0.95] tracking-[-0.02em] text-[var(--color-sand)]">
                 Mauritius.
@@ -80,9 +118,10 @@ export default function Home() {
         </div>
 
         {/* AI search centerpiece — overlaps the hero bottom, sits dead-center.
-            The hero-search-wrapper layers a luminous terracotta halo on the
-            existing AiSearchBar without forking the component. */}
-        <div className="absolute inset-x-0 -bottom-20 px-6 sm:px-10">
+            The hero-search-wrapper layers a luminous peach halo on the
+            existing AiSearchBar without forking the component.  zIndex 10
+            keeps it above the orb + photo + gradient overlay. */}
+        <div className="absolute inset-x-0 -bottom-20 px-6 sm:px-10" style={{ zIndex: 10 }}>
           <div className="mx-auto w-full max-w-3xl">
             <div className="hero-search-wrapper">
               <AiSearchBar variant="hero" />
@@ -174,7 +213,10 @@ export default function Home() {
           </div>
           <Link
             href="/listings"
-            className="hidden text-sm text-[var(--color-primary)] underline underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-accent)] sm:inline"
+            /* "All stays" is a navigation link; deeper-cobalt secondary
+               reads better than peach-on-sand for body-text underlines.
+               Hover steps up to peach primary for a warm lift. */
+            className="hidden text-sm text-[var(--color-secondary)] underline underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-primary)] sm:inline"
           >
             All stays
           </Link>
@@ -200,7 +242,7 @@ export default function Home() {
                 <p className="font-script text-xl text-[var(--color-ochre)]">
                   {f.region}
                 </p>
-                <h3 className="mt-1 font-display text-2xl leading-[1.15] tracking-[-0.01em] text-[var(--color-foreground)] transition-colors duration-200 ease-out group-hover:text-[var(--color-accent)]">
+                <h3 className="mt-1 font-display text-2xl leading-[1.15] tracking-[-0.01em] text-[var(--color-foreground)] transition-colors duration-200 ease-out group-hover:text-[var(--color-primary)]">
                   {f.title}
                 </h3>
                 <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
@@ -226,7 +268,7 @@ export default function Home() {
             </p>
             <h2 className="mt-2 max-w-2xl font-display text-4xl leading-[1.1] tracking-[-0.02em] sm:text-5xl">
               Hosting in Mauritius?{" "}
-              <span className="italic text-[var(--color-accent)]">
+              <span className="italic text-[var(--color-primary)]">
                 Reach guests who actually want to come here.
               </span>
             </h2>
@@ -237,7 +279,9 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap gap-3 md:justify-end">
             <Link href="/signup">
-              <Button variant="accent" size="lg" className="shadow-block">
+              {/* Default variant = peach primary now; accent variant is
+                  reserved for status stamps, not CTAs. */}
+              <Button size="lg" className="shadow-block">
                 List your place
               </Button>
             </Link>

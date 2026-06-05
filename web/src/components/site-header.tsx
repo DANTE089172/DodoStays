@@ -15,7 +15,7 @@ export function SiteHeader() {
         <nav className="flex items-center gap-1 sm:gap-4">
           <Link
             href="/listings"
-            className="hidden sm:inline-flex h-9 items-center px-2 text-sm text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+            className="hidden sm:inline-flex h-9 items-center px-2 text-sm text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-primary)]"
           >
             Browse
           </Link>
@@ -23,7 +23,7 @@ export function SiteHeader() {
             <>
               <Link
                 href="/bookings"
-                className="hidden sm:inline-flex h-9 items-center px-2 text-sm text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+                className="hidden sm:inline-flex h-9 items-center px-2 text-sm text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-primary)]"
               >
                 Bookings
               </Link>
@@ -37,7 +37,10 @@ export function SiteHeader() {
             <>
               <Link
                 href="/signin"
-                className="hidden sm:inline-flex h-9 items-center px-2 text-sm text-[var(--color-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+                /* "Sign in" is the canonical secondary action — takes the
+                   downgraded cobalt secondary token, not the peach primary
+                   nor the flamboyant status accent. */
+                className="hidden sm:inline-flex h-9 items-center px-2 text-sm text-[var(--color-secondary)] transition-colors duration-200 ease-out hover:text-[var(--color-primary)]"
               >
                 Sign in
               </Link>

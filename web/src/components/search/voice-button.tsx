@@ -25,10 +25,12 @@ export function VoiceButton({ size = "large" }: Props) {
             borderRadius: "6px",
             border: "1.5px solid var(--color-border)",
             backgroundColor: "var(--color-card)",
-            color: "var(--color-accent)",
+            // Voice button is a brand element (not a status stamp), so it
+            // takes the new peach primary rather than the flamboyant accent.
+            color: "var(--color-primary)",
             "&:hover": { backgroundColor: "var(--color-muted)" },
             "&.Mui-disabled": {
-              color: "var(--color-accent)",
+              color: "var(--color-primary)",
               border: "1.5px solid var(--color-border)",
               backgroundColor: "var(--color-card)",
             },
