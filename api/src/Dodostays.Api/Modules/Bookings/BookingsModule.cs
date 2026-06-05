@@ -47,6 +47,8 @@ public static class BookingsModule
         app.MapAddExternalFeed();
         app.MapRemoveExternalFeed();
         app.MapListExternalFeeds();
+        app.MapGetIcalFeed();
+        app.MapGetMyIcalUrl();
         return app;
     }
 }
