@@ -1,77 +1,94 @@
 "use client";
 
 import Link from "next/link";
+import { Search, Calendar, Heart, ChevronDown } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { Button } from "@/components/ui/button";
-import { FlagDivider } from "@/components/decorations/flag-divider";
-import { WaveDivider } from "@/components/decorations/wave-divider";
-import { GrainOverlay } from "@/components/decorations/grain-overlay";
-import { BatikPattern } from "@/components/decorations/batik-pattern";
 import { AiSearchBar } from "@/components/search/ai-search-bar";
 import { ExampleQueries } from "@/components/search/example-queries";
+import { Section } from "@/components/marketing/section";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
+import { Lede } from "@/components/marketing/lede";
+import { pillButtonClasses } from "@/components/marketing/pill-button";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1573548842355-73bb50e50323?w=2400&q=80";
 const HERO_FALLBACK =
   "https://images.unsplash.com/photo-1571396726928-7bd1cae40f0f?w=2400&q=80";
 
-const FEATURED = [
+const REGIONS = [
   {
-    title: "A coral villa above Tamarin Bay",
-    region: "Tamarin",
+    name: "Tamarin",
+    blurb: "Sunset surf town with a quiet, slow rhythm.",
     image:
       "https://images.unsplash.com/photo-1505881502353-a1986add3762?w=1600&q=80",
     href: "/listings?region=tamarin",
-    priceFrom: 8500,
   },
   {
-    title: "Old colonial house, lagoon at the door",
-    region: "Mahebourg",
+    name: "Mahebourg",
+    blurb: "Old colonial harbour, lagoon at the door.",
     image:
       "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1600&q=80",
     href: "/listings?region=mahebourg",
-    priceFrom: 4200,
   },
   {
-    title: "A small apartment in Flic en Flac",
-    region: "Flic en Flac",
+    name: "Flic en Flac",
+    blurb: "Long west-coast beach, walking distance to everything.",
     image:
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1600&q=80",
     href: "/listings?region=flic-en-flac",
-    priceFrom: 2800,
+  },
+  {
+    name: "Belle Mare",
+    blurb: "Powder-fine east-coast sand, turquoise lagoon.",
+    image:
+      "https://images.unsplash.com/photo-1571396726928-7bd1cae40f0f?w=1600&q=80",
+    href: "/listings?region=belle-mare",
+  },
+];
+
+const HOW_STEPS = [
+  {
+    n: "01",
+    title: "Search",
+    icon: Search,
+    body:
+      "Tell us where, when, and what kind of stay. Real prices in rupees, no surge surprises.",
+  },
+  {
+    n: "02",
+    title: "Book",
+    icon: Calendar,
+    body:
+      "Talk to KYC-verified hosts directly, then confirm in a few taps. Instant book where it matters.",
+  },
+  {
+    n: "03",
+    title: "Stay",
+    icon: Heart,
+    body:
+      "Local advice on which beach to visit Tuesday and where to find the best dholl puri — from people who live here.",
   },
 ];
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="flex min-h-screen flex-col bg-[var(--color-background)]">
       <SiteHeader />
 
-      {/* Hero — Cinema Maurice: full-bleed photograph, warm-graded with grain,
-          on a near-black surface.  The Peach Orb sits behind everything as a
-          luminous radial gradient bleeding off the bottom-right edge, so the
-          AI search bar reads as a centerpiece lit from below.
-
-          Layering (z-index):
-            0  ds-peach-orb         (decorative glow, pointer-events: none)
-            1  hero photo
-            2  GrainOverlay + editorial gradient overlay
-           10  headline + AI search wrapper (takes interaction) */}
+      {/* ------------------------------------------------------------------ */}
+      {/* HERO — full-bleed photo on cinema surface, peach orb signature      */}
+      {/* ------------------------------------------------------------------ */}
       <section
-        className="surface-cinema relative"
-        style={{ position: "relative", overflow: "hidden" }}
+        className="surface-cinema relative isolate overflow-hidden"
+        aria-label="Hero"
       >
-        {/* Peach Orb — radial-gradient halo bleeding off the bottom-right.
-            aria-hidden because it carries no semantic meaning; pointer-events
-            none so it never intercepts interaction with the search bar. */}
+        {/* Peach orb — the one signature ornament on the page. */}
         <div
           aria-hidden
-          className="ds-peach-orb"
+          className="ds-peach-orb absolute right-[-15%] bottom-[-25%] z-0 hidden md:block"
           style={{
-            position: "absolute",
-            right: "-15%",
-            bottom: "-25%",
             width: "70vw",
             height: "70vw",
             maxWidth: 900,
@@ -81,218 +98,214 @@ export default function Home() {
             boxShadow: "var(--orb-shadow)",
             filter: "blur(20px)",
             pointerEvents: "none",
-            zIndex: 0,
           }}
         />
 
-        <div
-          className="relative h-[80vh] min-h-[560px] w-full overflow-hidden"
-          style={{ zIndex: 1 }}
-        >
+        {/* Background photograph + ink overlay (no grain, no batik). */}
+        <div className="absolute inset-0 z-[1]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={HERO_IMAGE}
-            alt="A Mauritian beach with mountains beyond"
-            className="photo-warm h-full w-full object-cover"
-            style={{ filter: "contrast(1.05) saturate(1.1) hue-rotate(-2deg) brightness(0.9)" }}
+            alt="A Mauritian coastline with mountains beyond"
+            className="h-full w-full object-cover"
             onError={(e) => {
               const img = e.currentTarget;
               if (img.src !== HERO_FALLBACK) img.src = HERO_FALLBACK;
             }}
           />
-          <GrainOverlay />
-          <div aria-hidden="true" className="absolute inset-0 editorial-gradient" />
-          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-44 sm:px-12 lg:px-20 lg:pb-52" style={{ zIndex: 10 }}>
-            <div className="max-w-2xl">
-              <h1 className="font-display text-[clamp(3.5rem,9vw,6rem)] leading-[0.95] tracking-[-0.02em] text-[var(--color-sand)]">
-                Mauritius.
-              </h1>
-              <p className="mt-3 font-script text-3xl italic text-[var(--color-ochre)] sm:text-4xl">
-                lakaz pour vous.
-              </p>
-              <p className="mt-6 max-w-lg text-base leading-relaxed text-[var(--color-sand)]/85 sm:text-lg">
-                Real prices. Instant book. Hosts you can call by name.
-              </p>
-            </div>
-          </div>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[var(--color-ink)]/45"
+          />
         </div>
 
-        {/* AI search centerpiece — overlaps the hero bottom, sits dead-center.
-            The hero-search-wrapper layers a luminous peach halo on the
-            existing AiSearchBar without forking the component.  zIndex 10
-            keeps it above the orb + photo + gradient overlay. */}
-        <div className="absolute inset-x-0 -bottom-20 px-6 sm:px-10" style={{ zIndex: 10 }}>
-          <div className="mx-auto w-full max-w-3xl">
+        {/* Editorial column — eyebrow, headline, lede, search */}
+        <div className="relative z-10 flex min-h-[88vh] w-full flex-col items-center justify-center px-6 py-[var(--section-py-lg)] text-center">
+          <Eyebrow tone="peach">The Indian Ocean. Mauritius.</Eyebrow>
+          <DisplayHeading
+            level={1}
+            className="mt-6 max-w-3xl text-[var(--color-foreground)]"
+          >
+            Find your kind of <span className="italic">Mauritius</span>.
+          </DisplayHeading>
+          <Lede className="mt-6 text-[var(--color-foreground)]/85">
+            Curated stays from Black River to Belle Mare. Hosted by people who
+            know the island.
+          </Lede>
+
+          <div className="mt-10 w-full max-w-3xl">
             <div className="hero-search-wrapper">
               <AiSearchBar variant="hero" />
             </div>
             <ExampleQueries />
           </div>
         </div>
-      </section>
 
-      {/* Spacer so the next section accounts for the search overlap */}
-      <div className="h-40 sm:h-48" aria-hidden />
-
-      {/* Flag divider between hero and How it works */}
-      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
-        <FlagDivider />
-      </div>
-
-      {/* How DodoStays works — numbered editorial w/ batik bg */}
-      <section className="relative bg-[var(--color-card)]">
-        <BatikPattern />
-        <div className="relative mx-auto w-full max-w-7xl px-6 py-28 sm:px-10 lg:py-36">
-          <div className="grid gap-12 md:grid-cols-[1fr_2fr] md:gap-20">
-            <div>
-              <p className="font-script text-2xl text-[var(--color-ochre)]">
-                kifer nou la
-              </p>
-              <h2 className="mt-2 font-display text-4xl leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-                How DodoStays works.
-              </h2>
-              <p className="mt-6 max-w-md text-base leading-relaxed text-[var(--color-muted-foreground)]">
-                We are not a global platform. We are a small team in Quatre
-                Bornes who built a booking site for the island we live on.
-              </p>
-            </div>
-            <ol className="grid gap-12 sm:grid-cols-3">
-              {[
-                {
-                  step: "01",
-                  title: "Honest listings.",
-                  body:
-                    "Real photos and real prices in rupees. No surge pricing, no foreign-currency surprises at checkout.",
-                },
-                {
-                  step: "02",
-                  title: "Verified hosts.",
-                  body:
-                    "Every host is KYC-verified. Read past guest reviews and chat directly before you confirm.",
-                },
-                {
-                  step: "03",
-                  title: "Local advice.",
-                  body:
-                    "Tips on which beach to visit Tuesday, where to find dholl puri, and which reef to snorkel — from people who actually live here.",
-                },
-              ].map((item) => (
-                <li key={item.step}>
-                  <p className="font-display text-7xl leading-none tracking-[-0.04em] text-[var(--color-ochre)]">
-                    {item.step}
-                  </p>
-                  <FlagDivider width="short" className="mt-3" />
-                  <h3 className="mt-5 font-display text-xl tracking-[-0.01em]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
-                    {item.body}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </div>
+        {/* Scroll indicator */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-6 z-10 flex justify-center text-[var(--color-foreground)]/60"
+        >
+          <ChevronDown className="h-5 w-5 animate-bounce" />
         </div>
       </section>
 
-      {/* Wave divider */}
-      <div className="mx-auto w-full max-w-7xl px-6 pt-20 sm:px-10">
-        <WaveDivider />
-      </div>
+      {/* ------------------------------------------------------------------ */}
+      {/* SECTION 2 — How DodoStays works (cream)                             */}
+      {/* ------------------------------------------------------------------ */}
+      <Section tone="cream" size="lg">
+        <div className="mx-auto max-w-3xl text-center">
+          <Eyebrow tone="peach">How it works</Eyebrow>
+          <DisplayHeading level={2} className="mt-5">
+            How DodoStays works.
+          </DisplayHeading>
+          <Lede className="mx-auto mt-6">
+            We are not a global platform. We are a small team in Quatre Bornes
+            who built a booking site for the island we live on.
+          </Lede>
+        </div>
 
-      {/* Featured stays — asymmetric editorial */}
-      <section className="mx-auto w-full max-w-7xl px-6 pb-28 sm:px-10 lg:pb-36">
-        <div className="mb-14 flex items-end justify-between">
-          <div>
-            <p className="font-script text-2xl text-[var(--color-ochre)]">
-              bann lakaz nou kontan
-            </p>
-            <h2 className="mt-2 font-display text-4xl tracking-[-0.02em] sm:text-5xl">
-              A few places we love.
-            </h2>
+        <ol className="mt-20 grid gap-12 sm:grid-cols-3 sm:gap-10">
+          {HOW_STEPS.map(({ n, title, icon: Icon, body }) => (
+            <li key={n} className="text-center">
+              <Icon
+                className="mx-auto h-6 w-6 text-[var(--color-primary)]"
+                aria-hidden
+              />
+              <p
+                className="ds-display-lg mt-6 text-[var(--color-primary)]"
+                aria-hidden
+              >
+                {n}
+              </p>
+              <h3 className="ds-display-sm mt-4 text-[var(--color-foreground)]">
+                {title}
+              </h3>
+              <p className="mx-auto mt-4 max-w-xs text-[15px] leading-relaxed text-[var(--color-muted-foreground)]">
+                {body}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* SECTION 3 — Stays curated by region (sand)                          */}
+      {/* ------------------------------------------------------------------ */}
+      <Section tone="sand" size="lg">
+        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <div className="max-w-xl">
+            <Eyebrow tone="peach">Explore the island</Eyebrow>
+            <DisplayHeading level={2} className="mt-5">
+              Stays curated by region.
+            </DisplayHeading>
           </div>
           <Link
             href="/listings"
-            /* "All stays" is a navigation link; deeper-cobalt secondary
-               reads better than peach-on-sand for body-text underlines.
-               Hover steps up to peach primary for a warm lift. */
-            className="hidden text-sm text-[var(--color-secondary)] underline underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-primary)] sm:inline"
+            className="text-[14px] tracking-[0.04em] text-[var(--color-foreground)] underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-primary)] hover:underline"
           >
-            All stays
+            View all stays
           </Link>
         </div>
-        <div className="grid gap-x-10 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
-          {FEATURED.map((f, i) => (
+
+        <div className="mt-16 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+          {REGIONS.map((r) => (
             <Link
-              key={f.title}
-              href={f.href}
-              className={`group block ${
-                i === 0 ? "md:col-span-2 lg:col-span-2" : ""
-              }`}
+              key={r.name}
+              href={r.href}
+              className="group block"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-muted)]">
+              <div className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--color-border)] bg-[var(--color-muted)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={f.image}
-                  alt={f.title}
-                  className="photo-warm h-full w-full object-cover transition-opacity duration-200 ease-out group-hover:opacity-95"
+                  src={r.image}
+                  alt={`${r.name}, Mauritius`}
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                 />
               </div>
-              <div className="mt-5 max-w-md">
-                <p className="font-script text-xl text-[var(--color-ochre)]">
-                  {f.region}
-                </p>
-                <h3 className="mt-1 font-display text-2xl leading-[1.15] tracking-[-0.01em] text-[var(--color-foreground)] transition-colors duration-200 ease-out group-hover:text-[var(--color-primary)]">
-                  {f.title}
-                </h3>
-                <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
-                  From{" "}
-                  <span className="font-medium text-[var(--color-foreground)]">
-                    MUR {f.priceFrom.toLocaleString()}
-                  </span>{" "}
-                  / night
-                </p>
-              </div>
+              <h3 className="ds-display-sm mt-5 text-[var(--color-foreground)] transition-colors duration-200 ease-out group-hover:text-[var(--color-primary)]">
+                {r.name}
+              </h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-[var(--color-muted-foreground)]">
+                {r.blurb}
+              </p>
+              <span className="mt-3 inline-block text-[13px] tracking-[0.08em] text-[var(--color-primary)]">
+                View stays &rarr;
+              </span>
             </Link>
           ))}
         </div>
-      </section>
+      </Section>
 
-      {/* Hosting CTA — left-aligned, flag-divider trim */}
-      <section className="border-t-[1.5px] border-[var(--color-ochre)] bg-[var(--color-muted)]">
-        <FlagDivider />
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-24 sm:px-10 md:grid-cols-[2fr_1fr] md:items-end">
+      {/* ------------------------------------------------------------------ */}
+      {/* SECTION 4 — Why hosts choose us (cinema)                            */}
+      {/* ------------------------------------------------------------------ */}
+      <Section tone="ink" size="lg">
+        <div className="grid items-center gap-16 md:grid-cols-2 md:gap-20">
           <div>
-            <p className="font-script text-2xl text-[var(--color-ochre)]">
-              ou ena enn lakaz?
+            <Eyebrow tone="peach">For hosts</Eyebrow>
+            <DisplayHeading level={2} className="mt-5 text-[var(--color-foreground)]">
+              Hosting in Mauritius? Reach guests who actually want to come here.
+            </DisplayHeading>
+            <Lede className="mt-6 text-[var(--color-foreground)]/80">
+              Set your own prices in rupees. Keep your direct guests. Pay one
+              flat commission. No fine print, no foreign-currency surprises at
+              checkout.
+            </Lede>
+            <div className="mt-10">
+              <Link
+                href="/signup"
+                className={pillButtonClasses({ variant: "ghost", size: "lg" })}
+              >
+                Become a host &rarr;
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center md:text-left">
+            <p
+              className="font-display text-[clamp(7rem,18vw,12rem)] leading-none tracking-[-0.04em] text-[var(--color-primary)]"
+              aria-hidden
+            >
+              7%
             </p>
-            <h2 className="mt-2 max-w-2xl font-display text-4xl leading-[1.1] tracking-[-0.02em] sm:text-5xl">
-              Hosting in Mauritius?{" "}
-              <span className="italic text-[var(--color-primary)]">
-                Reach guests who actually want to come here.
-              </span>
-            </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--color-muted-foreground)]">
-              Set your own prices in MUR. Keep your direct guests. Pay one
-              flat commission. No fine print.
+            <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[var(--color-foreground)]/70 md:max-w-sm">
+              Our flat commission rate. No tiered pricing, no surge fees, no
+              category-specific cuts.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3 md:justify-end">
-            <Link href="/signup">
-              {/* Default variant = peach primary now; accent variant is
-                  reserved for status stamps, not CTAs. */}
-              <Button size="lg" className="shadow-block">
-                List your place
-              </Button>
+        </div>
+      </Section>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* SECTION 5 — Footer CTA (cream, italic close)                        */}
+      {/* ------------------------------------------------------------------ */}
+      <Section tone="cream" size="lg" width="narrow">
+        <div className="text-center">
+          <Eyebrow tone="peach">Ready when you are</Eyebrow>
+          <DisplayHeading level={2} italic className="mt-5">
+            Stay where the sea meets the road.
+          </DisplayHeading>
+          <Lede className="mx-auto mt-6">
+            A small Mauritian booking site, built for people who want to know
+            who they&apos;re renting from.
+          </Lede>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/listings"
+              className={pillButtonClasses({ variant: "solid", size: "lg" })}
+            >
+              Start exploring
             </Link>
-            <Link href="/listings">
-              <Button variant="outline" size="lg">
-                Browse stays
-              </Button>
+            <Link
+              href="/signup"
+              className={pillButtonClasses({ variant: "ghost", size: "lg" })}
+            >
+              Become a host
             </Link>
           </div>
         </div>
-      </section>
+      </Section>
 
       <SiteFooter />
     </main>
