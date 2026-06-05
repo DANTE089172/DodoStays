@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Box, Button, IconButton, MenuItem, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { Alert, MenuItem, Select, Stack, TextField } from "@mui/material";
 import { addFeed, listFeeds, removeFeed, type ExternalFeed } from "@/lib/ical";
 import { useAuth } from "@/lib/auth-context";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { PillButton, pillButtonClasses } from "@/components/marketing/pill-button";
+import { cn } from "@/lib/utils";
 
 interface Props { listingId: string; }
 
@@ -43,53 +45,94 @@ export function ExternalFeedList({ listingId }: Props) {
   }
 
   return (
-    <Box>
-      <Typography sx={{ fontFamily: "var(--font-fraunces)", fontWeight: 600, fontSize: "1.25rem", mb: 0.5 }}>
+    <div>
+      <Eyebrow tone="muted">External calendars</Eyebrow>
+      <h3 className="mt-2 font-[var(--font-display)] text-xl font-semibold leading-tight">
         External calendars (iCal)
-      </Typography>
-      <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.875rem", color: "var(--color-muted-foreground)", mb: 2 }}>
+      </h3>
+      <p className="mb-4 mt-2 text-sm text-[var(--color-muted-foreground)]">
         Paste your Airbnb / Booking.com iCal URL here so external bookings block these dates on DodoStays. We sync every 15 minutes.
-      </Typography>
+      </p>
 
       <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ mb: 2 }}>
-        <Select value={source} onChange={(e) => setSource(e.target.value as ExternalFeed["source"])} size="small" sx={{ minWidth: 140 }}>
+        <Select
+          value={source}
+          onChange={(e) => setSource(e.target.value as ExternalFeed["source"])}
+          size="small"
+          sx={{ minWidth: 140, backgroundColor: "var(--color-card)" }}
+        >
           <MenuItem value="Airbnb">Airbnb</MenuItem>
           <MenuItem value="Booking.com">Booking.com</MenuItem>
           <MenuItem value="Vrbo">Vrbo</MenuItem>
           <MenuItem value="Other">Other</MenuItem>
         </Select>
-        <TextField size="small" fullWidth placeholder="https://www.airbnb.com/calendar/ical/..." value={url} onChange={(e) => setUrl(e.target.value)} />
-        <Button onClick={add} disabled={busy || !url.trim()} variant="contained" color="primary">Add</Button>
+        <TextField
+          size="small"
+          fullWidth
+          placeholder="https://www.airbnb.com/calendar/ical/..."
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          sx={{ "& .MuiInputBase-root": { backgroundColor: "var(--color-card)" } }}
+        />
+        <PillButton onClick={add} disabled={busy || !url.trim()} variant="solid" size="sm">
+          Add
+        </PillButton>
       </Stack>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-      {feeds === null && <Typography sx={{ color: "var(--color-muted-foreground)" }}>Loading…</Typography>}
+      {feeds === null && (
+        <p className="text-sm text-[var(--color-muted-foreground)]">Loading…</p>
+      )}
       {feeds !== null && feeds.length === 0 && (
-        <Typography sx={{ color: "var(--color-muted-foreground)", fontFamily: "var(--font-plex)", fontSize: "0.875rem" }}>
+        <p className="text-sm text-[var(--color-muted-foreground)]">
           No external calendars yet.
-        </Typography>
+        </p>
       )}
       {feeds !== null && feeds.length > 0 && (
-        <Stack spacing={1}>
+        <ul className="flex flex-col gap-3">
           {feeds.map((f) => (
-            <Box key={f.id} sx={{ display: "flex", alignItems: "center", gap: 1, p: 1.5, border: "1.5px solid var(--color-border)", borderRadius: "6px", backgroundColor: "var(--color-card)" }}>
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography sx={{ fontFamily: "var(--font-plex)", fontWeight: 600, fontSize: "0.875rem" }}>{f.source}</Typography>
-                <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.75rem", color: "var(--color-muted-foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <li
+              key={f.id}
+              className="flex items-center gap-3 rounded-lg border border-[color-mix(in_srgb,var(--color-foreground)_10%,transparent)] bg-[var(--color-card)] p-3"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="font-[var(--font-sans)] text-sm font-semibold">
+                  {f.source}
+                </p>
+                <p className="truncate text-xs text-[var(--color-muted-foreground)]">
                   {f.url}
-                </Typography>
-                <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.75rem", color: f.lastError ? "var(--color-destructive)" : "var(--color-muted-foreground)" }}>
-                  {f.lastError ? `Error: ${f.lastError}` : f.lastSyncedAt ? `Last synced: ${new Date(f.lastSyncedAt).toLocaleString()}` : "Pending first sync"}
-                </Typography>
-              </Box>
-              <Tooltip title="Remove feed">
-                <IconButton onClick={() => remove(f.id)} aria-label="remove" size="small"><DeleteOutlineIcon /></IconButton>
-              </Tooltip>
-            </Box>
+                </p>
+                <p
+                  className={cn(
+                    "text-xs",
+                    f.lastError
+                      ? "text-[var(--color-destructive)]"
+                      : "text-[var(--color-muted-foreground)]",
+                  )}
+                >
+                  {f.lastError
+                    ? `Error: ${f.lastError}`
+                    : f.lastSyncedAt
+                      ? `Last synced: ${new Date(f.lastSyncedAt).toLocaleString()}`
+                      : "Pending first sync"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => remove(f.id)}
+                aria-label="remove"
+                className={cn(
+                  pillButtonClasses({ variant: "ghost", size: "sm" }),
+                  "px-3",
+                )}
+              >
+                Remove
+              </button>
+            </li>
           ))}
-        </Stack>
+        </ul>
       )}
-    </Box>
+    </div>
   );
 }

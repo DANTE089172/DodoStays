@@ -3,18 +3,29 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Stack } from "@mui/material";
 import { useAuth } from "@/lib/auth-context";
-import { deletePhoto, getMyListings, publishListing, unpublishListing, updateListing, uploadPhoto, type Listing } from "@/lib/listings";
+import {
+  deletePhoto,
+  getMyListings,
+  publishListing,
+  unpublishListing,
+  updateListing,
+  uploadPhoto,
+  type Listing,
+} from "@/lib/listings";
 import { ListingForm } from "../../listing-form";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FlagDivider } from "@/components/decorations/flag-divider";
-import { Stack } from "@mui/material";
 import { ExternalFeedList } from "@/components/bookings/external-feed-list";
 import { CopyIcalUrlCard } from "@/components/bookings/copy-ical-url-card";
+import { Section } from "@/components/marketing/section";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
+import { PillButton, pillButtonClasses } from "@/components/marketing/pill-button";
+import { cn } from "@/lib/utils";
 
 export default function EditListingPage() {
   const router = useRouter();
@@ -37,13 +48,15 @@ export default function EditListingPage() {
       .catch((e) => setError((e as Error).message));
   }, [accessToken, id]);
 
-  if (loading || !user)
+  if (loading || !user) {
     return (
       <main className="flex min-h-screen items-center justify-center p-8 text-sm text-[var(--color-muted-foreground)]">
         Loading…
       </main>
     );
-  if (!listing)
+  }
+
+  if (!listing) {
     return (
       <>
         <SiteHeader />
@@ -52,6 +65,7 @@ export default function EditListingPage() {
         </main>
       </>
     );
+  }
 
   async function onPhoto(file: File) {
     if (!accessToken) return;
@@ -92,174 +106,172 @@ export default function EditListingPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-20">
+
+      <Section tone="cream" size="sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/host/listings"
-            className="text-sm text-[var(--color-muted-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+            className="text-sm text-[var(--color-muted-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-foreground)]"
           >
             &larr; Back to my listings
           </Link>
           <span
-            className={`inline-flex items-center border-[1.5px] px-2.5 font-script text-base ${
+            className={cn(
+              "ds-eyebrow inline-flex items-center rounded-full border-[1.5px] px-2.5 py-1",
               listing.status === "Published"
                 ? "border-[var(--color-cane)] text-[var(--color-cane)]"
-                : "border-[var(--color-ochre)] text-[var(--color-ochre)]"
-            }`}
+                : "border-[var(--color-ochre)] text-[var(--color-ochre)]",
+            )}
           >
             {listing.status}
           </span>
         </div>
 
-        <div className="mt-10 flex flex-wrap items-end justify-between gap-6 pb-10">
-          <div>
-            <p className="font-script text-2xl text-[var(--color-ochre)]">
-              edit lakaz
-            </p>
-            <h1 className="mt-1 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
+        <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <Eyebrow>Edit listing</Eyebrow>
+            <DisplayHeading level={2} className="mt-3 break-words">
               {listing.title || "Untitled listing"}
-            </h1>
-            <p className="mt-3 font-script text-lg text-[var(--color-ochre)]">
-              {listing.region} · {listing.propertyType}
+            </DisplayHeading>
+            <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
+              {listing.region} &middot; {listing.propertyType}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link href={`/listings/${listing.id}`}>
-              <Button variant="outline">View public</Button>
+            <Link
+              href={`/listings/${listing.id}`}
+              className={pillButtonClasses({ variant: "ghost", size: "sm" })}
+            >
+              View public
             </Link>
-            <Button onClick={togglePublish} className="shadow-block">
+            <PillButton onClick={togglePublish} variant="solid" size="sm">
               {listing.status === "Published" ? "Unpublish" : "Publish"}
-            </Button>
+            </PillButton>
           </div>
         </div>
-        <FlagDivider />
+      </Section>
 
+      <main className="mx-auto w-full max-w-5xl px-6 py-10 sm:px-10 sm:py-14">
         {error && (
           <p
             role="alert"
-            className="mt-6 border-[1.5px] border-[var(--color-destructive)]/40 bg-[var(--color-destructive)]/5 px-4 py-3 text-sm text-[var(--color-destructive)]"
+            className="mb-6 rounded-md border border-[color-mix(in_srgb,var(--color-destructive)_40%,transparent)] bg-[color-mix(in_srgb,var(--color-destructive)_5%,transparent)] px-4 py-3 text-sm text-[var(--color-destructive)]"
           >
             {error}
           </p>
         )}
 
         {/* Photos gallery editor */}
-        <section className="mt-14 space-y-8">
-          <FlagDivider />
-          <div className="grid gap-8 md:grid-cols-[260px_1fr] md:gap-12">
-            <div>
-              <p className="font-script text-2xl italic text-[var(--color-ochre)]">
-                bann foto
-              </p>
-              <h2 className="mt-1 font-display text-3xl tracking-[-0.01em]">
-                Photos
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
-                The first photo is the cover guests see on browse pages. Add
-                at least one before you publish.
-              </p>
-            </div>
-            <div>
-              {listing.photos.length === 0 ? (
-                <div className="mb-6 border-[1.5px] border-dashed border-[var(--color-ochre)] bg-[var(--color-muted)]/40 px-6 py-16 text-center">
-                  <p className="font-display text-xl">No photos yet.</p>
-                  <p className="mt-2 text-xs text-[var(--color-muted-foreground)]">
-                    JPEG, PNG, WebP or HEIC.
-                  </p>
-                </div>
-              ) : (
-                <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  {listing.photos.map((p, i) => (
-                    <figure
-                      key={p.id}
-                      className="group relative aspect-[4/3] overflow-hidden border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-muted)]"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={p.publicUrl}
-                        alt={p.caption ?? ""}
-                        className="photo-warm h-full w-full object-cover transition-opacity duration-200 ease-out group-hover:opacity-90"
-                      />
-                      {i === 0 && (
-                        <span className="pointer-events-none absolute left-2 top-2 inline-flex items-center bg-[var(--color-flamboyant)] px-2 py-0.5 font-script text-base text-[var(--color-sand)]">
-                          Cover
-                        </span>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removePhoto(p.id)}
-                        className="absolute right-2 top-2 inline-flex h-7 items-center justify-center bg-[var(--color-card)]/95 px-2.5 font-script text-base text-[var(--color-flamboyant)] opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 focus-visible:opacity-100"
-                        aria-label="Remove photo"
-                      >
-                        remove
-                      </button>
-                      {p.caption && (
-                        <figcaption className="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-[var(--color-foreground)]/75 to-transparent px-3 py-2 text-xs text-[var(--color-sand)]">
-                          {p.caption}
-                        </figcaption>
-                      )}
-                    </figure>
-                  ))}
-                </div>
-              )}
-
-              <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
-                <div className="space-y-2">
-                  <Label htmlFor="photo-caption">Caption (optional)</Label>
-                  <Input
-                    id="photo-caption"
-                    type="text"
-                    placeholder="Sunset over the lagoon"
-                    value={photoCaption}
-                    onChange={(e) => setPhotoCaption(e.target.value)}
-                  />
-                </div>
-                <label
-                  className={`inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-[2px] border-[1.5px] border-[var(--color-primary)] bg-transparent px-5 text-sm font-medium text-[var(--color-primary)] transition-colors duration-200 ease-out hover:bg-[var(--color-primary)] hover:text-[var(--color-sand)] ${uploading ? "pointer-events-none opacity-60" : ""}`}
-                >
-                  {uploading ? "Uploading…" : "Upload photo"}
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/heic"
-                    className="sr-only"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) onPhoto(f);
-                    }}
-                  />
-                </label>
+        <section className="space-y-6">
+          <header>
+            <Eyebrow tone="muted">Photos</Eyebrow>
+            <DisplayHeading level={3} className="mt-2">
+              Photos
+            </DisplayHeading>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+              The first photo is the cover guests see on browse pages. Add at
+              least one before you publish.
+            </p>
+          </header>
+          <div>
+            {listing.photos.length === 0 ? (
+              <div className="mb-6 rounded-lg border border-dashed border-[color-mix(in_srgb,var(--color-foreground)_20%,transparent)] bg-[color-mix(in_srgb,var(--color-muted)_40%,transparent)] px-6 py-16 text-center">
+                <p className="font-[var(--font-display)] text-xl font-semibold">
+                  No photos yet.
+                </p>
+                <p className="mt-2 text-xs text-[var(--color-muted-foreground)]">
+                  JPEG, PNG, WebP or HEIC.
+                </p>
               </div>
+            ) : (
+              <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {listing.photos.map((p, i) => (
+                  <figure
+                    key={p.id}
+                    className="group relative aspect-[4/3] overflow-hidden rounded-lg border border-[color-mix(in_srgb,var(--color-foreground)_10%,transparent)] bg-[var(--color-muted)]"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={p.publicUrl}
+                      alt={p.caption ?? ""}
+                      className="h-full w-full object-cover transition-opacity duration-200 ease-out group-hover:opacity-90"
+                    />
+                    {i === 0 && (
+                      <span className="ds-eyebrow pointer-events-none absolute left-2 top-2 inline-flex items-center rounded-full bg-[var(--color-primary)] px-2 py-1 text-[var(--color-primary-foreground)]">
+                        Cover
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(p.id)}
+                      className="ds-eyebrow absolute right-2 top-2 inline-flex h-7 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--color-card)_95%,transparent)] px-2.5 text-[var(--color-destructive)] opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 focus-visible:opacity-100"
+                      aria-label="Remove photo"
+                    >
+                      Remove
+                    </button>
+                    {p.caption && (
+                      <figcaption className="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-[var(--color-foreground)]/75 to-transparent px-3 py-2 text-xs text-[var(--color-sand)]">
+                        {p.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            )}
+
+            <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+              <div className="space-y-2">
+                <Label htmlFor="photo-caption">Caption (optional)</Label>
+                <Input
+                  id="photo-caption"
+                  type="text"
+                  placeholder="Sunset over the lagoon"
+                  value={photoCaption}
+                  onChange={(e) => setPhotoCaption(e.target.value)}
+                />
+              </div>
+              <label
+                className={cn(
+                  pillButtonClasses({ variant: "ghost", size: "md" }),
+                  "cursor-pointer",
+                  uploading && "pointer-events-none opacity-60",
+                )}
+              >
+                {uploading ? "Uploading…" : "Upload photo"}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/heic"
+                  className="sr-only"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) onPhoto(f);
+                  }}
+                />
+              </label>
             </div>
           </div>
         </section>
 
         {/* Channels — external iCal feeds */}
-        <section className="mt-14 space-y-8">
-          <FlagDivider />
-          <div className="grid gap-8 md:grid-cols-[260px_1fr] md:gap-12">
-            <div>
-              <p className="font-script text-2xl italic text-[var(--color-ochre)]">
-                ki kote li parey?
-              </p>
-              <h2 className="mt-1 font-display text-3xl tracking-[-0.01em]">
-                Channels
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
-                Sync your calendar with Airbnb, Booking.com and others so the
-                same dates stay blocked everywhere.
-              </p>
-            </div>
-            <div>
-              <Stack spacing={3}>
-                <CopyIcalUrlCard listingId={listing.id} />
-                <ExternalFeedList listingId={listing.id} />
-              </Stack>
-            </div>
-          </div>
+        <section className="mt-16 space-y-6">
+          <header>
+            <Eyebrow tone="muted">Channels</Eyebrow>
+            <DisplayHeading level={3} className="mt-2">
+              Channels
+            </DisplayHeading>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+              Sync your calendar with Airbnb, Booking.com and others so the
+              same dates stay blocked everywhere.
+            </p>
+          </header>
+          <Stack spacing={3}>
+            <CopyIcalUrlCard listingId={listing.id} />
+            <ExternalFeedList listingId={listing.id} />
+          </Stack>
         </section>
 
         {/* Details form */}
-        <section className="mt-20 border-t-[1.5px] border-[var(--color-ochre)] pt-14">
+        <section className="mt-16 border-t border-[color-mix(in_srgb,var(--color-foreground)_10%,transparent)] pt-12">
           <ListingForm
             submitLabel="Save changes"
             initial={{

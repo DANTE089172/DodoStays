@@ -8,7 +8,10 @@ import { createListing } from "@/lib/listings";
 import { ListingForm } from "../listing-form";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { FlagDivider } from "@/components/decorations/flag-divider";
+import { Section } from "@/components/marketing/section";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
+import { Lede } from "@/components/marketing/lede";
 
 export default function NewListingPage() {
   const router = useRouter();
@@ -18,47 +21,46 @@ export default function NewListingPage() {
     if (!loading && !user) router.replace("/signin");
   }, [loading, user, router]);
 
-  if (loading || !user)
+  if (loading || !user) {
     return (
       <main className="flex min-h-screen items-center justify-center p-8 text-sm text-[var(--color-muted-foreground)]">
         Loading…
       </main>
     );
+  }
 
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-20">
+
+      <Section tone="cream" size="sm">
         <Link
           href="/host/listings"
-          className="text-sm text-[var(--color-muted-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-accent)]"
+          className="text-sm text-[var(--color-muted-foreground)] transition-colors duration-200 ease-out hover:text-[var(--color-foreground)]"
         >
           &larr; Back to my listings
         </Link>
-        <div className="mt-10 max-w-3xl pb-10">
-          <p className="font-script text-2xl text-[var(--color-ochre)]">
-            enn nouvo lakaz
-          </p>
-          <h1 className="mt-1 font-display text-5xl leading-[1.05] tracking-[-0.02em] sm:text-6xl">
+        <div className="mt-6 max-w-2xl">
+          <Eyebrow>New listing</Eyebrow>
+          <DisplayHeading level={2} className="mt-3">
             Tell us about your place.
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--color-muted-foreground)]">
+          </DisplayHeading>
+          <Lede className="mt-4">
             Fill in the basics now. You can add photos and publish from the
             next screen.
-          </p>
+          </Lede>
         </div>
-        <FlagDivider />
+      </Section>
 
-        <div className="mt-14">
-          <ListingForm
-            submitLabel="Save as draft"
-            onSubmit={async (input) => {
-              if (!accessToken) throw new Error("Not authenticated");
-              const created = await createListing(accessToken, input);
-              router.push(`/host/listings/${created.id}/edit`);
-            }}
-          />
-        </div>
+      <main className="mx-auto w-full max-w-5xl px-6 py-10 sm:px-10 sm:py-14">
+        <ListingForm
+          submitLabel="Save as draft"
+          onSubmit={async (input) => {
+            if (!accessToken) throw new Error("Not authenticated");
+            const created = await createListing(accessToken, input);
+            router.push(`/host/listings/${created.id}/edit`);
+          }}
+        />
       </main>
       <SiteFooter />
     </>

@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Stack, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useAuth } from "@/lib/auth-context";
 import { getMyIcalUrl } from "@/lib/ical";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { PillButton } from "@/components/marketing/pill-button";
 
 interface Props { listingId: string; }
 
@@ -27,22 +29,30 @@ export function CopyIcalUrlCard({ listingId }: Props) {
   }
 
   return (
-    <Box sx={{ p: 2, border: "1.5px solid var(--color-border)", borderRadius: "8px", backgroundColor: "var(--color-card)" }}>
-      <Typography sx={{ fontFamily: "var(--font-fraunces)", fontWeight: 600, fontSize: "1rem", mb: 0.5 }}>
+    <div className="rounded-xl border-[1.5px] border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_8%,var(--color-card))] p-5">
+      <Eyebrow>DodoStays feed</Eyebrow>
+      <h3 className="mt-2 font-[var(--font-display)] text-xl font-semibold leading-tight">
         Your DodoStays iCal URL
-      </Typography>
-      <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.875rem", color: "var(--color-muted-foreground)", mb: 2 }}>
+      </h3>
+      <p className="mt-2 mb-4 text-sm text-[var(--color-muted-foreground)]">
         Copy this URL and paste it into Airbnb / Booking.com&apos;s &quot;Import calendar&quot; setting so they block these dates too.
-      </Typography>
+      </p>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {url && (
-        <Stack direction="row" spacing={1}>
-          <TextField size="small" fullWidth value={url} InputProps={{ readOnly: true }} />
-          <Button startIcon={<ContentCopyIcon />} variant="outlined" onClick={copy}>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+          <TextField
+            size="small"
+            fullWidth
+            value={url}
+            InputProps={{ readOnly: true }}
+            sx={{ "& .MuiInputBase-root": { backgroundColor: "var(--color-card)" } }}
+          />
+          <PillButton variant="solid" size="sm" onClick={copy}>
+            <ContentCopyIcon sx={{ fontSize: 16 }} />
             {copied ? "Copied" : "Copy"}
-          </Button>
+          </PillButton>
         </Stack>
       )}
-    </Box>
+    </div>
   );
 }

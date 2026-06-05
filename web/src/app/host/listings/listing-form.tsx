@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { AMENITY_OPTIONS, REGIONS, type Amenity, type CreateOrUpdateListingInput, type PropertyType } from "@/lib/listings";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { FlagDivider } from "@/components/decorations/flag-divider";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
+import { PillButton } from "@/components/marketing/pill-button";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -60,7 +61,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
     <form onSubmit={handleSubmit} className="space-y-16">
       {/* Property — title (1st input), description (textarea) */}
       <Section
-        eyebrow="kombien gran sa lakaz?"
+        eyebrow="Property"
         title="Property"
         description="The basics guests see first."
       >
@@ -91,7 +92,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
 
       {/* Location — address must be the second text input overall */}
       <Section
-        eyebrow="kot li ete?"
+        eyebrow="Location"
         title="Location"
         description="Where is your place?"
       >
@@ -161,7 +162,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
 
       {/* Capacity & pricing */}
       <Section
-        eyebrow="konbien sa kut?"
+        eyebrow="Capacity & pricing"
         title="Capacity & pricing"
         description="How many can stay, and what does it cost? All amounts in Mauritian rupees."
       >
@@ -180,7 +181,7 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
 
       {/* Amenities */}
       <Section
-        eyebrow="ki bann services?"
+        eyebrow="Amenities"
         title="Amenities"
         description="What does your place include?"
       >
@@ -219,15 +220,15 @@ export function ListingForm({ initial, submitLabel, onSubmit }: Props) {
         </p>
       )}
 
-      <div className="flex justify-end border-t-[1.5px] border-[var(--color-ochre)] pt-8">
-        <Button
+      <div className="flex justify-end border-t border-[color-mix(in_srgb,var(--color-foreground)_10%,transparent)] pt-8">
+        <PillButton
           type="submit"
           disabled={submitting}
-          size="lg"
-          className="shadow-block"
+          variant="solid"
+          size="md"
         >
           {submitting ? "Saving…" : submitLabel}
-        </Button>
+        </PillButton>
       </div>
     </form>
   );
@@ -245,16 +246,13 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="space-y-8">
-      <FlagDivider />
+    <section className="space-y-8 border-t border-[color-mix(in_srgb,var(--color-foreground)_10%,transparent)] pt-12 first:border-t-0 first:pt-0">
       <div className="grid gap-8 md:grid-cols-[260px_1fr] md:gap-12">
         <div>
-          <p className="font-script text-2xl italic text-[var(--color-ochre)]">
-            {eyebrow}
-          </p>
-          <h2 className="mt-1 font-display text-3xl tracking-[-0.01em]">
+          <Eyebrow tone="muted">{eyebrow}</Eyebrow>
+          <DisplayHeading level={3} className="mt-2 !text-[1.75rem] !leading-tight">
             {title}
-          </h2>
+          </DisplayHeading>
           {description && (
             <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
               {description}

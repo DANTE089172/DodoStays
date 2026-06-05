@@ -1,20 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Alert, Box, Skeleton, Stack, Typography } from "@mui/material";
+import { Inbox } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { getMyBookings, type BookingSummaryDto } from "@/lib/bookings";
+import { getMyBookings, type BookingState, type BookingSummaryDto } from "@/lib/bookings";
+import { fromIsoDate, today } from "@/lib/dates";
 import { BookingCard } from "@/components/bookings/booking-card";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Section } from "@/components/marketing/section";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
+import { Lede } from "@/components/marketing/lede";
+import { pillButtonClasses } from "@/components/marketing/pill-button";
+import { cn } from "@/lib/utils";
+
+type Filter = "all" | "upcoming" | "past" | "cancelled";
+
+const FILTERS: { id: Filter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "upcoming", label: "Upcoming" },
+  { id: "past", label: "Past" },
+  { id: "cancelled", label: "Cancelled" },
+];
+
+const CANCELLED_STATES: BookingState[] = ["Cancelled", "Disputed"];
+
+function bookingBucket(b: BookingSummaryDto): "upcoming" | "past" | "cancelled" {
+  if (CANCELLED_STATES.includes(b.state)) return "cancelled";
+  const checkOut = fromIsoDate(b.dates.checkOut);
+  return checkOut.getTime() >= today().getTime() ? "upcoming" : "past";
+}
 
 export default function BookingsPage() {
   const router = useRouter();
   const { user, accessToken, loading } = useAuth();
   const [items, setItems] = useState<BookingSummaryDto[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
 
   useEffect(() => {
     if (!loading && !user) router.replace("/signin?next=/bookings");
@@ -29,44 +54,137 @@ export default function BookingsPage() {
       .catch((e) => setError((e as Error).message));
   }, [accessToken]);
 
-  if (loading || !user) return <main className="p-8">Loading…</main>;
+  const filtered = useMemo(() => {
+    if (items === null) return null;
+    if (filter === "all") return items;
+    return items.filter((b) => bookingBucket(b) === filter);
+  }, [items, filter]);
+
+  if (loading || !user) {
+    return (
+      <main className="flex min-h-screen items-center justify-center p-8 text-sm text-[var(--color-muted-foreground)]">
+        Loading…
+      </main>
+    );
+  }
 
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-6 py-8">
-        <header className="mb-6">
-          <h1 className="font-display text-4xl">Your bookings</h1>
-          <p className="font-script text-lg text-[var(--ds-ochre,_#D4A24C)]">to bann sezir</p>
-        </header>
+      <Section tone="cream" size="sm">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <Eyebrow>Your trips</Eyebrow>
+            <DisplayHeading level={2} className="mt-3">
+              Bookings
+            </DisplayHeading>
+          </div>
+          <div
+            role="tablist"
+            aria-label="Filter bookings"
+            className="flex flex-wrap items-center gap-x-1 gap-y-1 border-b border-[color-mix(in_srgb,var(--color-foreground)_12%,transparent)]"
+          >
+            {FILTERS.map((f) => {
+              const active = filter === f.id;
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setFilter(f.id)}
+                  className={cn(
+                    "ds-eyebrow relative -mb-px px-4 py-3 transition-colors duration-150",
+                    active
+                      ? "text-[var(--color-foreground)]"
+                      : "text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]",
+                  )}
+                >
+                  {f.label}
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "absolute inset-x-2 bottom-0 h-[2px] rounded-full transition-colors duration-150",
+                      active ? "bg-[var(--color-primary)]" : "bg-transparent",
+                    )}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </Section>
 
-        {error && <Alert severity="error" sx={{ mb: 2, fontFamily: "var(--font-plex)" }}>{error}</Alert>}
+      <main className="mx-auto w-full max-w-7xl px-6 py-10 sm:px-10 sm:py-14">
+        {error && (
+          <p
+            role="alert"
+            className="mb-6 rounded-md border border-[color-mix(in_srgb,var(--color-destructive)_40%,transparent)] bg-[color-mix(in_srgb,var(--color-destructive)_5%,transparent)] px-4 py-3 text-sm text-[var(--color-destructive)]"
+          >
+            {error}
+          </p>
+        )}
 
         {items === null && (
-          <Stack spacing={2}>
-            {[1, 2].map((i) => <Skeleton key={i} variant="rectangular" height={130} sx={{ borderRadius: "12px" }} />)}
-          </Stack>
+          <ul className="flex flex-col gap-4">
+            {[1, 2].map((i) => (
+              <li
+                key={i}
+                aria-hidden
+                className="h-[160px] animate-pulse rounded-xl border border-[color-mix(in_srgb,var(--color-foreground)_10%,transparent)] bg-[color-mix(in_srgb,var(--color-muted)_60%,transparent)]"
+              />
+            ))}
+          </ul>
         )}
 
-        {items !== null && items.length === 0 && (
-          <Box sx={{ textAlign: "center", py: 6, border: "1.5px dashed var(--color-border)", borderRadius: "12px" }}>
-            <Typography sx={{ fontFamily: "var(--font-caveat)", fontSize: "1.5rem", color: "var(--color-muted-foreground)" }}>
-              ou pa enkor reserve…
-            </Typography>
-            <Typography sx={{ mt: 1, fontFamily: "var(--font-plex)", fontSize: "0.875rem", color: "var(--color-muted-foreground)" }}>
-              You haven&apos;t booked anything yet.{" "}
-              <Link href="/listings" className="underline">Browse stays</Link>
-            </Typography>
-          </Box>
+        {filtered !== null && filtered.length === 0 && (
+          <EmptyBookings hasAny={(items?.length ?? 0) > 0} filter={filter} />
         )}
 
-        {items !== null && items.length > 0 && (
-          <Box component="ul" sx={{ listStyle: "none", p: 0, m: 0, display: "flex", flexDirection: "column", gap: 2 }}>
-            {items.map((b) => <BookingCard key={b.id} booking={b} />)}
-          </Box>
+        {filtered !== null && filtered.length > 0 && (
+          <ul className="flex flex-col gap-4">
+            {filtered.map((b) => (
+              <BookingCard key={b.id} booking={b} />
+            ))}
+          </ul>
         )}
       </main>
       <SiteFooter />
     </>
+  );
+}
+
+function EmptyBookings({
+  hasAny,
+  filter,
+}: {
+  hasAny: boolean;
+  filter: Filter;
+}) {
+  const headline = hasAny
+    ? `Nothing in ${filter}.`
+    : "No bookings yet.";
+  const sub = hasAny
+    ? "Try a different filter or browse new stays."
+    : "Once you book a stay it will appear here. Browse the island and find a place that fits.";
+
+  return (
+    <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 px-4 py-20 text-center">
+      <Inbox
+        className="text-[var(--color-primary)]"
+        size={60}
+        strokeWidth={1.25}
+        aria-hidden
+      />
+      <Eyebrow>Your trips</Eyebrow>
+      <DisplayHeading level={3}>{headline}</DisplayHeading>
+      <Lede>{sub}</Lede>
+      <Link
+        href="/listings"
+        className={pillButtonClasses({ variant: "solid", size: "md" })}
+      >
+        Browse stays
+      </Link>
+    </div>
   );
 }

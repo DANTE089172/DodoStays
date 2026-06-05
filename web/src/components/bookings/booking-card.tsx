@@ -1,22 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Box, Chip, Stack, Typography } from "@mui/material";
 import type { BookingState, BookingSummaryDto } from "@/lib/bookings";
 import { formatDate, fromIsoDate } from "@/lib/dates";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
+import { pillButtonClasses } from "@/components/marketing/pill-button";
+import { cn } from "@/lib/utils";
 
 interface Props {
   booking: BookingSummaryDto;
 }
-
-const STATE_COLOR: Record<BookingState, "default" | "primary" | "success" | "warning" | "error" | "info"> = {
-  PendingPayment: "warning",
-  Confirmed: "primary",
-  CheckedIn: "info",
-  Completed: "success",
-  Cancelled: "error",
-  Disputed: "error",
-};
 
 const STATE_LABEL: Record<BookingState, string> = {
   PendingPayment: "Pending payment",
@@ -27,45 +21,95 @@ const STATE_LABEL: Record<BookingState, string> = {
   Disputed: "Disputed",
 };
 
+/**
+ * Status chip uses a tracked-caps Plex pill keyed on a colour token.
+ * Confirmed / CheckedIn -> peach (primary)
+ * Completed -> cane (success)
+ * PendingPayment -> ochre (warm)
+ * Cancelled / Disputed -> destructive
+ */
+const STATE_TONE: Record<BookingState, string> = {
+  PendingPayment:
+    "border-[var(--color-ochre)] text-[var(--color-ochre)]",
+  Confirmed:
+    "border-[var(--color-primary)] text-[var(--color-primary)]",
+  CheckedIn:
+    "border-[var(--color-primary)] text-[var(--color-primary)]",
+  Completed:
+    "border-[var(--color-cane)] text-[var(--color-cane)]",
+  Cancelled:
+    "border-[var(--color-destructive)] text-[var(--color-destructive)]",
+  Disputed:
+    "border-[var(--color-destructive)] text-[var(--color-destructive)]",
+};
+
 export function BookingCard({ booking }: Props) {
   const checkIn = fromIsoDate(booking.dates.checkIn);
   const checkOut = fromIsoDate(booking.dates.checkOut);
 
   return (
-    <Box
-      component="li"
-      sx={{
-        display: "flex",
-        gap: 2,
-        p: 2,
-        border: "1.5px solid var(--color-border)",
-        borderRadius: "12px",
-        backgroundColor: "var(--color-card)",
-        "&:hover": { boxShadow: "var(--shadow-card-hover, 0 1px 2px rgba(20,12,8,0.06), 0 4px 16px rgba(20,12,8,0.06))" },
-        transition: "box-shadow 200ms ease-out",
-      }}
-    >
-      <Box sx={{ width: 140, aspectRatio: "4/3", borderRadius: "8px", overflow: "hidden", flexShrink: 0, backgroundColor: "var(--color-muted)" }}>
-        {booking.primaryPhotoUrl && (
-          <img src={booking.primaryPhotoUrl} alt={booking.listingTitle} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    <li className="list-none">
+      <article
+        className={cn(
+          "group flex flex-col gap-5 rounded-xl border bg-[var(--color-card)] p-4 sm:flex-row sm:items-stretch sm:gap-6 sm:p-5",
+          "border-[color-mix(in_srgb,var(--color-foreground)_10%,transparent)]",
+          "transition-[border-color] duration-200 ease-out",
+          "hover:border-[var(--color-primary)]",
         )}
-      </Box>
-      <Stack sx={{ flex: 1, minWidth: 0 }} spacing={0.5}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
-          <Link href={`/listings/${booking.listingId}`} style={{ textDecoration: "none", color: "inherit", flex: 1 }}>
-            <Typography component="h3" sx={{ fontFamily: "var(--font-fraunces)", fontWeight: 600, fontSize: "1.125rem", lineHeight: 1.25, "&:hover": { textDecoration: "underline" } }}>
+      >
+        <div className="overflow-hidden rounded-lg bg-[var(--color-muted)] sm:w-[200px] sm:flex-shrink-0">
+          <div className="relative aspect-[4/3]">
+            {booking.primaryPhotoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={booking.primaryPhotoUrl}
+                alt={booking.listingTitle}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.01]"
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-2.5">
+          <Eyebrow tone="muted">Reservation</Eyebrow>
+          <Link
+            href={`/listings/${booking.listingId}`}
+            className="text-[color:inherit] no-underline hover:underline"
+          >
+            <DisplayHeading level={4} className="!text-[1.5rem] !leading-tight">
               {booking.listingTitle}
-            </Typography>
+            </DisplayHeading>
           </Link>
-          <Chip label={STATE_LABEL[booking.state]} color={STATE_COLOR[booking.state]} size="small" />
-        </Box>
-        <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.875rem", color: "var(--color-muted-foreground)" }}>
-          {formatDate(checkIn)} → {formatDate(checkOut)}
-        </Typography>
-        <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.875rem", fontWeight: 600 }}>
-          MUR {booking.totalMur.toLocaleString()}
-        </Typography>
-      </Stack>
-    </Box>
+          <p className="font-[var(--font-sans)] text-sm text-[var(--color-muted-foreground)]">
+            {formatDate(checkIn)} <span aria-hidden>&rarr;</span> {formatDate(checkOut)}
+          </p>
+          <div className="mt-1">
+            <span
+              className={cn(
+                "ds-eyebrow inline-flex items-center rounded-full border-[1.5px] bg-transparent px-2.5 py-1",
+                STATE_TONE[booking.state],
+              )}
+            >
+              {STATE_LABEL[booking.state]}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-row items-center justify-between gap-4 sm:flex-col sm:items-end sm:justify-between sm:gap-3 sm:pl-2">
+          <div className="text-right">
+            <Eyebrow tone="muted">Total</Eyebrow>
+            <p className="mt-1 font-[var(--font-display)] text-2xl font-semibold tracking-tight">
+              MUR {booking.totalMur.toLocaleString()}
+            </p>
+          </div>
+          <Link
+            href={`/listings/${booking.listingId}`}
+            className={pillButtonClasses({ variant: "ghost", size: "sm" })}
+          >
+            View details
+          </Link>
+        </div>
+      </article>
+    </li>
   );
 }
