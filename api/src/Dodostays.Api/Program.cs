@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Dodostays.Api.Modules.Common.Database;
 using Dodostays.Api.Modules.Common.Health;
 using Dodostays.Api.Modules.Common.ProblemDetails;
+using Dodostays.Api.Modules.Bookings;
 using Dodostays.Api.Modules.Identity;
 using Dodostays.Api.Modules.Listings;
 using Dodostays.Api.Modules.Search;
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<DodostaysDbContext>(opts =>
 builder.Services.AddIdentityModule(builder.Configuration);
 builder.Services.AddSearchModule(builder.Configuration);
 builder.Services.AddListingsModule(builder.Configuration);
+builder.Services.AddBookingsModule(builder.Configuration);
 
 const string CorsPolicyName = "DodostaysFrontend";
 builder.Services.AddCors(opts =>
@@ -69,6 +71,7 @@ app.UseAuthorization();
 app.MapHealthCheckEndpoints();
 app.MapIdentityEndpoints();
 app.MapListingsEndpoints();
+app.MapBookingsEndpoints();
 app.MapSearchEndpoints();
 
 app.Run();
