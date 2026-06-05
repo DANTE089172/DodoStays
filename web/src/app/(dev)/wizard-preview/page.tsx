@@ -5,7 +5,13 @@
 // them without wiring up the real edit page yet.
 
 import { useState } from "react";
+import { Compass } from "lucide-react";
 import { HOST_STEPS, type HostStepKey } from "@/lib/wizard";
+import { useWizardForm } from "@/lib/wizard-form";
+import {
+  LocationStepSchema,
+  type LocationStepValues,
+} from "@/lib/wizard-schemas";
 import {
   JournalGlyph,
   type JournalGlyphName,
@@ -77,7 +83,8 @@ export default function WizardPreviewPage() {
     <div className="min-h-screen bg-[var(--color-background)] px-6 py-10">
       <div className="mx-auto max-w-6xl space-y-16">
         <header>
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-primary)]">
+          <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-primary)]">
+            <Compass size={14} aria-hidden />
             Dev preview
           </p>
           <h1 className="font-[family-name:var(--font-fraunces)] text-4xl font-semibold text-[var(--color-ink)]">
@@ -263,7 +270,54 @@ export default function WizardPreviewPage() {
             onClose={() => setToast((t) => ({ ...t, open: false }))}
           />
         </section>
+
+        {/* === Form foundation smoke test ===================================== */}
+        <section>
+          <h2 className="mb-4 font-[family-name:var(--font-fraunces)] text-2xl text-[var(--color-ink)]">
+            Form foundation (RHF + zod)
+          </h2>
+          <LocationFormSmoke />
+        </section>
       </div>
     </div>
+  );
+}
+
+function LocationFormSmoke() {
+  // Smoke test for `useWizardForm` + `LocationStepSchema`. Only the
+  // `addressLine` field is wired up here — full step UI is Plan 05.3's job.
+  const { register, handleSubmit, formState } = useWizardForm<LocationStepValues>(
+    LocationStepSchema,
+    {
+      addressLine: "",
+      latitude: -20.27,
+      longitude: 57.42,
+      region: "flic-en-flac",
+    },
+  );
+
+  return (
+    <form
+      onSubmit={handleSubmit(() => {})}
+      className="flex flex-col gap-2 rounded-[10px] border border-[var(--color-border)] bg-[var(--color-card)] p-6"
+    >
+      <label
+        htmlFor="smoke-address"
+        className="font-[family-name:var(--font-plex)] text-sm text-[var(--color-ink)]"
+      >
+        Address line
+      </label>
+      <input
+        id="smoke-address"
+        {...register("addressLine")}
+        className="rounded-[6px] border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 font-[family-name:var(--font-plex)] text-[15px] text-[var(--color-ink)] outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/30"
+        placeholder="e.g. Coastal Road, Tamarin"
+      />
+      {formState.errors.addressLine ? (
+        <p className="font-[family-name:var(--font-plex)] text-[13px] text-[var(--color-destructive)]">
+          {formState.errors.addressLine.message}
+        </p>
+      ) : null}
+    </form>
   );
 }
