@@ -6,9 +6,12 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FlagDivider } from "@/components/decorations/flag-divider";
+import { Section } from "@/components/marketing/section";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading } from "@/components/marketing/display-heading";
+import { PillButton } from "@/components/marketing/pill-button";
+import { pillButtonClasses } from "@/components/marketing/pill-button";
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -37,89 +40,95 @@ export default function AccountPage() {
     user.kycStatus === "Verified"
       ? "text-[var(--color-cane)] border-[var(--color-cane)]"
       : user.kycStatus === "Pending"
-        ? "text-[var(--color-ochre)] border-[var(--color-ochre)]"
+        ? "text-[var(--color-primary)] border-[var(--color-primary)]"
         : "text-[var(--color-muted-foreground)] border-[var(--color-border)]";
+
+  const cardClass =
+    "bg-white border border-[color:rgba(10,9,8,0.10)] rounded-xl p-8 mb-6";
+  const cardHeadingClass =
+    "text-[1.25rem] font-[family-name:var(--font-fraunces)] text-[var(--color-foreground)] mb-4";
 
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-5xl px-6 py-16 sm:px-10 sm:py-24">
-        <p className="font-script text-2xl text-[var(--color-ochre)]">
-          ou kont
-        </p>
-        <FlagDivider width="short" className="mt-2" />
-        <div className="mt-12 grid gap-16 lg:grid-cols-[1fr_1.4fr]">
-          {/* Left: identity */}
-          <div className="flex flex-col items-start">
+      <Section tone="cream" size="md">
+        <div className="mx-auto w-full max-w-3xl">
+          <Eyebrow>your profile</Eyebrow>
+          <DisplayHeading level={2} className="mt-4">
+            Account
+          </DisplayHeading>
+
+          {/* Identity card */}
+          <div className={`${cardClass} mt-10 flex flex-col gap-6 sm:flex-row sm:items-center`}>
             <div
               aria-hidden="true"
-              className="flex h-28 w-28 items-center justify-center rounded-[2px] border-[1.5px] border-[var(--color-ochre)] bg-[var(--color-sand)] font-display text-4xl tracking-[-0.02em] text-[var(--color-foreground)]"
+              className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-[var(--color-sand)] font-[family-name:var(--font-fraunces)] text-3xl tracking-[-0.02em] text-[var(--color-foreground)]"
             >
               {initials(user.displayName)}
             </div>
-            <h1 className="mt-8 font-display text-4xl leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-              Welcome,{" "}
-              <span className="italic">{user.displayName}</span>.
-            </h1>
-            <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
-              {user.email}
-            </p>
-            <div className="mt-5 flex flex-wrap items-center gap-2">
-              <Badge variant="outline">{user.role}</Badge>
-              <span
-                className={`inline-flex items-center border-[1.5px] px-2.5 font-script text-base ${kycTone}`}
-              >
-                {user.kycStatus.toLowerCase()}
-              </span>
+            <div>
+              <h3 className={cardHeadingClass}>
+                Welcome, <span className="italic">{user.displayName}</span>
+              </h3>
+              <p className="text-sm text-[var(--color-muted-foreground)]">
+                {user.email}
+              </p>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <Badge variant="outline">{user.role}</Badge>
+                <span
+                  className={`inline-flex items-center rounded-full border-[1.5px] px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.14em] ${kycTone}`}
+                >
+                  {user.kycStatus}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Right: details + actions */}
-          <div>
-            <p className="font-script text-2xl text-[var(--color-ochre)]">
-              profile
-            </p>
-            <dl className="mt-3 divide-y-[1.5px] divide-[var(--color-border)] border-y-[1.5px] border-[var(--color-ochre)]">
+          {/* Profile details card */}
+          <div className={cardClass}>
+            <h3 className={cardHeadingClass}>Profile</h3>
+            <dl className="divide-y divide-[color:rgba(10,9,8,0.08)]">
               <DetailRow label="Role" value={user.role} />
               <DetailRow label="KYC status" value={user.kycStatus} />
               <DetailRow label="Language" value={user.preferredLanguage} />
             </dl>
-
-            <div className="mt-12 flex flex-wrap gap-3">
-              {user.role === "Host" && (
-                <Link href="/host/listings">
-                  <Button className="shadow-block">Manage my listings</Button>
-                </Link>
-              )}
-              <Button
+            <div className="mt-8 flex flex-wrap gap-3">
+              <PillButton variant="ghost" type="button" disabled>
+                Edit
+              </PillButton>
+              <PillButton
                 type="button"
-                variant="outline"
+                variant="solid"
                 onClick={async () => {
                   await signOut();
                   router.push("/");
                 }}
               >
                 Sign out
-              </Button>
+              </PillButton>
             </div>
-
-            {user.role === "Host" && (
-              <div className="mt-16 border-t-[1.5px] border-[var(--color-border)] pt-10">
-                <p className="font-script text-2xl text-[var(--color-ochre)]">
-                  for hosts
-                </p>
-                <h2 className="mt-1 font-display text-2xl tracking-[-0.01em]">
-                  Hosting on DodoStays.
-                </h2>
-                <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--color-muted-foreground)]">
-                  Edit, publish and track your places. Add photos, set
-                  prices in MUR, control your availability.
-                </p>
-              </div>
-            )}
           </div>
+
+          {/* Host card */}
+          {user.role === "Host" && (
+            <div className={cardClass}>
+              <h3 className={cardHeadingClass}>Hosting on DodoStays</h3>
+              <p className="max-w-md text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+                Edit, publish and track your places. Add photos, set prices in
+                MUR, control your availability.
+              </p>
+              <div className="mt-6">
+                <Link
+                  href="/host/listings"
+                  className={pillButtonClasses({ variant: "solid" })}
+                >
+                  Manage my listings
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
-      </main>
+      </Section>
       <SiteFooter />
     </>
   );
@@ -128,7 +137,7 @@ export default function AccountPage() {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid grid-cols-[140px_1fr] items-baseline gap-4 py-4">
-      <dt className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-ochre)]">
+      <dt className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-muted-foreground)]">
         {label}
       </dt>
       <dd className="text-sm text-[var(--color-foreground)]">{value}</dd>
