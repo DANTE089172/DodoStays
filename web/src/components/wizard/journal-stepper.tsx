@@ -9,29 +9,13 @@ interface JournalStepperProps {
   currentStepId: string;
   completedStepIds: string[];
   onJump?: (stepId: string) => void;
-  /** Optional Caveat eyebrow per step, in step order. Falls back to the default 8-step set. */
-  kickers?: string[];
 }
-
-// Mauritian Creole eyebrow-kickers, one per host step in order.
-// Soft "premier/deuxième…" with a single lakaz nod on the last step.
-const DEFAULT_HOST_KICKERS: string[] = [
-  "première partie",
-  "deuxième partie",
-  "troisième partie",
-  "quatrième partie",
-  "cinquième partie",
-  "sixième partie",
-  "septième partie",
-  "lakaz dehors",
-];
 
 export function JournalStepper({
   steps,
   currentStepId,
   completedStepIds,
   onJump,
-  kickers,
 }: JournalStepperProps) {
   const completed = useMemo(
     () => new Set(completedStepIds),
@@ -79,7 +63,6 @@ export function JournalStepper({
           const isComplete = completed.has(step.key);
           const isFuture = !isActive && !isComplete;
           const reachable = isReachable(step.key);
-          const kicker = (kickers ?? DEFAULT_HOST_KICKERS)[idx];
 
           return (
             <li key={step.key} className="lg:w-full">
@@ -134,18 +117,6 @@ export function JournalStepper({
                 </span>
 
                 <span className="flex min-w-0 flex-col">
-                  {kicker ? (
-                    <span
-                      className={cn(
-                        "font-[family-name:var(--font-caveat)] text-[13px] italic leading-tight",
-                        isActive
-                          ? "text-[var(--color-primary)]"
-                          : "text-[var(--color-muted-foreground)]",
-                      )}
-                    >
-                      {kicker}
-                    </span>
-                  ) : null}
                   <span
                     className={cn(
                       "font-[family-name:var(--font-fraunces)] text-[18px] font-medium leading-snug",

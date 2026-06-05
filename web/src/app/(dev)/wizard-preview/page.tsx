@@ -77,8 +77,8 @@ export default function WizardPreviewPage() {
     <div className="min-h-screen bg-[var(--color-background)] px-6 py-10">
       <div className="mx-auto max-w-6xl space-y-16">
         <header>
-          <p className="font-[family-name:var(--font-caveat)] text-lg italic text-[var(--color-primary)]">
-            dev preview
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-primary)]">
+            Dev preview
           </p>
           <h1 className="font-[family-name:var(--font-fraunces)] text-4xl font-semibold text-[var(--color-ink)]">
             Wizard chrome — Plan 05.2
@@ -106,7 +106,7 @@ export default function WizardPreviewPage() {
               <JournalPage
                 pageNumber={currentIdx + 1}
                 totalPages={HOST_STEPS.length}
-                kicker={`partie ${currentIdx + 1}`}
+                kicker={`Step ${currentIdx + 1} of ${HOST_STEPS.length}`}
                 title={HOST_STEPS[currentIdx].title}
                 description="A simple, restrained step page. Warm sand surface, single radial-fibre texture at 4% opacity, Fraunces title and Plex body copy."
               >

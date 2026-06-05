@@ -45,8 +45,7 @@ export function JournalPage({
       <header className="relative">
         {kicker ? (
           <p
-            className="font-[family-name:var(--font-caveat)] text-lg italic text-[var(--color-primary)]"
-            aria-hidden={false}
+            className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-primary)]"
           >
             {kicker}
           </p>
