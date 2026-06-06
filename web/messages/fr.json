@@ -1,0 +1,459 @@
+{
+  "_meta": {
+    "language": "Français",
+    "code": "fr",
+    "reviewed": false,
+    "note": "AI-drafted first pass. Native review pending. Formal vous register throughout."
+  },
+  "common": {
+    "buttons": {
+      "signIn": "Se connecter",
+      "signUp": "Créer un compte",
+      "signOut": "Se déconnecter",
+      "save": "Enregistrer",
+      "saveChanges": "Enregistrer les modifications",
+      "saveAsDraft": "Enregistrer comme brouillon",
+      "cancel": "Annuler",
+      "edit": "Modifier",
+      "search": "Rechercher",
+      "searching": "Recherche en cours",
+      "back": "Retour",
+      "continue": "Continuer",
+      "remove": "Supprimer",
+      "add": "Ajouter",
+      "delete": "Supprimer",
+      "publish": "Publier",
+      "unpublish": "Dépublier",
+      "viewPublic": "Voir en public",
+      "browseStays": "Parcourir les logements",
+      "viewDetails": "Voir les détails"
+    },
+    "labels": {
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "displayName": "Nom affiché",
+      "preferredLanguage": "Langue préférée",
+      "guests": "Voyageurs",
+      "checkIn": "Arrivée",
+      "checkOut": "Départ"
+    },
+    "status": {
+      "loading": "Chargement…",
+      "saving": "Enregistrement…",
+      "uploading": "Téléversement…"
+    },
+    "currency": {
+      "perNight": "/ nuit"
+    }
+  },
+  "siteHeader": {
+    "homeAriaLabel": "Accueil DodoStays",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "primaryNavLabel": "Navigation principale",
+    "links": {
+      "browse": "Parcourir",
+      "hosts": "Hôtes",
+      "about": "À propos",
+      "bookings": "Réservations",
+      "account": "Compte"
+    },
+    "becomeHost": "Devenir hôte",
+    "language": "Langue"
+  },
+  "siteFooter": {
+    "tagline": "Des logements à prix honnêtes à Maurice. Roupies réelles, hôtes vérifiés.",
+    "exploreEyebrow": "Explorer",
+    "localeEyebrow": "Localisation",
+    "madeIn": "Fait à Maurice.",
+    "pricesIn": "Tous les prix en MUR.",
+    "copyright": "© {year} DodoStays.",
+    "links": {
+      "browse": "Parcourir",
+      "hosts": "Hôtes",
+      "about": "À propos",
+      "contact": "Contact"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "eyebrow": "L'océan Indien. Maurice.",
+      "titleLead": "Trouvez votre",
+      "titleItalic": "Maurice",
+      "lede": "Une sélection de logements de Rivière Noire à Belle Mare. Hébergés par des gens qui connaissent l'île.",
+      "imageAlt": "Une côte mauricienne avec des montagnes en arrière-plan"
+    },
+    "howItWorks": {
+      "eyebrow": "Comment ça marche",
+      "title": "Comment fonctionne DodoStays.",
+      "lede": "Nous ne sommes pas une plateforme mondiale. Nous sommes une petite équipe de Quatre-Bornes qui a créé un site de réservation pour l'île où nous vivons.",
+      "steps": {
+        "search": {
+          "title": "Cherchez",
+          "body": "Dites-nous où, quand et quel type de séjour vous cherchez. Prix réels en roupies, sans mauvaises surprises."
+        },
+        "book": {
+          "title": "Réservez",
+          "body": "Échangez directement avec des hôtes vérifiés KYC, puis confirmez en quelques clics. Réservation instantanée là où ça compte."
+        },
+        "stay": {
+          "title": "Profitez",
+          "body": "Des conseils locaux sur la plage à choisir le mardi et où trouver les meilleurs dholl puri — par des gens qui vivent ici."
+        }
+      }
+    },
+    "regions": {
+      "eyebrow": "Explorer l'île",
+      "title": "Des séjours sélectionnés par région.",
+      "viewAll": "Voir tous les logements",
+      "viewStays": "Voir les logements →",
+      "tamarin": {
+        "name": "Tamarin",
+        "blurb": "Village de surf au coucher de soleil, au rythme tranquille."
+      },
+      "mahebourg": {
+        "name": "Mahébourg",
+        "blurb": "Vieux port colonial, lagon à votre porte."
+      },
+      "flicEnFlac": {
+        "name": "Flic en Flac",
+        "blurb": "Longue plage de la côte ouest, tout est accessible à pied."
+      },
+      "belleMare": {
+        "name": "Belle Mare",
+        "blurb": "Sable fin de la côte est, lagon turquoise."
+      },
+      "regionPhotoAlt": "{name}, Maurice"
+    },
+    "hostCta": {
+      "eyebrow": "Pour les hôtes",
+      "title": "Vous hébergez à Maurice ? Touchez les voyageurs qui veulent vraiment venir ici.",
+      "lede": "Fixez vos propres tarifs en roupies. Gardez vos clients directs. Payez une commission unique. Pas de petits caractères, pas de surprises de change au paiement.",
+      "becomeHost": "Devenir hôte →",
+      "rateHeadline": "7 %",
+      "rateBody": "Notre taux de commission unique. Pas de tarification par paliers, pas de surcharge, pas de prélèvements par catégorie."
+    },
+    "footerCta": {
+      "eyebrow": "Quand vous le souhaitez",
+      "title": "Logez là où la mer rejoint la route.",
+      "lede": "Un petit site de réservation mauricien, conçu pour les voyageurs qui veulent savoir à qui ils louent.",
+      "startExploring": "Commencer à explorer",
+      "becomeHost": "Devenir hôte"
+    }
+  },
+  "search": {
+    "ai": {
+      "placeholder": "Dites-nous où, quand, quoi — par ex. 3 chambres à Flic en Flac avec piscine, moins de 5000 MUR",
+      "buttonSearch": "Rechercher",
+      "buttonSearching": "Recherche"
+    },
+    "acknowledgementPrefix": "Recherche : ",
+    "acknowledgementParts": {
+      "underNightly": "moins de {amount} MUR/nuit",
+      "verifiedOnly": "(vérifiés uniquement)",
+      "inRegion": "à {region}",
+      "minBeds": "{count}+ chambre",
+      "with": "avec {amenities}"
+    },
+    "examples": {
+      "title": "Essayez"
+    },
+    "anchors": {
+      "empty": "Touchez la carte pour déposer une ancre — les logements seront triés par temps de trajet vers les lieux qui vous intéressent. Jusqu'à {max}.",
+      "renamePrompt": "Renommer l'ancre"
+    },
+    "filterChips": {
+      "minBeds": "{count}+ chambres",
+      "minGuests": "{count}+ voyageurs",
+      "maxNightly": "≤ {amount} MUR",
+      "minNightly": "≥ {amount} MUR",
+      "verifiedOnly": "vérifiés uniquement"
+    }
+  },
+  "listings": {
+    "explorer": {
+      "eyebrow": "Logements à Maurice",
+      "headingDefault": "Sélection de logements",
+      "countOne": "{count} logement",
+      "countOther": "{count} logements",
+      "emptyTitle": "Aucun logement ne correspond à ces filtres.",
+      "emptyBody": "Essayez de retirer un filtre, de déposer une ancre ou de déplacer la carte.",
+      "driveTime": "{minutes} min depuis l'ancre",
+      "perNight": "par nuit"
+    },
+    "detail": {
+      "backLink": "← Tous les logements",
+      "eyebrowVerified": "Hôte vérifié",
+      "hostedBy": "Hébergé par",
+      "stats": {
+        "bedrooms": "Chambres",
+        "beds": "Lits",
+        "bathrooms": "Salles de bain",
+        "maxGuests": "Voyageurs max"
+      },
+      "about": {
+        "eyebrow": "À propos de ce logement",
+        "titleLead": "Un séjour façonné par",
+        "titleItalicSuffix": "."
+      },
+      "amenities": {
+        "eyebrow": "Équipements",
+        "title": "Ce que ce logement propose."
+      },
+      "host": {
+        "eyebrow": "Votre hôte",
+        "blurb": "Un hôte mauricien vérifié. Réponse rapide, ravi de vous orienter vers la bonne plage, le bon marché ou le meilleur coucher de soleil.",
+        "messageHost": "Contacter l'hôte"
+      }
+    },
+    "amenities": {
+      "Pool": "Piscine",
+      "BeachAccess": "Accès plage",
+      "AirCon": "Climatisation",
+      "Wifi": "Wi-Fi",
+      "Kitchen": "Cuisine",
+      "Parking": "Parking",
+      "Tv": "Télévision",
+      "WashingMachine": "Lave-linge",
+      "Balcony": "Balcon",
+      "Garden": "Jardin",
+      "Bbq": "Barbecue",
+      "Generator": "Générateur"
+    }
+  },
+  "auth": {
+    "signin": {
+      "leftEyebrow": "ravi de vous revoir",
+      "leftTitle": "Logez là où la mer rejoint la route.",
+      "headline": "Se connecter",
+      "subline": "à votre compte DodoStays",
+      "forgotPassword": "Mot de passe oublié ?",
+      "submitting": "Connexion…",
+      "submit": "Se connecter",
+      "or": "ou",
+      "newToDodostays": "Nouveau sur DodoStays ?",
+      "createAccountLink": "Créer un compte"
+    },
+    "signup": {
+      "leftEyebrow": "rejoignez-nous",
+      "leftTitle": "Trouvez votre Maurice.",
+      "headline": "Créez votre compte",
+      "subline": "Rejoignez DodoStays pour réserver ou héberger à travers Maurice.",
+      "iAm": "Je suis",
+      "rolePicker": {
+        "guest": "Je suis voyageur",
+        "host": "Je suis hôte"
+      },
+      "passwordHint": "Au moins 10 caractères avec une majuscule, une minuscule et un chiffre.",
+      "submitting": "Création…",
+      "submit": "Créer un compte",
+      "alreadyHaveAccount": "Vous avez déjà un compte ?",
+      "signInLink": "Se connecter",
+      "languages": {
+        "en": "English",
+        "fr": "Français",
+        "mfe": "Kreol Morisien"
+      }
+    }
+  },
+  "account": {
+    "eyebrow": "votre profil",
+    "title": "Compte",
+    "welcome": "Bienvenue,",
+    "labels": {
+      "role": "Rôle",
+      "kycStatus": "Statut KYC",
+      "language": "Langue"
+    },
+    "profileHeading": "Profil",
+    "hosting": {
+      "title": "Hébergement sur DodoStays",
+      "blurb": "Modifiez, publiez et suivez vos logements. Ajoutez des photos, fixez les prix en MUR, gérez votre disponibilité.",
+      "manageMyListings": "Gérer mes logements"
+    }
+  },
+  "bookings": {
+    "dashboard": {
+      "eyebrow": "Vos voyages",
+      "title": "Réservations",
+      "filterAriaLabel": "Filtrer les réservations",
+      "filters": {
+        "all": "Toutes",
+        "upcoming": "À venir",
+        "past": "Passées",
+        "cancelled": "Annulées"
+      },
+      "emptyHasNone": {
+        "headline": "Aucune réservation pour l'instant.",
+        "sub": "Dès que vous réservez un séjour, il apparaîtra ici. Parcourez l'île et trouvez l'endroit qui vous convient."
+      },
+      "emptyFilter": {
+        "headline": "Rien dans {filter}.",
+        "sub": "Essayez un autre filtre ou parcourez de nouveaux logements."
+      }
+    },
+    "card": {
+      "eyebrow": "Réservation",
+      "totalEyebrow": "Total"
+    },
+    "states": {
+      "PendingPayment": "Paiement en attente",
+      "Confirmed": "Confirmée",
+      "CheckedIn": "Arrivée enregistrée",
+      "Completed": "Terminée",
+      "Cancelled": "Annulée",
+      "Disputed": "Litige"
+    },
+    "sidebar": {
+      "expired": "Réservation provisoire expirée. Choisissez à nouveau les dates.",
+      "blockedDefault": "Dates déjà réservées. Choisissez d'autres dates.",
+      "signInToBook": "Connectez-vous pour réserver",
+      "holdDates": "Réserver provisoirement",
+      "holding": "Réservation provisoire…",
+      "confirmBooking": "Confirmer la réservation",
+      "pickDifferentDates": "Choisir d'autres dates",
+      "paymentPending": "Le paiement sera intégré au Plan 04. Pour l'instant, « Confirmer » finalise sans débit.",
+      "confirming": "Confirmation en cours…"
+    }
+  },
+  "host": {
+    "dashboard": {
+      "eyebrow": "Tableau de bord hôte",
+      "blurb": "Créez, modifiez et publiez vos logements. Ajoutez des photos, fixez les prix, gérez la disponibilité.",
+      "addListing": "+ Ajouter un logement",
+      "tabsAriaLabel": "Sections hôte",
+      "tabListings": "Logements",
+      "kpi": {
+        "activeListings": "Logements actifs",
+        "totalListings": "Total des logements",
+        "avgNightlyRate": "Tarif moyen / nuit",
+        "status": "Statut",
+        "draftSuffixOne": "{count} brouillon",
+        "draftSuffixOther": "{count} brouillons",
+        "allPublished": "Tous publiés",
+        "includingDrafts": "Brouillons inclus",
+        "acrossYourPlaces": "Tous logements confondus",
+        "live": "En ligne",
+        "setup": "Configuration",
+        "bookingsOpen": "Réservations ouvertes",
+        "publishToGoLive": "Publiez pour passer en ligne"
+      },
+      "row": {
+        "noPhotoYet": "Pas encore de photo",
+        "untitled": "Logement sans titre",
+        "perNight": "{amount} MUR / nuit",
+        "deleteConfirm": "Supprimer ce logement ? Cette action est irréversible."
+      },
+      "empty": {
+        "eyebrow": "Pour commencer",
+        "title": "Aucun logement pour l'instant.",
+        "lede": "Cliquez sur le bouton ci-dessous pour créer votre premier logement sur DodoStays. Il ne faut que quelques minutes.",
+        "cta": "Créer mon premier logement"
+      },
+      "fallbackHostName": "Hôte"
+    },
+    "newListing": {
+      "back": "← Retour à mes logements",
+      "eyebrow": "Nouveau logement",
+      "title": "Parlez-nous de votre logement.",
+      "lede": "Renseignez l'essentiel maintenant. Vous pourrez ajouter des photos et publier sur l'écran suivant."
+    },
+    "editListing": {
+      "back": "← Retour à mes logements",
+      "eyebrow": "Modifier le logement",
+      "untitled": "Logement sans titre",
+      "notFound": "Logement introuvable.",
+      "photos": {
+        "eyebrow": "Photos",
+        "title": "Photos",
+        "blurb": "La première photo est celle que les voyageurs voient sur les pages de recherche. Ajoutez-en au moins une avant de publier.",
+        "empty": "Aucune photo pour l'instant.",
+        "emptyHint": "JPEG, PNG, WebP ou HEIC.",
+        "cover": "Couverture",
+        "removeAriaLabel": "Supprimer la photo",
+        "remove": "Supprimer",
+        "captionLabel": "Légende (facultative)",
+        "captionPlaceholder": "Coucher de soleil sur le lagon",
+        "uploadPhoto": "Téléverser une photo",
+        "uploading": "Téléversement…"
+      },
+      "channels": {
+        "eyebrow": "Canaux",
+        "title": "Canaux",
+        "blurb": "Synchronisez votre calendrier avec Airbnb, Booking.com et d'autres pour que les mêmes dates restent bloquées partout."
+      }
+    },
+    "listingForm": {
+      "property": {
+        "eyebrow": "Logement",
+        "title": "Logement",
+        "description": "L'essentiel que les voyageurs voient en premier.",
+        "titleLabel": "Titre",
+        "titlePlaceholder": "Villa ensoleillée 3 chambres avec piscine",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Dites aux voyageurs ce qui rend votre logement spécial…"
+      },
+      "location": {
+        "eyebrow": "Emplacement",
+        "title": "Emplacement",
+        "description": "Où se trouve votre logement ?",
+        "addressLabel": "Adresse",
+        "addressPlaceholder": "Rue, quartier, ville",
+        "regionLabel": "Région",
+        "propertyTypeLabel": "Type de logement",
+        "latitudeLabel": "Latitude",
+        "longitudeLabel": "Longitude"
+      },
+      "capacity": {
+        "eyebrow": "Capacité et tarifs",
+        "title": "Capacité et tarifs",
+        "description": "Combien de personnes, et à quel prix ? Tous les montants en roupies mauriciennes.",
+        "bedrooms": "Chambres",
+        "beds": "Lits",
+        "bathrooms": "Salles de bain",
+        "maxGuests": "Voyageurs max",
+        "nightlyRate": "Tarif par nuit (MUR)",
+        "cleaningFee": "Frais de ménage (MUR)",
+        "minStay": "Séjour min. (nuits)"
+      },
+      "amenities": {
+        "eyebrow": "Équipements",
+        "title": "Équipements",
+        "description": "Que propose votre logement ?"
+      },
+      "saving": "Enregistrement…"
+    },
+    "channels": {
+      "ourFeed": {
+        "eyebrow": "Flux DodoStays",
+        "title": "Votre URL iCal DodoStays",
+        "blurb": "Copiez cette URL et collez-la dans le paramètre « Importer un calendrier » d'Airbnb / Booking.com pour qu'ils bloquent aussi ces dates.",
+        "copy": "Copier",
+        "copied": "Copié"
+      },
+      "external": {
+        "eyebrow": "Calendriers externes",
+        "title": "Calendriers externes (iCal)",
+        "blurb": "Collez ici votre URL iCal Airbnb / Booking.com pour que les réservations externes bloquent ces dates sur DodoStays. Synchronisation toutes les 15 minutes.",
+        "urlPlaceholder": "https://www.airbnb.com/calendar/ical/...",
+        "loading": "Chargement…",
+        "empty": "Pas encore de calendrier externe.",
+        "removeConfirm": "Supprimer ce flux de calendrier ? Les blocages synchronisés seront supprimés.",
+        "lastSynced": "Dernière synchro : {when}",
+        "pendingSync": "Première synchronisation en attente",
+        "errorPrefix": "Erreur : {message}"
+      }
+    }
+  },
+  "errors": {
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "notFound": "Page introuvable.",
+    "unauthorized": "Vous n'avez pas accès à cette page.",
+    "notAuthenticated": "Non authentifié"
+  },
+  "validation": {
+    "required": "Obligatoire",
+    "email": "E-mail invalide",
+    "minLength": "Au moins {min} caractères"
+  }
+}

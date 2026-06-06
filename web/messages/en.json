@@ -1,0 +1,459 @@
+{
+  "_meta": {
+    "language": "English",
+    "code": "en",
+    "reviewed": true,
+    "note": "Hand-written baseline. Lift other locales from this."
+  },
+  "common": {
+    "buttons": {
+      "signIn": "Sign in",
+      "signUp": "Create account",
+      "signOut": "Sign out",
+      "save": "Save",
+      "saveChanges": "Save changes",
+      "saveAsDraft": "Save as draft",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "search": "Search",
+      "searching": "Searching",
+      "back": "Back",
+      "continue": "Continue",
+      "remove": "Remove",
+      "add": "Add",
+      "delete": "Delete",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "viewPublic": "View public",
+      "browseStays": "Browse stays",
+      "viewDetails": "View details"
+    },
+    "labels": {
+      "email": "Email",
+      "password": "Password",
+      "displayName": "Display name",
+      "preferredLanguage": "Preferred language",
+      "guests": "Guests",
+      "checkIn": "Check in",
+      "checkOut": "Check out"
+    },
+    "status": {
+      "loading": "Loading…",
+      "saving": "Saving…",
+      "uploading": "Uploading…"
+    },
+    "currency": {
+      "perNight": "/ night"
+    }
+  },
+  "siteHeader": {
+    "homeAriaLabel": "DodoStays home",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "primaryNavLabel": "Primary",
+    "links": {
+      "browse": "Browse",
+      "hosts": "Hosts",
+      "about": "About",
+      "bookings": "Bookings",
+      "account": "Account"
+    },
+    "becomeHost": "Become a host",
+    "language": "Language"
+  },
+  "siteFooter": {
+    "tagline": "Honestly priced stays in Mauritius. Real rupees, verified hosts.",
+    "exploreEyebrow": "Explore",
+    "localeEyebrow": "Locale",
+    "madeIn": "Made in Mauritius.",
+    "pricesIn": "All prices in MUR.",
+    "copyright": "© {year} DodoStays.",
+    "links": {
+      "browse": "Browse",
+      "hosts": "Hosts",
+      "about": "About",
+      "contact": "Contact"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "eyebrow": "The Indian Ocean. Mauritius.",
+      "titleLead": "Find your kind of",
+      "titleItalic": "Mauritius",
+      "lede": "Curated stays from Black River to Belle Mare. Hosted by people who know the island.",
+      "imageAlt": "A Mauritian coastline with mountains beyond"
+    },
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "title": "How DodoStays works.",
+      "lede": "We are not a global platform. We are a small team in Quatre Bornes who built a booking site for the island we live on.",
+      "steps": {
+        "search": {
+          "title": "Search",
+          "body": "Tell us where, when, and what kind of stay. Real prices in rupees, no surge surprises."
+        },
+        "book": {
+          "title": "Book",
+          "body": "Talk to KYC-verified hosts directly, then confirm in a few taps. Instant book where it matters."
+        },
+        "stay": {
+          "title": "Stay",
+          "body": "Local advice on which beach to visit Tuesday and where to find the best dholl puri — from people who live here."
+        }
+      }
+    },
+    "regions": {
+      "eyebrow": "Explore the island",
+      "title": "Stays curated by region.",
+      "viewAll": "View all stays",
+      "viewStays": "View stays →",
+      "tamarin": {
+        "name": "Tamarin",
+        "blurb": "Sunset surf town with a quiet, slow rhythm."
+      },
+      "mahebourg": {
+        "name": "Mahebourg",
+        "blurb": "Old colonial harbour, lagoon at the door."
+      },
+      "flicEnFlac": {
+        "name": "Flic en Flac",
+        "blurb": "Long west-coast beach, walking distance to everything."
+      },
+      "belleMare": {
+        "name": "Belle Mare",
+        "blurb": "Powder-fine east-coast sand, turquoise lagoon."
+      },
+      "regionPhotoAlt": "{name}, Mauritius"
+    },
+    "hostCta": {
+      "eyebrow": "For hosts",
+      "title": "Hosting in Mauritius? Reach guests who actually want to come here.",
+      "lede": "Set your own prices in rupees. Keep your direct guests. Pay one flat commission. No fine print, no foreign-currency surprises at checkout.",
+      "becomeHost": "Become a host →",
+      "rateHeadline": "7%",
+      "rateBody": "Our flat commission rate. No tiered pricing, no surge fees, no category-specific cuts."
+    },
+    "footerCta": {
+      "eyebrow": "Ready when you are",
+      "title": "Stay where the sea meets the road.",
+      "lede": "A small Mauritian booking site, built for people who want to know who they're renting from.",
+      "startExploring": "Start exploring",
+      "becomeHost": "Become a host"
+    }
+  },
+  "search": {
+    "ai": {
+      "placeholder": "Tell us where, when, what — e.g. 3 beds Flic en Flac with pool, under 5000 MUR",
+      "buttonSearch": "Search",
+      "buttonSearching": "Searching"
+    },
+    "acknowledgementPrefix": "Searching: ",
+    "acknowledgementParts": {
+      "underNightly": "under MUR {amount}/night",
+      "verifiedOnly": "(verified only)",
+      "inRegion": "in {region}",
+      "minBeds": "{count}+ bed",
+      "with": "with {amenities}"
+    },
+    "examples": {
+      "title": "Try one"
+    },
+    "anchors": {
+      "empty": "Tap the map to drop an anchor — listings will sort by drive-time to the places you care about. Up to {max}.",
+      "renamePrompt": "Rename anchor"
+    },
+    "filterChips": {
+      "minBeds": "{count}+ beds",
+      "minGuests": "{count}+ guests",
+      "maxNightly": "≤ MUR {amount}",
+      "minNightly": "≥ MUR {amount}",
+      "verifiedOnly": "verified only"
+    }
+  },
+  "listings": {
+    "explorer": {
+      "eyebrow": "Stays in Mauritius",
+      "headingDefault": "Curated stays",
+      "countOne": "{count} stay",
+      "countOther": "{count} stays",
+      "emptyTitle": "No stays match these filters.",
+      "emptyBody": "Try removing a chip, dropping an anchor, or panning the map.",
+      "driveTime": "{minutes} min from anchor",
+      "perNight": "per night"
+    },
+    "detail": {
+      "backLink": "← All stays",
+      "eyebrowVerified": "Verified host",
+      "hostedBy": "Hosted by",
+      "stats": {
+        "bedrooms": "Bedrooms",
+        "beds": "Beds",
+        "bathrooms": "Bathrooms",
+        "maxGuests": "Max guests"
+      },
+      "about": {
+        "eyebrow": "About this place",
+        "titleLead": "A stay shaped by",
+        "titleItalicSuffix": "."
+      },
+      "amenities": {
+        "eyebrow": "Amenities",
+        "title": "What this place offers."
+      },
+      "host": {
+        "eyebrow": "Meet your host",
+        "blurb": "A verified Mauritian host. Quick to reply and happy to point you toward the right beach, market, or sunset spot.",
+        "messageHost": "Message host"
+      }
+    },
+    "amenities": {
+      "Pool": "Pool",
+      "BeachAccess": "Beach access",
+      "AirCon": "Air conditioning",
+      "Wifi": "Wi-Fi",
+      "Kitchen": "Kitchen",
+      "Parking": "Parking",
+      "Tv": "TV",
+      "WashingMachine": "Washing machine",
+      "Balcony": "Balcony",
+      "Garden": "Garden",
+      "Bbq": "BBQ",
+      "Generator": "Generator"
+    }
+  },
+  "auth": {
+    "signin": {
+      "leftEyebrow": "welcome back",
+      "leftTitle": "Stay where the sea meets the road.",
+      "headline": "Sign in",
+      "subline": "to your DodoStays account",
+      "forgotPassword": "Forgot password?",
+      "submitting": "Signing in…",
+      "submit": "Sign in",
+      "or": "or",
+      "newToDodostays": "New to DodoStays?",
+      "createAccountLink": "Create an account"
+    },
+    "signup": {
+      "leftEyebrow": "join us",
+      "leftTitle": "Find your kind of Mauritius.",
+      "headline": "Create your account",
+      "subline": "Join DodoStays to book or host stays across Mauritius.",
+      "iAm": "I am",
+      "rolePicker": {
+        "guest": "I'm a guest",
+        "host": "I'm a host"
+      },
+      "passwordHint": "At least 10 characters with mixed case and a digit.",
+      "submitting": "Creating…",
+      "submit": "Create account",
+      "alreadyHaveAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "languages": {
+        "en": "English",
+        "fr": "Français",
+        "mfe": "Kreol Morisien"
+      }
+    }
+  },
+  "account": {
+    "eyebrow": "your profile",
+    "title": "Account",
+    "welcome": "Welcome,",
+    "labels": {
+      "role": "Role",
+      "kycStatus": "KYC status",
+      "language": "Language"
+    },
+    "profileHeading": "Profile",
+    "hosting": {
+      "title": "Hosting on DodoStays",
+      "blurb": "Edit, publish and track your places. Add photos, set prices in MUR, control your availability.",
+      "manageMyListings": "Manage my listings"
+    }
+  },
+  "bookings": {
+    "dashboard": {
+      "eyebrow": "Your trips",
+      "title": "Bookings",
+      "filterAriaLabel": "Filter bookings",
+      "filters": {
+        "all": "All",
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "cancelled": "Cancelled"
+      },
+      "emptyHasNone": {
+        "headline": "No bookings yet.",
+        "sub": "Once you book a stay it will appear here. Browse the island and find a place that fits."
+      },
+      "emptyFilter": {
+        "headline": "Nothing in {filter}.",
+        "sub": "Try a different filter or browse new stays."
+      }
+    },
+    "card": {
+      "eyebrow": "Reservation",
+      "totalEyebrow": "Total"
+    },
+    "states": {
+      "PendingPayment": "Pending payment",
+      "Confirmed": "Confirmed",
+      "CheckedIn": "Checked in",
+      "Completed": "Completed",
+      "Cancelled": "Cancelled",
+      "Disputed": "Disputed"
+    },
+    "sidebar": {
+      "expired": "Hold expired. Pick dates again to retry.",
+      "blockedDefault": "Dates already booked. Pick different dates.",
+      "signInToBook": "Sign in to book",
+      "holdDates": "Hold dates",
+      "holding": "Holding…",
+      "confirmBooking": "Confirm booking",
+      "pickDifferentDates": "Pick different dates",
+      "paymentPending": "Payment will be wired in Plan 04. For now, \"Confirm\" finalizes without charging.",
+      "confirming": "Confirming booking…"
+    }
+  },
+  "host": {
+    "dashboard": {
+      "eyebrow": "Host dashboard",
+      "blurb": "Create, edit and publish your places. Add photos, set prices, control availability.",
+      "addListing": "+ Add listing",
+      "tabsAriaLabel": "Host sections",
+      "tabListings": "Listings",
+      "kpi": {
+        "activeListings": "Active listings",
+        "totalListings": "Total listings",
+        "avgNightlyRate": "Avg nightly rate",
+        "status": "Status",
+        "draftSuffixOne": "{count} draft",
+        "draftSuffixOther": "{count} drafts",
+        "allPublished": "All published",
+        "includingDrafts": "Including drafts",
+        "acrossYourPlaces": "Across your places",
+        "live": "Live",
+        "setup": "Setup",
+        "bookingsOpen": "Bookings open",
+        "publishToGoLive": "Publish to go live"
+      },
+      "row": {
+        "noPhotoYet": "No photo yet",
+        "untitled": "Untitled listing",
+        "perNight": "MUR {amount} / night",
+        "deleteConfirm": "Delete this listing? This cannot be undone."
+      },
+      "empty": {
+        "eyebrow": "Get started",
+        "title": "No listings yet.",
+        "lede": "Use the button below to create your first place on DodoStays. It only takes a few minutes.",
+        "cta": "Create your first listing"
+      },
+      "fallbackHostName": "Host"
+    },
+    "newListing": {
+      "back": "← Back to my listings",
+      "eyebrow": "New listing",
+      "title": "Tell us about your place.",
+      "lede": "Fill in the basics now. You can add photos and publish from the next screen."
+    },
+    "editListing": {
+      "back": "← Back to my listings",
+      "eyebrow": "Edit listing",
+      "untitled": "Untitled listing",
+      "notFound": "Listing not found.",
+      "photos": {
+        "eyebrow": "Photos",
+        "title": "Photos",
+        "blurb": "The first photo is the cover guests see on browse pages. Add at least one before you publish.",
+        "empty": "No photos yet.",
+        "emptyHint": "JPEG, PNG, WebP or HEIC.",
+        "cover": "Cover",
+        "removeAriaLabel": "Remove photo",
+        "remove": "Remove",
+        "captionLabel": "Caption (optional)",
+        "captionPlaceholder": "Sunset over the lagoon",
+        "uploadPhoto": "Upload photo",
+        "uploading": "Uploading…"
+      },
+      "channels": {
+        "eyebrow": "Channels",
+        "title": "Channels",
+        "blurb": "Sync your calendar with Airbnb, Booking.com and others so the same dates stay blocked everywhere."
+      }
+    },
+    "listingForm": {
+      "property": {
+        "eyebrow": "Property",
+        "title": "Property",
+        "description": "The basics guests see first.",
+        "titleLabel": "Title",
+        "titlePlaceholder": "Sunny 3-bed villa with pool",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Tell guests what makes your place special…"
+      },
+      "location": {
+        "eyebrow": "Location",
+        "title": "Location",
+        "description": "Where is your place?",
+        "addressLabel": "Address",
+        "addressPlaceholder": "Street, area, town",
+        "regionLabel": "Region",
+        "propertyTypeLabel": "Property type",
+        "latitudeLabel": "Latitude",
+        "longitudeLabel": "Longitude"
+      },
+      "capacity": {
+        "eyebrow": "Capacity & pricing",
+        "title": "Capacity & pricing",
+        "description": "How many can stay, and what does it cost? All amounts in Mauritian rupees.",
+        "bedrooms": "Bedrooms",
+        "beds": "Beds",
+        "bathrooms": "Bathrooms",
+        "maxGuests": "Max guests",
+        "nightlyRate": "Nightly rate (MUR)",
+        "cleaningFee": "Cleaning fee (MUR)",
+        "minStay": "Min stay (nights)"
+      },
+      "amenities": {
+        "eyebrow": "Amenities",
+        "title": "Amenities",
+        "description": "What does your place include?"
+      },
+      "saving": "Saving…"
+    },
+    "channels": {
+      "ourFeed": {
+        "eyebrow": "DodoStays feed",
+        "title": "Your DodoStays iCal URL",
+        "blurb": "Copy this URL and paste it into Airbnb / Booking.com's \"Import calendar\" setting so they block these dates too.",
+        "copy": "Copy",
+        "copied": "Copied"
+      },
+      "external": {
+        "eyebrow": "External calendars",
+        "title": "External calendars (iCal)",
+        "blurb": "Paste your Airbnb / Booking.com iCal URL here so external bookings block these dates on DodoStays. We sync every 15 minutes.",
+        "urlPlaceholder": "https://www.airbnb.com/calendar/ical/...",
+        "loading": "Loading…",
+        "empty": "No external calendars yet.",
+        "removeConfirm": "Remove this calendar feed? Synced blocks will be deleted.",
+        "lastSynced": "Last synced: {when}",
+        "pendingSync": "Pending first sync",
+        "errorPrefix": "Error: {message}"
+      }
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "notFound": "Page not found.",
+    "unauthorized": "You don't have access to this page.",
+    "notAuthenticated": "Not authenticated"
+  },
+  "validation": {
+    "required": "Required",
+    "email": "Invalid email",
+    "minLength": "At least {min} characters"
+  }
+}

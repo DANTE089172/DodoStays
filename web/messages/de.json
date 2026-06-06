@@ -1,0 +1,459 @@
+{
+  "_meta": {
+    "language": "Deutsch",
+    "code": "de",
+    "reviewed": false,
+    "note": "AI-drafted first pass. Native review pending. Formal Sie register; clean German, minimal Anglicisms."
+  },
+  "common": {
+    "buttons": {
+      "signIn": "Anmelden",
+      "signUp": "Konto erstellen",
+      "signOut": "Abmelden",
+      "save": "Speichern",
+      "saveChanges": "Änderungen speichern",
+      "saveAsDraft": "Als Entwurf speichern",
+      "cancel": "Abbrechen",
+      "edit": "Bearbeiten",
+      "search": "Suchen",
+      "searching": "Suche läuft",
+      "back": "Zurück",
+      "continue": "Weiter",
+      "remove": "Entfernen",
+      "add": "Hinzufügen",
+      "delete": "Löschen",
+      "publish": "Veröffentlichen",
+      "unpublish": "Veröffentlichung aufheben",
+      "viewPublic": "Öffentlich ansehen",
+      "browseStays": "Unterkünfte durchsuchen",
+      "viewDetails": "Details anzeigen"
+    },
+    "labels": {
+      "email": "E-Mail",
+      "password": "Passwort",
+      "displayName": "Anzeigename",
+      "preferredLanguage": "Bevorzugte Sprache",
+      "guests": "Gäste",
+      "checkIn": "Anreise",
+      "checkOut": "Abreise"
+    },
+    "status": {
+      "loading": "Wird geladen…",
+      "saving": "Wird gespeichert…",
+      "uploading": "Wird hochgeladen…"
+    },
+    "currency": {
+      "perNight": "/ Nacht"
+    }
+  },
+  "siteHeader": {
+    "homeAriaLabel": "DodoStays Startseite",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "primaryNavLabel": "Hauptnavigation",
+    "links": {
+      "browse": "Entdecken",
+      "hosts": "Gastgeber",
+      "about": "Über uns",
+      "bookings": "Buchungen",
+      "account": "Konto"
+    },
+    "becomeHost": "Gastgeber werden",
+    "language": "Sprache"
+  },
+  "siteFooter": {
+    "tagline": "Faire Preise für Unterkünfte auf Mauritius. Echte Rupien, geprüfte Gastgeber.",
+    "exploreEyebrow": "Entdecken",
+    "localeEyebrow": "Region",
+    "madeIn": "Gemacht auf Mauritius.",
+    "pricesIn": "Alle Preise in MUR.",
+    "copyright": "© {year} DodoStays.",
+    "links": {
+      "browse": "Entdecken",
+      "hosts": "Gastgeber",
+      "about": "Über uns",
+      "contact": "Kontakt"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "eyebrow": "Der Indische Ozean. Mauritius.",
+      "titleLead": "Finden Sie Ihr",
+      "titleItalic": "Mauritius",
+      "lede": "Ausgewählte Unterkünfte von Black River bis Belle Mare. Vermietet von Menschen, die die Insel kennen.",
+      "imageAlt": "Eine mauritische Küste mit Bergen im Hintergrund"
+    },
+    "howItWorks": {
+      "eyebrow": "So funktioniert's",
+      "title": "So funktioniert DodoStays.",
+      "lede": "Wir sind keine globale Plattform. Wir sind ein kleines Team aus Quatre Bornes, das eine Buchungsseite für die Insel gebaut hat, auf der wir leben.",
+      "steps": {
+        "search": {
+          "title": "Suchen",
+          "body": "Sagen Sie uns, wohin, wann und welche Art von Aufenthalt. Echte Preise in Rupien, keine bösen Überraschungen."
+        },
+        "book": {
+          "title": "Buchen",
+          "body": "Sprechen Sie direkt mit KYC-geprüften Gastgebern und bestätigen Sie mit wenigen Klicks. Sofortbuchung dort, wo es zählt."
+        },
+        "stay": {
+          "title": "Genießen",
+          "body": "Lokale Tipps, an welchen Strand Sie dienstags fahren sollten und wo Sie das beste Dholl Puri finden – von Menschen, die hier leben."
+        }
+      }
+    },
+    "regions": {
+      "eyebrow": "Die Insel entdecken",
+      "title": "Unterkünfte nach Region.",
+      "viewAll": "Alle Unterkünfte ansehen",
+      "viewStays": "Unterkünfte ansehen →",
+      "tamarin": {
+        "name": "Tamarin",
+        "blurb": "Surfort im Sonnenuntergang, ruhig und entspannt."
+      },
+      "mahebourg": {
+        "name": "Mahébourg",
+        "blurb": "Alter Kolonialhafen, Lagune direkt vor der Tür."
+      },
+      "flicEnFlac": {
+        "name": "Flic en Flac",
+        "blurb": "Langer Weststrand, alles fußläufig erreichbar."
+      },
+      "belleMare": {
+        "name": "Belle Mare",
+        "blurb": "Feinster Sand der Ostküste, türkise Lagune."
+      },
+      "regionPhotoAlt": "{name}, Mauritius"
+    },
+    "hostCta": {
+      "eyebrow": "Für Gastgeber",
+      "title": "Sie vermieten auf Mauritius? Erreichen Sie Gäste, die wirklich hierher kommen wollen.",
+      "lede": "Legen Sie Ihre Preise selbst in Rupien fest. Behalten Sie Ihre Direktgäste. Eine einheitliche Provision. Kein Kleingedrucktes, keine Wechselkurs-Überraschungen beim Bezahlen.",
+      "becomeHost": "Gastgeber werden →",
+      "rateHeadline": "7 %",
+      "rateBody": "Unsere einheitliche Provision. Keine Stufenpreise, keine Aufschläge, keine kategorienabhängigen Abzüge."
+    },
+    "footerCta": {
+      "eyebrow": "Wann immer Sie soweit sind",
+      "title": "Wohnen, wo das Meer auf die Straße trifft.",
+      "lede": "Eine kleine mauritische Buchungsseite – für Menschen, die wissen wollen, bei wem sie mieten.",
+      "startExploring": "Jetzt entdecken",
+      "becomeHost": "Gastgeber werden"
+    }
+  },
+  "search": {
+    "ai": {
+      "placeholder": "Sagen Sie uns wohin, wann, was — z. B. 3 Schlafzimmer in Flic en Flac mit Pool unter 5000 MUR",
+      "buttonSearch": "Suchen",
+      "buttonSearching": "Suche"
+    },
+    "acknowledgementPrefix": "Suche: ",
+    "acknowledgementParts": {
+      "underNightly": "unter {amount} MUR/Nacht",
+      "verifiedOnly": "(nur geprüfte)",
+      "inRegion": "in {region}",
+      "minBeds": "ab {count} Schlafzimmern",
+      "with": "mit {amenities}"
+    },
+    "examples": {
+      "title": "Probieren Sie es"
+    },
+    "anchors": {
+      "empty": "Tippen Sie auf die Karte, um einen Ankerpunkt zu setzen — Unterkünfte werden nach Fahrzeit zu Ihren wichtigen Orten sortiert. Bis zu {max}.",
+      "renamePrompt": "Anker umbenennen"
+    },
+    "filterChips": {
+      "minBeds": "ab {count} Schlafzimmern",
+      "minGuests": "ab {count} Gästen",
+      "maxNightly": "≤ {amount} MUR",
+      "minNightly": "≥ {amount} MUR",
+      "verifiedOnly": "nur geprüfte"
+    }
+  },
+  "listings": {
+    "explorer": {
+      "eyebrow": "Unterkünfte auf Mauritius",
+      "headingDefault": "Ausgewählte Unterkünfte",
+      "countOne": "{count} Unterkunft",
+      "countOther": "{count} Unterkünfte",
+      "emptyTitle": "Keine Unterkunft passt zu diesen Filtern.",
+      "emptyBody": "Entfernen Sie einen Filter, setzen Sie einen Anker oder verschieben Sie die Karte.",
+      "driveTime": "{minutes} Min. vom Anker",
+      "perNight": "pro Nacht"
+    },
+    "detail": {
+      "backLink": "← Alle Unterkünfte",
+      "eyebrowVerified": "Geprüfter Gastgeber",
+      "hostedBy": "Gastgeber:",
+      "stats": {
+        "bedrooms": "Schlafzimmer",
+        "beds": "Betten",
+        "bathrooms": "Bäder",
+        "maxGuests": "Max. Gäste"
+      },
+      "about": {
+        "eyebrow": "Über diese Unterkunft",
+        "titleLead": "Ein Aufenthalt geprägt von",
+        "titleItalicSuffix": "."
+      },
+      "amenities": {
+        "eyebrow": "Ausstattung",
+        "title": "Was diese Unterkunft bietet."
+      },
+      "host": {
+        "eyebrow": "Ihr Gastgeber",
+        "blurb": "Ein geprüfter mauritischer Gastgeber. Antwortet schnell und gibt gerne Tipps zum richtigen Strand, Markt oder Sonnenuntergang.",
+        "messageHost": "Gastgeber kontaktieren"
+      }
+    },
+    "amenities": {
+      "Pool": "Pool",
+      "BeachAccess": "Strandzugang",
+      "AirCon": "Klimaanlage",
+      "Wifi": "WLAN",
+      "Kitchen": "Küche",
+      "Parking": "Parkplatz",
+      "Tv": "Fernseher",
+      "WashingMachine": "Waschmaschine",
+      "Balcony": "Balkon",
+      "Garden": "Garten",
+      "Bbq": "Grill",
+      "Generator": "Notstromaggregat"
+    }
+  },
+  "auth": {
+    "signin": {
+      "leftEyebrow": "willkommen zurück",
+      "leftTitle": "Wohnen, wo das Meer auf die Straße trifft.",
+      "headline": "Anmelden",
+      "subline": "in Ihrem DodoStays-Konto",
+      "forgotPassword": "Passwort vergessen?",
+      "submitting": "Anmeldung läuft…",
+      "submit": "Anmelden",
+      "or": "oder",
+      "newToDodostays": "Neu bei DodoStays?",
+      "createAccountLink": "Konto erstellen"
+    },
+    "signup": {
+      "leftEyebrow": "machen Sie mit",
+      "leftTitle": "Finden Sie Ihr Mauritius.",
+      "headline": "Konto erstellen",
+      "subline": "Werden Sie Teil von DodoStays — buchen oder vermieten Sie auf Mauritius.",
+      "iAm": "Ich bin",
+      "rolePicker": {
+        "guest": "Ich bin Gast",
+        "host": "Ich bin Gastgeber"
+      },
+      "passwordHint": "Mindestens 10 Zeichen mit Groß- und Kleinbuchstaben sowie einer Ziffer.",
+      "submitting": "Konto wird erstellt…",
+      "submit": "Konto erstellen",
+      "alreadyHaveAccount": "Sie haben bereits ein Konto?",
+      "signInLink": "Anmelden",
+      "languages": {
+        "en": "English",
+        "fr": "Français",
+        "mfe": "Kreol Morisien"
+      }
+    }
+  },
+  "account": {
+    "eyebrow": "ihr profil",
+    "title": "Konto",
+    "welcome": "Willkommen,",
+    "labels": {
+      "role": "Rolle",
+      "kycStatus": "KYC-Status",
+      "language": "Sprache"
+    },
+    "profileHeading": "Profil",
+    "hosting": {
+      "title": "Vermieten auf DodoStays",
+      "blurb": "Bearbeiten, veröffentlichen und verwalten Sie Ihre Unterkünfte. Fügen Sie Fotos hinzu, legen Sie Preise in MUR fest, steuern Sie die Verfügbarkeit.",
+      "manageMyListings": "Meine Unterkünfte verwalten"
+    }
+  },
+  "bookings": {
+    "dashboard": {
+      "eyebrow": "Ihre Reisen",
+      "title": "Buchungen",
+      "filterAriaLabel": "Buchungen filtern",
+      "filters": {
+        "all": "Alle",
+        "upcoming": "Bevorstehend",
+        "past": "Vergangen",
+        "cancelled": "Storniert"
+      },
+      "emptyHasNone": {
+        "headline": "Noch keine Buchungen.",
+        "sub": "Sobald Sie eine Unterkunft buchen, erscheint sie hier. Entdecken Sie die Insel und finden Sie den passenden Ort."
+      },
+      "emptyFilter": {
+        "headline": "Nichts unter „{filter}\".",
+        "sub": "Probieren Sie einen anderen Filter oder neue Unterkünfte."
+      }
+    },
+    "card": {
+      "eyebrow": "Reservierung",
+      "totalEyebrow": "Gesamt"
+    },
+    "states": {
+      "PendingPayment": "Zahlung ausstehend",
+      "Confirmed": "Bestätigt",
+      "CheckedIn": "Eingecheckt",
+      "Completed": "Abgeschlossen",
+      "Cancelled": "Storniert",
+      "Disputed": "Im Streit"
+    },
+    "sidebar": {
+      "expired": "Reservierung abgelaufen. Bitte wählen Sie die Daten erneut.",
+      "blockedDefault": "Termine bereits gebucht. Bitte andere Daten wählen.",
+      "signInToBook": "Zum Buchen anmelden",
+      "holdDates": "Daten reservieren",
+      "holding": "Reservierung läuft…",
+      "confirmBooking": "Buchung bestätigen",
+      "pickDifferentDates": "Andere Daten wählen",
+      "paymentPending": "Die Zahlung wird in Plan 04 ergänzt. Vorerst schließt „Bestätigen\" die Buchung ohne Belastung ab.",
+      "confirming": "Bestätigung läuft…"
+    }
+  },
+  "host": {
+    "dashboard": {
+      "eyebrow": "Gastgeber-Dashboard",
+      "blurb": "Erstellen, bearbeiten und veröffentlichen Sie Ihre Unterkünfte. Fotos hinzufügen, Preise festlegen, Verfügbarkeit steuern.",
+      "addListing": "+ Unterkunft hinzufügen",
+      "tabsAriaLabel": "Gastgeber-Bereiche",
+      "tabListings": "Unterkünfte",
+      "kpi": {
+        "activeListings": "Aktive Unterkünfte",
+        "totalListings": "Unterkünfte gesamt",
+        "avgNightlyRate": "Ø Preis pro Nacht",
+        "status": "Status",
+        "draftSuffixOne": "{count} Entwurf",
+        "draftSuffixOther": "{count} Entwürfe",
+        "allPublished": "Alle veröffentlicht",
+        "includingDrafts": "Inklusive Entwürfe",
+        "acrossYourPlaces": "Über alle Unterkünfte",
+        "live": "Live",
+        "setup": "Einrichtung",
+        "bookingsOpen": "Buchungen offen",
+        "publishToGoLive": "Veröffentlichen Sie, um live zu gehen"
+      },
+      "row": {
+        "noPhotoYet": "Noch kein Foto",
+        "untitled": "Unterkunft ohne Titel",
+        "perNight": "{amount} MUR / Nacht",
+        "deleteConfirm": "Diese Unterkunft löschen? Das lässt sich nicht rückgängig machen."
+      },
+      "empty": {
+        "eyebrow": "Loslegen",
+        "title": "Noch keine Unterkünfte.",
+        "lede": "Mit der Schaltfläche unten erstellen Sie Ihre erste Unterkunft auf DodoStays. Es dauert nur wenige Minuten.",
+        "cta": "Erste Unterkunft anlegen"
+      },
+      "fallbackHostName": "Gastgeber"
+    },
+    "newListing": {
+      "back": "← Zurück zu meinen Unterkünften",
+      "eyebrow": "Neue Unterkunft",
+      "title": "Erzählen Sie uns von Ihrer Unterkunft.",
+      "lede": "Geben Sie jetzt das Wesentliche ein. Fotos und Veröffentlichung folgen im nächsten Schritt."
+    },
+    "editListing": {
+      "back": "← Zurück zu meinen Unterkünften",
+      "eyebrow": "Unterkunft bearbeiten",
+      "untitled": "Unterkunft ohne Titel",
+      "notFound": "Unterkunft nicht gefunden.",
+      "photos": {
+        "eyebrow": "Fotos",
+        "title": "Fotos",
+        "blurb": "Das erste Foto ist das Titelbild, das Gäste auf der Suche sehen. Fügen Sie mindestens eines hinzu, bevor Sie veröffentlichen.",
+        "empty": "Noch keine Fotos.",
+        "emptyHint": "JPEG, PNG, WebP oder HEIC.",
+        "cover": "Titelbild",
+        "removeAriaLabel": "Foto entfernen",
+        "remove": "Entfernen",
+        "captionLabel": "Bildunterschrift (optional)",
+        "captionPlaceholder": "Sonnenuntergang über der Lagune",
+        "uploadPhoto": "Foto hochladen",
+        "uploading": "Wird hochgeladen…"
+      },
+      "channels": {
+        "eyebrow": "Kanäle",
+        "title": "Kanäle",
+        "blurb": "Synchronisieren Sie Ihren Kalender mit Airbnb, Booking.com und anderen, damit dieselben Termine überall blockiert bleiben."
+      }
+    },
+    "listingForm": {
+      "property": {
+        "eyebrow": "Unterkunft",
+        "title": "Unterkunft",
+        "description": "Was Gäste zuerst sehen.",
+        "titleLabel": "Titel",
+        "titlePlaceholder": "Sonnige 3-Zimmer-Villa mit Pool",
+        "descriptionLabel": "Beschreibung",
+        "descriptionPlaceholder": "Erzählen Sie Gästen, was Ihre Unterkunft besonders macht…"
+      },
+      "location": {
+        "eyebrow": "Lage",
+        "title": "Lage",
+        "description": "Wo befindet sich Ihre Unterkunft?",
+        "addressLabel": "Adresse",
+        "addressPlaceholder": "Straße, Ortsteil, Ort",
+        "regionLabel": "Region",
+        "propertyTypeLabel": "Unterkunftstyp",
+        "latitudeLabel": "Breitengrad",
+        "longitudeLabel": "Längengrad"
+      },
+      "capacity": {
+        "eyebrow": "Kapazität & Preise",
+        "title": "Kapazität & Preise",
+        "description": "Für wie viele und zu welchem Preis? Alle Beträge in mauritischen Rupien.",
+        "bedrooms": "Schlafzimmer",
+        "beds": "Betten",
+        "bathrooms": "Bäder",
+        "maxGuests": "Max. Gäste",
+        "nightlyRate": "Preis pro Nacht (MUR)",
+        "cleaningFee": "Reinigungsgebühr (MUR)",
+        "minStay": "Mindestaufenthalt (Nächte)"
+      },
+      "amenities": {
+        "eyebrow": "Ausstattung",
+        "title": "Ausstattung",
+        "description": "Was umfasst Ihre Unterkunft?"
+      },
+      "saving": "Wird gespeichert…"
+    },
+    "channels": {
+      "ourFeed": {
+        "eyebrow": "DodoStays-Feed",
+        "title": "Ihre DodoStays-iCal-URL",
+        "blurb": "Kopieren Sie diese URL und fügen Sie sie in die Einstellung „Kalender importieren\" bei Airbnb / Booking.com ein, damit dort dieselben Termine blockiert werden.",
+        "copy": "Kopieren",
+        "copied": "Kopiert"
+      },
+      "external": {
+        "eyebrow": "Externe Kalender",
+        "title": "Externe Kalender (iCal)",
+        "blurb": "Fügen Sie hier Ihre iCal-URL von Airbnb / Booking.com ein, damit externe Buchungen diese Termine auf DodoStays blockieren. Synchronisation alle 15 Minuten.",
+        "urlPlaceholder": "https://www.airbnb.com/calendar/ical/...",
+        "loading": "Wird geladen…",
+        "empty": "Noch keine externen Kalender.",
+        "removeConfirm": "Diesen Kalender-Feed entfernen? Synchronisierte Sperren werden gelöscht.",
+        "lastSynced": "Zuletzt synchronisiert: {when}",
+        "pendingSync": "Erste Synchronisation ausstehend",
+        "errorPrefix": "Fehler: {message}"
+      }
+    }
+  },
+  "errors": {
+    "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "notFound": "Seite nicht gefunden.",
+    "unauthorized": "Sie haben keinen Zugriff auf diese Seite.",
+    "notAuthenticated": "Nicht angemeldet"
+  },
+  "validation": {
+    "required": "Pflichtfeld",
+    "email": "Ungültige E-Mail",
+    "minLength": "Mindestens {min} Zeichen"
+  }
+}

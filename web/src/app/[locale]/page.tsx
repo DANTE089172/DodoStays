@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Search, Calendar, Heart, ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { AiSearchBar } from "@/components/search/ai-search-bar";
@@ -23,62 +24,52 @@ const HERO_VIDEO_SRC =
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1573548842355-73bb50e50323?w=2400&q=80";
 
-const REGIONS = [
-  {
-    name: "Tamarin",
-    blurb: "Sunset surf town with a quiet, slow rhythm.",
+const REGION_KEYS = ["tamarin", "mahebourg", "flicEnFlac", "belleMare"] as const;
+
+const REGION_META: Record<
+  (typeof REGION_KEYS)[number],
+  { image: string; href: string }
+> = {
+  tamarin: {
     image:
       "https://images.unsplash.com/photo-1505881502353-a1986add3762?w=1600&q=80",
     href: "/listings?region=tamarin",
   },
-  {
-    name: "Mahebourg",
-    blurb: "Old colonial harbour, lagoon at the door.",
+  mahebourg: {
     image:
       "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1600&q=80",
     href: "/listings?region=mahebourg",
   },
-  {
-    name: "Flic en Flac",
-    blurb: "Long west-coast beach, walking distance to everything.",
+  flicEnFlac: {
     image:
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1600&q=80",
     href: "/listings?region=flic-en-flac",
   },
-  {
-    name: "Belle Mare",
-    blurb: "Powder-fine east-coast sand, turquoise lagoon.",
+  belleMare: {
     image:
       "https://images.unsplash.com/photo-1571396726928-7bd1cae40f0f?w=1600&q=80",
     href: "/listings?region=belle-mare",
   },
-];
+};
 
-const HOW_STEPS = [
-  {
-    n: "01",
-    title: "Search",
-    icon: Search,
-    body:
-      "Tell us where, when, and what kind of stay. Real prices in rupees, no surge surprises.",
-  },
-  {
-    n: "02",
-    title: "Book",
-    icon: Calendar,
-    body:
-      "Talk to KYC-verified hosts directly, then confirm in a few taps. Instant book where it matters.",
-  },
-  {
-    n: "03",
-    title: "Stay",
-    icon: Heart,
-    body:
-      "Local advice on which beach to visit Tuesday and where to find the best dholl puri — from people who live here.",
-  },
-];
+const HOW_STEP_KEYS = ["search", "book", "stay"] as const;
+
+const HOW_STEP_META: Record<
+  (typeof HOW_STEP_KEYS)[number],
+  { n: string; icon: typeof Search }
+> = {
+  search: { n: "01", icon: Search },
+  book: { n: "02", icon: Calendar },
+  stay: { n: "03", icon: Heart },
+};
 
 export default function Home() {
+  const tHero = useTranslations("homepage.hero");
+  const tHow = useTranslations("homepage.howItWorks");
+  const tRegions = useTranslations("homepage.regions");
+  const tHostCta = useTranslations("homepage.hostCta");
+  const tFooterCta = useTranslations("homepage.footerCta");
+
   return (
     <main className="flex min-h-screen flex-col bg-[var(--color-background)]">
       <SiteHeader />
@@ -113,21 +104,21 @@ export default function Home() {
         <CinematicHeroMedia
           videoSrc={HERO_VIDEO_SRC}
           posterSrc={HERO_IMAGE}
-          alt="A Mauritian coastline with mountains beyond"
+          alt={tHero("imageAlt")}
         />
 
         {/* Editorial column — eyebrow, headline, lede, search */}
         <div className="relative z-10 flex min-h-[88vh] w-full flex-col items-center justify-center px-6 py-[var(--section-py-lg)] text-center">
-          <Eyebrow tone="peach">The Indian Ocean. Mauritius.</Eyebrow>
+          <Eyebrow tone="peach">{tHero("eyebrow")}</Eyebrow>
           <DisplayHeading
             level={1}
             className="mt-6 max-w-3xl text-[var(--color-foreground)]"
           >
-            Find your kind of <span className="italic">Mauritius</span>.
+            {tHero("titleLead")}{" "}
+            <span className="italic">{tHero("titleItalic")}</span>.
           </DisplayHeading>
           <Lede className="mt-6 text-[var(--color-foreground)]/85">
-            Curated stays from Black River to Belle Mare. Hosted by people who
-            know the island.
+            {tHero("lede")}
           </Lede>
 
           <div className="mt-10 w-full max-w-3xl">
@@ -152,37 +143,37 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       <Section tone="cream" size="lg">
         <div className="mx-auto max-w-3xl text-center">
-          <Eyebrow tone="peach">How it works</Eyebrow>
+          <Eyebrow tone="peach">{tHow("eyebrow")}</Eyebrow>
           <DisplayHeading level={2} className="mt-5">
-            How DodoStays works.
+            {tHow("title")}
           </DisplayHeading>
-          <Lede className="mx-auto mt-6">
-            We are not a global platform. We are a small team in Quatre Bornes
-            who built a booking site for the island we live on.
-          </Lede>
+          <Lede className="mx-auto mt-6">{tHow("lede")}</Lede>
         </div>
 
         <ol className="mt-20 grid gap-12 sm:grid-cols-3 sm:gap-10">
-          {HOW_STEPS.map(({ n, title, icon: Icon, body }) => (
-            <li key={n} className="text-center">
-              <Icon
-                className="mx-auto h-6 w-6 text-[var(--color-primary)]"
-                aria-hidden
-              />
-              <p
-                className="ds-display-lg mt-6 text-[var(--color-primary)]"
-                aria-hidden
-              >
-                {n}
-              </p>
-              <h3 className="ds-display-sm mt-4 text-[var(--color-foreground)]">
-                {title}
-              </h3>
-              <p className="mx-auto mt-4 max-w-xs text-[15px] leading-relaxed text-[var(--color-muted-foreground)]">
-                {body}
-              </p>
-            </li>
-          ))}
+          {HOW_STEP_KEYS.map((key) => {
+            const Icon = HOW_STEP_META[key].icon;
+            return (
+              <li key={key} className="text-center">
+                <Icon
+                  className="mx-auto h-6 w-6 text-[var(--color-primary)]"
+                  aria-hidden
+                />
+                <p
+                  className="ds-display-lg mt-6 text-[var(--color-primary)]"
+                  aria-hidden
+                >
+                  {HOW_STEP_META[key].n}
+                </p>
+                <h3 className="ds-display-sm mt-4 text-[var(--color-foreground)]">
+                  {tHow(`steps.${key}.title`)}
+                </h3>
+                <p className="mx-auto mt-4 max-w-xs text-[15px] leading-relaxed text-[var(--color-muted-foreground)]">
+                  {tHow(`steps.${key}.body`)}
+                </p>
+              </li>
+            );
+          })}
         </ol>
       </Section>
 
@@ -192,45 +183,45 @@ export default function Home() {
       <Section tone="sand" size="lg">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div className="max-w-xl">
-            <Eyebrow tone="peach">Explore the island</Eyebrow>
+            <Eyebrow tone="peach">{tRegions("eyebrow")}</Eyebrow>
             <DisplayHeading level={2} className="mt-5">
-              Stays curated by region.
+              {tRegions("title")}
             </DisplayHeading>
           </div>
           <Link
             href="/listings"
             className="text-[14px] tracking-[0.04em] text-[var(--color-foreground)] underline-offset-4 transition-colors duration-200 ease-out hover:text-[var(--color-primary)] hover:underline"
           >
-            View all stays
+            {tRegions("viewAll")}
           </Link>
         </div>
 
         <div className="mt-16 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
-          {REGIONS.map((r) => (
-            <Link
-              key={r.name}
-              href={r.href}
-              className="group block"
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--color-border)] bg-[var(--color-muted)]">
-                <CinematicPhoto
-                  src={r.image}
-                  alt={`${r.name}, Mauritius`}
-                  grade="warm"
-                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                />
-              </div>
-              <h3 className="ds-display-sm mt-5 text-[var(--color-foreground)] transition-colors duration-200 ease-out group-hover:text-[var(--color-primary)]">
-                {r.name}
-              </h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-[var(--color-muted-foreground)]">
-                {r.blurb}
-              </p>
-              <span className="mt-3 inline-block text-[13px] tracking-[0.08em] text-[var(--color-primary)]">
-                View stays &rarr;
-              </span>
-            </Link>
-          ))}
+          {REGION_KEYS.map((key) => {
+            const meta = REGION_META[key];
+            const name = tRegions(`${key}.name`);
+            return (
+              <Link key={key} href={meta.href} className="group block">
+                <div className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--color-border)] bg-[var(--color-muted)]">
+                  <CinematicPhoto
+                    src={meta.image}
+                    alt={tRegions("regionPhotoAlt", { name })}
+                    grade="warm"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                  />
+                </div>
+                <h3 className="ds-display-sm mt-5 text-[var(--color-foreground)] transition-colors duration-200 ease-out group-hover:text-[var(--color-primary)]">
+                  {name}
+                </h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-[var(--color-muted-foreground)]">
+                  {tRegions(`${key}.blurb`)}
+                </p>
+                <span className="mt-3 inline-block text-[13px] tracking-[0.08em] text-[var(--color-primary)]">
+                  {tRegions("viewStays")}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </Section>
 
@@ -240,21 +231,19 @@ export default function Home() {
       <Section tone="ink" size="lg">
         <div className="grid items-center gap-16 md:grid-cols-2 md:gap-20">
           <div>
-            <Eyebrow tone="peach">For hosts</Eyebrow>
+            <Eyebrow tone="peach">{tHostCta("eyebrow")}</Eyebrow>
             <DisplayHeading level={2} className="mt-5 text-[var(--color-foreground)]">
-              Hosting in Mauritius? Reach guests who actually want to come here.
+              {tHostCta("title")}
             </DisplayHeading>
             <Lede className="mt-6 text-[var(--color-foreground)]/80">
-              Set your own prices in rupees. Keep your direct guests. Pay one
-              flat commission. No fine print, no foreign-currency surprises at
-              checkout.
+              {tHostCta("lede")}
             </Lede>
             <div className="mt-10">
               <Link
                 href="/signup"
                 className={pillButtonClasses({ variant: "ghost", size: "lg" })}
               >
-                Become a host &rarr;
+                {tHostCta("becomeHost")}
               </Link>
             </div>
           </div>
@@ -264,11 +253,10 @@ export default function Home() {
               className="font-display text-[clamp(7rem,18vw,12rem)] leading-none tracking-[-0.04em] text-[var(--color-primary)]"
               aria-hidden
             >
-              7%
+              {tHostCta("rateHeadline")}
             </p>
             <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-[var(--color-foreground)]/70 md:max-w-sm">
-              Our flat commission rate. No tiered pricing, no surge fees, no
-              category-specific cuts.
+              {tHostCta("rateBody")}
             </p>
           </div>
         </div>
@@ -279,26 +267,23 @@ export default function Home() {
       {/* ------------------------------------------------------------------ */}
       <Section tone="cream" size="lg" width="narrow">
         <div className="text-center">
-          <Eyebrow tone="peach">Ready when you are</Eyebrow>
+          <Eyebrow tone="peach">{tFooterCta("eyebrow")}</Eyebrow>
           <DisplayHeading level={2} italic className="mt-5">
-            Stay where the sea meets the road.
+            {tFooterCta("title")}
           </DisplayHeading>
-          <Lede className="mx-auto mt-6">
-            A small Mauritian booking site, built for people who want to know
-            who they&apos;re renting from.
-          </Lede>
+          <Lede className="mx-auto mt-6">{tFooterCta("lede")}</Lede>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/listings"
               className={pillButtonClasses({ variant: "solid", size: "lg" })}
             >
-              Start exploring
+              {tFooterCta("startExploring")}
             </Link>
             <Link
               href="/signup"
               className={pillButtonClasses({ variant: "ghost", size: "lg" })}
             >
-              Become a host
+              {tFooterCta("becomeHost")}
             </Link>
           </div>
         </div>
