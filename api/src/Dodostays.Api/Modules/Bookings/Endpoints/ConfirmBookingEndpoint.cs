@@ -12,14 +12,16 @@ internal static class ConfirmBookingEndpoint
 
     private static async Task<IResult> HandleAsync(
         [FromBody] ConfirmBookingRequest request,
+        HttpContext httpContext,
         IUserContext userContext,
         BookingService service,
         CancellationToken ct)
     {
         var user = await userContext.RequireUserAsync(ct);
+        var idempotencyKey = httpContext.Request.Headers["Idempotency-Key"].FirstOrDefault() ?? request.IdempotencyKey;
         try
         {
-            var dto = await service.ConfirmAsync(user.Id, request.BookingId, request.PaymentReference, ct);
+            var dto = await service.ConfirmAsync(user.Id, request.BookingId, request.PaymentReference, idempotencyKey, ct);
             return Results.Ok(dto);
         }
         catch (KeyNotFoundException) { return Results.NotFound(); }

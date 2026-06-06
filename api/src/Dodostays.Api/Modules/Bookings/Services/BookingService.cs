@@ -1,33 +1,172 @@
 using Microsoft.EntityFrameworkCore;
 using Dodostays.Api.Contracts.Bookings;
+using Dodostays.Api.Contracts.Payments;
 using Dodostays.Api.Modules.Bookings.Domain;
 using Dodostays.Api.Modules.Common.Database;
+using Dodostays.Api.Modules.Payments.Domain;
+using Dodostays.Api.Modules.Payments.Idempotency;
+using Dodostays.Api.Modules.Payments.Processing;
+using Dodostays.Api.Modules.Payments.Invoices;
+using Dodostays.Api.Modules.Payments.Email;
+using Microsoft.Extensions.Logging;
 
 namespace Dodostays.Api.Modules.Bookings.Services;
 
 public sealed class BookingService
 {
     private readonly DodostaysDbContext _db;
+    private readonly IPaymentProcessor _paymentProcessor;
+    private readonly IIdempotencyService _idempotencyService;
+    private readonly IInvoiceGenerator _invoiceGenerator;
+    private readonly IInvoicePdfStorage _invoicePdfStorage;
+    private readonly IEmailSender _emailSender;
+    private readonly ILogger<BookingService> _logger;
 
-    public BookingService(DodostaysDbContext db) => _db = db;
-
-    public async Task<BookingDto> ConfirmAsync(Guid guestUserId, Guid bookingId, string? paymentReference, CancellationToken ct)
+    public BookingService(
+        DodostaysDbContext db,
+        IPaymentProcessor paymentProcessor,
+        IIdempotencyService idempotencyService,
+        IInvoiceGenerator invoiceGenerator,
+        IInvoicePdfStorage invoicePdfStorage,
+        IEmailSender emailSender,
+        ILogger<BookingService> logger)
     {
-        var booking = await _db.Bookings.SingleOrDefaultAsync(b => b.Id == bookingId, ct)
-            ?? throw new KeyNotFoundException("Booking not found.");
-        if (booking.GuestUserId != guestUserId)
-            throw new UnauthorizedAccessException("Not your booking.");
-        if (booking.HoldExpiresAt < DateTimeOffset.UtcNow && booking.State == BookingState.PendingPayment)
-            throw new InvalidOperationException("Hold expired — please hold dates again.");
+        _db = db;
+        _paymentProcessor = paymentProcessor;
+        _idempotencyService = idempotencyService;
+        _invoiceGenerator = invoiceGenerator;
+        _invoicePdfStorage = invoicePdfStorage;
+        _emailSender = emailSender;
+        _logger = logger;
+    }
 
-        booking.MarkConfirmed(paymentReference);
+    public async Task<BookingDto> ConfirmAsync(Guid guestUserId, Guid bookingId, string? paymentReference, string? idempotencyKey, CancellationToken ct)
+    {
+        // Wrap entire flow in idempotency service
+        var result = await _idempotencyService.GetOrExecuteAsync<BookingDto>(
+            headerKey: idempotencyKey,
+            scope: "booking-confirm",
+            bookingId: bookingId,
+            factory: async (ct) =>
+            {
+                // Load booking
+                var booking = await _db.Bookings
+                    .SingleOrDefaultAsync(b => b.Id == bookingId, ct)
+                    ?? throw new KeyNotFoundException("Booking not found.");
 
-        // The hold record can be removed; booking itself is now the source of truth
-        var holds = await _db.BookingHolds.Where(h => h.BookingId == bookingId).ToListAsync(ct);
-        _db.BookingHolds.RemoveRange(holds);
+                if (booking.GuestUserId != guestUserId)
+                    throw new UnauthorizedAccessException("Not your booking.");
 
-        await _db.SaveChangesAsync(ct);
-        return await ToDtoAsync(booking, ct);
+                // Verify state is PendingPayment (which maps to Hold in the task description)
+                if (booking.State != BookingState.PendingPayment)
+                    throw new InvalidOperationException($"Cannot confirm booking in state {booking.State}.");
+
+                if (booking.HoldExpiresAt < DateTimeOffset.UtcNow)
+                    throw new InvalidOperationException("Hold expired — please hold dates again.");
+
+                // Load listing for invoice
+                var listing = await _db.Listings
+                    .Where(l => l.Id == booking.ListingId)
+                    .Select(l => new { l.Title })
+                    .SingleAsync(ct);
+
+                // Compute totals from existing booking fields
+                var netTotal = booking.SubtotalMur;
+                var vat = booking.VatMur;
+                var gross = booking.TotalMur;
+
+                // Capture payment
+                var receipt = await _paymentProcessor.AuthorizeAndCaptureAsync(
+                    bookingId,
+                    gross,
+                    idempotencyKey ?? Guid.NewGuid().ToString("N"),
+                    ct);
+
+                if (receipt.Status != PaymentStatus.Captured)
+                    throw new InvalidOperationException($"Payment failed: {receipt.Status}");
+
+                // Create PaymentRecord
+                var paymentRecord = new PaymentRecord
+                {
+                    Id = Guid.NewGuid(),
+                    BookingId = booking.Id,
+                    ProcessorId = receipt.ProcessorId,
+                    ExternalRef = receipt.ExternalRef,
+                    AmountMur = gross,
+                    Status = PaymentStatus.Captured,
+                    AttemptedAt = DateTimeOffset.UtcNow,
+                    SucceededAt = receipt.SucceededAt,
+                    FailureReason = null,
+                    RawPayloadJson = null
+                };
+                _db.PaymentRecords.Add(paymentRecord);
+
+                // Load guest user for invoice
+                var guestUser = await _db.Users
+                    .Where(u => u.Id == booking.GuestUserId)
+                    .Select(u => new { u.DisplayName, u.Email })
+                    .SingleAsync(ct);
+
+                // Compute nights
+                var nights = (booking.CheckOut.DayNumber - booking.CheckIn.DayNumber);
+
+                // Generate guest invoice
+                var invoice = await _invoiceGenerator.GenerateGuestStayAsync(new GuestInvoiceInput(
+                    BookingId: booking.Id,
+                    GuestDisplayName: guestUser.DisplayName,
+                    GuestVatNumber: null,  // not collected at v1
+                    ListingTitle: listing.Title,
+                    CheckIn: booking.CheckIn,
+                    CheckOut: booking.CheckOut,
+                    Nights: nights,
+                    NightlyRateNetMur: booking.NightlyRateMur,
+                    CleaningFeeNetMur: booking.CleaningFeeMur,
+                    DamageDepositMur: 0m), ct);  // TODO: Listing.DamageDepositMur field is Plan 04 v2 follow-up
+                _db.Invoices.Add(invoice);
+
+                // Update booking state
+                booking.MarkConfirmed(receipt.ExternalRef);
+
+                // Remove holds
+                var holds = await _db.BookingHolds.Where(h => h.BookingId == bookingId).ToListAsync(ct);
+                _db.BookingHolds.RemoveRange(holds);
+
+                // Commit transaction
+                await _db.SaveChangesAsync(ct);
+
+                // Send confirmation email (fire-and-forget, don't fail confirm if email fails)
+                try
+                {
+                    var pdfBytes = await _invoicePdfStorage.ReadAsync(invoice.PdfStoragePath, ct);
+                    var emailMessage = new EmailMessage(
+                        To: guestUser.Email ?? throw new InvalidOperationException("Guest user has no email."),
+                        Subject: $"Your DodoStays booking is confirmed - {listing.Title}",
+                        Body: $@"
+<h1>Your DodoStays booking is confirmed</h1>
+<p>Hi {guestUser.DisplayName}, your stay at <strong>{listing.Title}</strong> from {booking.CheckIn:yyyy-MM-dd} to {booking.CheckOut:yyyy-MM-dd} is confirmed.</p>
+<p><strong>Total:</strong> MUR {gross:N2}</p>
+<p><strong>Invoice number:</strong> {invoice.Number}</p>
+<p>We look forward to hosting you!</p>
+",
+                        IsHtml: true,
+                        Attachments: pdfBytes != null
+                            ? new[] { new EmailAttachment($"{invoice.Number}.pdf", "application/pdf", pdfBytes) }
+                            : null);
+
+                    await _emailSender.SendAsync(emailMessage, ct);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send confirmation email for booking {BookingId}", bookingId);
+                    // Don't fail the entire confirm
+                }
+
+                return (await ToDtoAsync(booking, ct), 200);
+            },
+            ttl: null,
+            ct: ct);
+
+        return result.Body;
     }
 
     public async Task<BookingDto> CancelAsync(Guid actorUserId, Guid bookingId, string? reason, CancellationToken ct)
