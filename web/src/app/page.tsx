@@ -11,11 +11,17 @@ import { Eyebrow } from "@/components/marketing/eyebrow";
 import { DisplayHeading } from "@/components/marketing/display-heading";
 import { Lede } from "@/components/marketing/lede";
 import { pillButtonClasses } from "@/components/marketing/pill-button";
+import { CinematicHeroMedia, CinematicPhoto } from "@/components/cinematic";
 
+// Pexels — drone footage over tropical water. Free hot-link, <8s loop-friendly
+// clip. Hard-coded here so it's trivial to swap for a Mauritius-shot original
+// later. 1080p variant chosen over 4K UHD for faster initial paint; the 4K
+// version (.../3018669-uhd_3840_2160_25fps.mp4) is a known-good fallback if
+// CDN policy changes for the 1080p one.
+const HERO_VIDEO_SRC =
+  "https://videos.pexels.com/video-files/3018669/3018669-hd_1920_1080_25fps.mp4";
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1573548842355-73bb50e50323?w=2400&q=80";
-const HERO_FALLBACK =
-  "https://images.unsplash.com/photo-1571396726928-7bd1cae40f0f?w=2400&q=80";
 
 const REGIONS = [
   {
@@ -101,23 +107,14 @@ export default function Home() {
           }}
         />
 
-        {/* Background photograph + ink overlay (no grain, no batik). */}
-        <div className="absolute inset-0 z-[1]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={HERO_IMAGE}
-            alt="A Mauritian coastline with mountains beyond"
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              const img = e.currentTarget;
-              if (img.src !== HERO_FALLBACK) img.src = HERO_FALLBACK;
-            }}
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-[var(--color-ink)]/45"
-          />
-        </div>
+        {/* Background video on desktop with motion-OK; poster image
+            (Ken-Burns animated) on mobile + reduced-motion. Ink scrim is
+            baked into CinematicHeroMedia for headline legibility. */}
+        <CinematicHeroMedia
+          videoSrc={HERO_VIDEO_SRC}
+          posterSrc={HERO_IMAGE}
+          alt="A Mauritian coastline with mountains beyond"
+        />
 
         {/* Editorial column — eyebrow, headline, lede, search */}
         <div className="relative z-10 flex min-h-[88vh] w-full flex-col items-center justify-center px-6 py-[var(--section-py-lg)] text-center">
@@ -216,10 +213,10 @@ export default function Home() {
               className="group block"
             >
               <div className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--color-border)] bg-[var(--color-muted)]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <CinematicPhoto
                   src={r.image}
                   alt={`${r.name}, Mauritius`}
+                  grade="warm"
                   className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                 />
               </div>

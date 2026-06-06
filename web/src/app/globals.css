@@ -96,6 +96,14 @@
   --section-py-lg: 8rem;               /* 128px — hero / signature */
 
   --container-narrow: 56rem;           /* 896px — editorial column */
+
+  /* === Cinematic photo color-grade tokens (Phase Cinema) ===
+     Filter chains live here so CinematicPhoto can reference them by name
+     instead of inlining literal numbers in component code.  warm = subtle
+     teal-orange pull for sand/cream surfaces; moody = lifted desaturation
+     for ink-tone surfaces (host card etc.). */
+  --photo-grade-warm: contrast(1.05) saturate(1.1) sepia(0.05) hue-rotate(-8deg);
+  --photo-grade-moody: contrast(1.1) saturate(0.9) brightness(0.95);
 }
 
 /* :root mirrors the @theme tokens for non-Tailwind consumers (raw var(--peach-glow)
@@ -353,4 +361,22 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ds-waveform span { animation: none; transform: scaleY(1); }
+}
+
+/* --- Ken-Burns: slow zoom + subtle pan ---
+   Applied to the active gallery slide (toggled by embla's `select` listener)
+   and to the hero poster fallback when the video is suppressed. Plays once
+   per slide and holds at the zoomed state — no looping, no CPU burn on
+   inactive slides. Reduced-motion users get a static image. */
+@keyframes ken-burns {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.06) translate(0.5%, -0.5%); }
+}
+.ken-burns-active {
+  animation: ken-burns 12s ease-out forwards;
+  transform-origin: center;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ken-burns-active { animation: none; transform: none; }
 }

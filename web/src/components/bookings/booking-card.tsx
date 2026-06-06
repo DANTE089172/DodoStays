@@ -6,6 +6,7 @@ import { formatDate, fromIsoDate } from "@/lib/dates";
 import { Eyebrow } from "@/components/marketing/eyebrow";
 import { DisplayHeading } from "@/components/marketing/display-heading";
 import { pillButtonClasses } from "@/components/marketing/pill-button";
+import { CinematicPhoto } from "@/components/cinematic";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -60,10 +61,10 @@ export function BookingCard({ booking }: Props) {
         <div className="overflow-hidden rounded-lg bg-[var(--color-muted)] sm:w-[200px] sm:flex-shrink-0">
           <div className="relative aspect-[4/3]">
             {booking.primaryPhotoUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <CinematicPhoto
                 src={booking.primaryPhotoUrl}
                 alt={booking.listingTitle}
+                grade="warm"
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.01]"
               />
             )}

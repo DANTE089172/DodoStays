@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Box, Typography } from "@mui/material";
 import type { ListingSummary } from "@/lib/listings";
 import { Eyebrow } from "@/components/marketing/eyebrow";
+import { CinematicPhoto } from "@/components/cinematic";
 
 interface Props {
   items: ListingSummary[];
@@ -96,10 +97,10 @@ export function ListingsList({ items, highlightId, onCardHover }: Props) {
                 }}
               >
                 {l.primaryPhotoUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <CinematicPhoto
                     src={l.primaryPhotoUrl}
                     alt={l.title}
+                    grade="warm"
                     style={{
                       width: "100%",
                       height: "100%",

@@ -4,6 +4,7 @@ import * as React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CinematicPhoto } from "@/components/cinematic";
 
 export type GalleryPhoto = {
   url: string;
@@ -100,6 +101,7 @@ export function PhotoGallery({
                 photo={photo}
                 onClick={() => openLightbox(idx)}
                 priority={idx === 0}
+                isActive={idx === selectedIndex}
               />
             </div>
           ))}
@@ -152,10 +154,23 @@ interface PhotoSlideProps {
   photo: GalleryPhoto;
   onClick: () => void;
   priority?: boolean;
+  isActive?: boolean;
 }
 
-function PhotoSlide({ photo, onClick, priority }: PhotoSlideProps) {
+function PhotoSlide({ photo, onClick, priority, isActive }: PhotoSlideProps) {
   const [loaded, setLoaded] = React.useState(false);
+  // Bump a counter every time this slide becomes active, then use it as the
+  // `key` of an inner wrapper <span>. The wrapper remounts (cheap — no <img>
+  // network re-paint) and React re-applies `.ken-burns-active`, which the
+  // browser treats as a fresh animation. Mirrors the derived-state-during-
+  // render pattern used by PhotoLightbox below — no setState-in-effect.
+  const [activeRun, setActiveRun] = React.useState(0);
+  const [lastActive, setLastActive] = React.useState<boolean>(Boolean(isActive));
+  if (Boolean(isActive) !== lastActive) {
+    setLastActive(Boolean(isActive));
+    if (isActive) setActiveRun((n) => n + 1);
+  }
+
   return (
     <button
       type="button"
@@ -170,18 +185,28 @@ function PhotoSlide({ photo, onClick, priority }: PhotoSlideProps) {
           className="absolute inset-0 bg-[var(--color-peach-50)]"
         />
       )}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={photo.url}
-        alt={photo.caption ?? ""}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
-        onLoad={() => setLoaded(true)}
+      <span
+        // Wrapper remounts on activation so the keyframe restarts. The inner
+        // <img> stays mounted across re-runs because it's keyed only on URL.
+        key={isActive ? `run-${activeRun}` : "idle"}
         className={cn(
-          "photo-warm h-full w-full object-cover transition-opacity duration-300 ease-out",
-          loaded ? "opacity-100" : "opacity-0",
+          "block h-full w-full",
+          isActive && "ken-burns-active",
         )}
-      />
+      >
+        <CinematicPhoto
+          src={photo.url}
+          alt={photo.caption ?? ""}
+          grade="warm"
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          className={cn(
+            "h-full w-full object-cover transition-opacity duration-300 ease-out",
+            loaded ? "opacity-100" : "opacity-0",
+          )}
+        />
+      </span>
     </button>
   );
 }
@@ -266,10 +291,10 @@ const PhotoLightbox = React.forwardRef<HTMLDialogElement, PhotoLightboxProps>(
           )}
 
           <figure className="flex max-h-full max-w-full flex-col items-center justify-center px-4 py-16">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <CinematicPhoto
               src={current.url}
               alt={current.caption ?? ""}
+              grade="moody"
               className="max-h-[80vh] max-w-full object-contain"
             />
             {current.caption ? (
