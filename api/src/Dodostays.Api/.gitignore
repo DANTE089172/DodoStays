@@ -1,2 +1,4 @@
 wwwroot/photos/*
 !wwwroot/photos/.gitkeep
+wwwroot/invoices/*.pdf
+!wwwroot/invoices/.gitkeep

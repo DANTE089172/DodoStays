@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Xunit;
 using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Dodostays.Api.Modules.Payments.Sms;

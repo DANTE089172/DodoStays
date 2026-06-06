@@ -31,12 +31,18 @@ public sealed class InvoiceSequenceService : IInvoiceSequenceService
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unknown InvoiceKind")
         };
 
-        // Use SqlQuery to fetch next sequence value. Sequence name is validated via the switch above
-        // (whitelist), preventing SQL injection. FormattableString is used for safe interpolation.
-        FormattableString sql = $"SELECT nextval('{sequenceName}')";
-        var seq = await _db.Database
-            .SqlQuery<long>(sql)
-            .SingleAsync(ct);
+        // Fetch next sequence value via raw ADO.NET. Sequence name is validated via the switch above
+        // (whitelist), preventing SQL injection. Direct string interpolation is safe here because
+        // sequenceName is constrained to one of three hardcoded values.
+        var connection = _db.Database.GetDbConnection();
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"SELECT nextval('{sequenceName}')";
+
+        if (connection.State != System.Data.ConnectionState.Open)
+            await connection.OpenAsync(ct);
+
+        var result = await command.ExecuteScalarAsync(ct);
+        var seq = Convert.ToInt64(result);
 
         var year = DateTimeOffset.UtcNow.Year;
         var invoiceNumber = $"{prefix}-{year}-{seq:D5}";
