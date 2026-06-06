@@ -29,3 +29,9 @@ Thumbs.db
 *.key
 .env
 secrets/
+
+# Task 4.6: Email and SMS logs
+**/wwwroot/emails/**
+!**/wwwroot/emails/.gitkeep
+**/wwwroot/sms/**
+!**/wwwroot/sms/.gitkeep

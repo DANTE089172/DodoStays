@@ -30,9 +30,44 @@ public static class PaymentsModule
         services.AddScoped<IIdempotencyStore, DbIdempotencyStore>();
         services.AddScoped<IIdempotencyService, IdempotencyService>();
 
-        // Tasks 4.5–4.6 will register IPayoutProcessor, IInvoiceGenerator,
-        // IEmailSender, etc. here, driven by the "Payouts", "Email" and "Invoicing"
-        // config sections.
+        // Task 4.5: Invoice generation (QuestPDF)
+        // QuestPDF Community licence — free for companies under $1M USD revenue
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+        services.Configure<Invoices.InvoicingOptions>(configuration.GetSection(Invoices.InvoicingOptions.SectionName));
+        services.AddScoped<Invoices.IInvoiceSequenceService, Invoices.InvoiceSequenceService>();
+        services.AddScoped<Invoices.IInvoicePdfStorage, Invoices.LocalDiskInvoicePdfStorage>();
+        services.AddScoped<Invoices.IInvoiceGenerator, Invoices.QuestPdfInvoiceGenerator>();
+
+        // Task 4.6: Email sender
+        services.Configure<Email.EmailOptions>(configuration.GetSection(Email.EmailOptions.SectionName));
+        var emailProvider = configuration.GetSection(Email.EmailOptions.SectionName).GetValue<string>("Provider") ?? "Log";
+        switch (emailProvider)
+        {
+            case "Log":
+                services.AddSingleton<Email.IEmailSender, Email.LogEmailSender>();
+                break;
+            case "Resend":
+                services.AddSingleton<Email.IEmailSender, Email.ResendEmailSender>();
+                break;
+            default:
+                throw new InvalidOperationException($"Unknown Email:Provider value: {emailProvider}");
+        }
+
+        // Task 4.6: SMS sender
+        services.Configure<Sms.SmsOptions>(configuration.GetSection(Sms.SmsOptions.SectionName));
+        var smsProvider = configuration.GetSection(Sms.SmsOptions.SectionName).GetValue<string>("Provider") ?? "Log";
+        switch (smsProvider)
+        {
+            case "Log":
+                services.AddSingleton<Sms.ISmsSender, Sms.LogSmsSender>();
+                break;
+            case "Twilio":
+                services.AddSingleton<Sms.ISmsSender, Sms.TwilioSmsSender>();
+                break;
+            default:
+                throw new InvalidOperationException($"Unknown Sms:Provider value: {smsProvider}");
+        }
+
         return services;
     }
 
