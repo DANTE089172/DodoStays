@@ -1,4 +1,5 @@
 using Dodostays.Api.Modules.Payments.Processing;
+using Dodostays.Api.Modules.Payments.Idempotency;
 
 namespace Dodostays.Api.Modules.Payments;
 
@@ -20,9 +21,18 @@ public static class PaymentsModule
         else
             throw new InvalidOperationException($"Unknown Payments:Provider value: {paymentProvider}");
 
-        // Tasks 4.3–4.6 will register IPayoutProcessor, IFxRateProvider, IInvoiceGenerator,
-        // IEmailSender, IIdempotencyService, etc. here, driven by the "Payouts", "Fx",
-        // "Email" and "Invoicing" config sections.
+        // Task 4.4: FX rate provider abstraction + Fixed impl
+        services.Configure<Fx.FxOptions>(configuration.GetSection(Fx.FxOptions.SectionName));
+        // TODO: Plan 06 — branch on FxOptions.Provider once OpenExchangeRatesFxProvider exists
+        services.AddSingleton<Fx.IFxRateProvider, Fx.FixedFxRateProvider>();
+
+        // Task 4.3: Idempotency service + DB store
+        services.AddScoped<IIdempotencyStore, DbIdempotencyStore>();
+        services.AddScoped<IIdempotencyService, IdempotencyService>();
+
+        // Tasks 4.5–4.6 will register IPayoutProcessor, IInvoiceGenerator,
+        // IEmailSender, etc. here, driven by the "Payouts", "Email" and "Invoicing"
+        // config sections.
         return services;
     }
 
