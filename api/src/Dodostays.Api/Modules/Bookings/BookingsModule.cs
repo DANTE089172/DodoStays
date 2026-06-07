@@ -39,6 +39,7 @@ public static class BookingsModule
         app.MapHoldBooking();
         app.MapConfirmBooking();
         app.MapGetMyBookings();
+        app.MapGetBookingById();
         app.MapGetListingBookings();
         app.MapCancelBooking();
         app.MapCheckInBooking();

@@ -1,4 +1,5 @@
 using Dodostays.Api.Contracts.Identity;
+using Dodostays.Api.Contracts.Payments;
 
 namespace Dodostays.Api.Contracts.Bookings;
 
@@ -24,4 +25,5 @@ public sealed record BookingDto(
     DateTimeOffset? CheckedInAt,
     DateTimeOffset? CompletedAt,
     DateTimeOffset? CancelledAt,
-    string? CancellationReason);
+    string? CancellationReason,
+    BookingPaymentSummaryDto? PaymentSummary);

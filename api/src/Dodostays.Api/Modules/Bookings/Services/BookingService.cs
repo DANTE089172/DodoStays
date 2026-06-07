@@ -279,6 +279,28 @@ public sealed class BookingService
             .Select(u => u.DisplayName)
             .SingleAsync(ct);
 
+        // Load payment summary
+        BookingPaymentSummaryDto? paymentSummary = null;
+        var paymentRecord = await _db.PaymentRecords
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.BookingId == b.Id, ct);
+
+        if (paymentRecord is not null)
+        {
+            var invoice = await _db.Invoices
+                .AsNoTracking()
+                .FirstOrDefaultAsync(i => i.BookingId == b.Id && i.Kind == InvoiceKind.GuestStay, ct);
+
+            paymentSummary = new BookingPaymentSummaryDto(
+                BookingId: b.Id,
+                TotalMur: b.TotalMur,
+                AmountPaidMur: paymentRecord.AmountMur,
+                PaymentStatus: paymentRecord.Status,
+                PayoutStatus: b.PayoutStatus,
+                InvoiceId: invoice?.Id,
+                InvoiceNumber: invoice?.Number);
+        }
+
         return new BookingDto(
             Id: b.Id,
             ListingId: b.ListingId,
@@ -301,6 +323,7 @@ public sealed class BookingService
             CheckedInAt: b.CheckedInAt,
             CompletedAt: b.CompletedAt,
             CancelledAt: b.CancelledAt,
-            CancellationReason: b.CancellationReason);
+            CancellationReason: b.CancellationReason,
+            PaymentSummary: paymentSummary);
     }
 }

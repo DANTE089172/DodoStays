@@ -65,6 +65,13 @@ if (!app.Environment.IsEnvironment("Testing"))
             "ical-sync",
             job => job.RunAsync(CancellationToken.None),
             "*/15 * * * *");
+
+        global::Hangfire.RecurringJobManagerExtensions.AddOrUpdate<Dodostays.Api.Modules.Payments.Payouts.BookingPayoutJob>(
+            recurringJobManager,
+            "booking-payout-fortnightly",
+            job => job.RunAsync(CancellationToken.None),
+            "0 5 * * MON",
+            new global::Hangfire.RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
     }
 }
 

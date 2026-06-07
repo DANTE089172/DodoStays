@@ -1,5 +1,6 @@
 using Dodostays.Api.Modules.Payments.Processing;
 using Dodostays.Api.Modules.Payments.Idempotency;
+using Dodostays.Api.Modules.Payments.Endpoints;
 
 namespace Dodostays.Api.Modules.Payments;
 
@@ -68,12 +69,29 @@ public static class PaymentsModule
                 throw new InvalidOperationException($"Unknown Sms:Provider value: {smsProvider}");
         }
 
+        // Task 4.8: Payouts
+        services.Configure<Payouts.PayoutOptions>(configuration.GetSection(Payouts.PayoutOptions.SectionName));
+        var payoutProvider = configuration.GetSection(Payouts.PayoutOptions.SectionName).GetValue<string>("Provider") ?? "InMemory";
+        switch (payoutProvider)
+        {
+            case "InMemory":
+                services.AddSingleton<Payouts.IPayoutProcessor, Payouts.InMemoryPayoutProcessor>();
+                break;
+            case "Wise":
+                services.AddSingleton<Payouts.IPayoutProcessor, Payouts.WisePayoutProcessor>();
+                break;
+            default:
+                throw new InvalidOperationException($"Unknown Payouts:Provider value: {payoutProvider}");
+        }
+        services.AddScoped<Payouts.BookingPayoutJob>();
+
         return services;
     }
 
     public static IEndpointRouteBuilder MapPaymentsEndpoints(this IEndpointRouteBuilder app)
     {
-        // Task 4.9 will map GET /api/bookings/{id} and GET /api/bookings/{id}/invoice here.
+        // Task 4.9: Invoice download endpoint
+        app.MapGetBookingInvoice();
         return app;
     }
 }
