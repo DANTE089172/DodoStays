@@ -1,0 +1,43 @@
+# Build artifacts
+**/bin
+**/obj
+**/.vs
+**/.vscode
+**/.idea
+*.user
+*.suo
+
+# Test projects (not needed in production image)
+tests/
+
+# Node modules (if any)
+**/node_modules
+
+# User-generated content (mount as volumes in production)
+**/wwwroot/photos/*
+!**/wwwroot/photos/.gitkeep
+**/wwwroot/invoices/*.pdf
+!**/wwwroot/invoices/.gitkeep
+**/wwwroot/emails/*
+!**/wwwroot/emails/.gitkeep
+**/wwwroot/sms/*
+!**/wwwroot/sms/.gitkeep
+
+# Git metadata
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# Docker files themselves
+**/Dockerfile
+**/.dockerignore
+
+# Documentation
+**/README.md
+**/DOCKER.md
+
+# Secrets (should never be in context)
+**/*.pem
+**/*.key
+.env
+secrets/
