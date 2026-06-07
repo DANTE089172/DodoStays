@@ -1,0 +1,68 @@
+name: Frontend CI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "web/**"
+      - ".github/workflows/frontend-ci.yml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "web/**"
+      - ".github/workflows/frontend-ci.yml"
+
+jobs:
+  frontend-typecheck-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: cd web && npm ci --legacy-peer-deps
+
+      - name: Run TypeScript type check
+        run: cd web && npm run typecheck
+
+      - name: Run ESLint
+        run: cd web && npm run lint
+
+  frontend-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: cd web && npm ci --legacy-peer-deps
+
+      - name: Install Playwright browsers
+        run: cd web && npx playwright install --with-deps chromium
+
+      - name: Build Next.js application
+        run: cd web && npm run build
+
+      # TODO: Plan 0.13b - wire backend service container + run npx playwright test
+      # The e2e tests require a running backend API (baseURL http://localhost:3000
+      # with webServer spawning dev server, but tests hit backend at :5080).
+      # For now, we verify the build succeeds. E2E test execution will be added
+      # once the backend container is available in CI (Task 0.13b/0.15).
