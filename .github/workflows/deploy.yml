@@ -1,0 +1,105 @@
+name: Deploy to Fly.io
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'api/**'
+      - 'web/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:  # Manual trigger
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false  # Don't cancel in-progress deploys
+
+jobs:
+  # Wait for CI to pass before deploying
+  wait-for-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for backend tests
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          running-workflow-name: wait-for-ci
+          check-name: backend-test
+          wait-interval: 20
+
+      - name: Wait for frontend checks
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          running-workflow-name: wait-for-ci
+          check-name: frontend-typecheck-lint
+          wait-interval: 20
+
+  deploy-api:
+    needs: wait-for-ci
+    runs-on: ubuntu-latest
+    # Only deploy if API code changed (or manual trigger)
+    if: contains(github.event.head_commit.modified, 'api/') || contains(github.event.head_commit.added, 'api/') || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy API
+        working-directory: api
+        run: flyctl deploy --remote-only --strategy rolling
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Smoke test API
+        run: |
+          echo "Waiting for API to be healthy..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://dodostays-api.fly.dev/health/live || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ API is healthy (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/12: HTTP $STATUS (expected 200), retrying in 10s..."
+            sleep 10
+          done
+          echo "❌ API failed health check after 2 minutes"
+          exit 1
+
+  deploy-web:
+    needs: wait-for-ci
+    runs-on: ubuntu-latest
+    # Only deploy if Web code changed (or manual trigger)
+    if: contains(github.event.head_commit.modified, 'web/') || contains(github.event.head_commit.added, 'web/') || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy Web
+        working-directory: web
+        run: flyctl deploy --remote-only --strategy rolling
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Smoke test Web
+        run: |
+          echo "Waiting for Web to be healthy..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://dodostays-web.fly.dev/ || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Web is healthy (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/12: HTTP $STATUS (expected 200), retrying in 10s..."
+            sleep 10
+          done
+          echo "❌ Web failed health check after 2 minutes"
+          exit 1

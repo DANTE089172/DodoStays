@@ -1,0 +1,38 @@
+# Fly.io configuration for DodoStays Web
+# Deploy: flyctl deploy --remote-only
+# Logs: flyctl logs -a dodostays-web
+
+app = "dodostays-web"
+primary_region = "sin"  # Singapore — ~150ms latency to Mauritius
+
+[build]
+  dockerfile = "Dockerfile"
+
+  # Build-time environment variables (baked into the JS bundle)
+  [build.args]
+    NEXT_PUBLIC_API_BASE_URL = "https://dodostays-api.fly.dev"
+    NEXT_PUBLIC_MAPBOX_TOKEN = ""  # Public Mapbox token (safe to expose in client bundle)
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+  HOSTNAME = "0.0.0.0"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0  # Scale to zero when idle (first request after sleep ~3-5s)
+  processes = ["app"]
+
+  [[http_service.checks]]
+    grace_period = "20s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
