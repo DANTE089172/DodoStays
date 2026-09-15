@@ -2,7 +2,8 @@
 
 import { Box, Chip, Stack, Typography } from "@mui/material";
 import AnchorIcon from "@mui/icons-material/Anchor";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { anchorsToString, parseAnchors, MAX_ANCHORS, type Anchor } from "@/lib/anchors";
 
 export function AnchorList() {

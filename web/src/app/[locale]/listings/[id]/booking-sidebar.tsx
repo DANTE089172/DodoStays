@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import Link from "next/link";
 import { Alert, Box, Button, MenuItem, Select, Snackbar, Stack, Typography } from "@mui/material";
 import { useAuth } from "@/lib/auth-context";
@@ -189,6 +189,7 @@ export function BookingSidebar({ listingId, nightlyMur, cleaningMur, maxGuests, 
                 fullWidth
                 value={numGuests}
                 onChange={(e) => setNumGuests(Number(e.target.value))}
+                inputProps={{ "aria-label": "Number of guests" }}
                 sx={{ fontFamily: "var(--font-plex)" }}
               >
                 {Array.from({ length: maxGuests }, (_, i) => i + 1).map((n) => (
@@ -249,7 +250,7 @@ export function BookingSidebar({ listingId, nightlyMur, cleaningMur, maxGuests, 
               Pick different dates
             </Button>
             <Typography sx={{ fontFamily: "var(--font-plex)", fontSize: "0.75rem", color: "var(--color-muted-foreground)", textAlign: "center" }}>
-              Payment will be wired in Plan 04. For now, &quot;Confirm&quot; finalizes without charging.
+              On confirmation we secure your dates and email your invoice — with no guest service fee.
             </Typography>
           </>
         )}

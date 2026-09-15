@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl, { LngLatBoundsLike, Map as MaplibreMap } from "maplibre-gl";
 import { Alert, Snackbar } from "@mui/material";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { MAURITIUS_BOUNDS, bboxToString } from "@/lib/geo";
 import { anchorsToString, parseAnchors, MAX_ANCHORS, type Anchor } from "@/lib/anchors";
 import { lifestylePinElement } from "./lifestyle-pin";

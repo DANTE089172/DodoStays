@@ -6,6 +6,11 @@ public sealed class PhotoStorageOptions
     public string LocalRoot { get; set; } = string.Empty;
     public string PublicBaseUrl { get; set; } = string.Empty;
     public string? R2AccountId { get; set; }
+
+    /// <summary>Optional explicit S3-compatible host:port. When empty, derived from <see cref="R2AccountId"/>. Tests point this at a MinIO container.</summary>
+    public string? R2Endpoint { get; set; }
+
+    public bool R2UseSsl { get; set; } = true;
     public string? R2AccessKeyId { get; set; }
     public string? R2SecretAccessKey { get; set; }
     public string? R2Bucket { get; set; }

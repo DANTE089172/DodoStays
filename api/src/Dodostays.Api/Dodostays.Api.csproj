@@ -22,6 +22,7 @@
     <PackageReference Include="Hangfire.AspNetCore" />
     <PackageReference Include="Hangfire.PostgreSql" />
     <PackageReference Include="Ical.Net" />
+    <PackageReference Include="Minio" />
   </ItemGroup>
 
   <ItemGroup>

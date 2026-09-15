@@ -7,10 +7,17 @@ internal static class PaymentEntityConfigurations
 {
     public static void Apply(ModelBuilder modelBuilder)
     {
-        // Postgres sequences for gapless invoice numbering (one per InvoiceKind).
-        modelBuilder.HasSequence<long>("inv_guest_seq").StartsAt(1).IncrementsBy(1);
-        modelBuilder.HasSequence<long>("inv_commission_seq").StartsAt(1).IncrementsBy(1);
-        modelBuilder.HasSequence<long>("inv_credit_note_seq").StartsAt(1).IncrementsBy(1);
+        // Gap-free invoice numbering (Mauritius VAT Act / MRA): a transactional counter table,
+        // NOT a Postgres sequence. nextval() is non-transactional and burns a value on rollback,
+        // which would leave gaps in the invoice series. One row per (Kind, Year); resets yearly.
+        modelBuilder.Entity<InvoiceCounter>(b =>
+        {
+            b.ToTable("invoice_counters");
+            b.HasKey(x => new { x.Kind, x.Year });
+            b.Property(x => x.Kind).HasColumnName("kind").HasConversion<int>();
+            b.Property(x => x.Year).HasColumnName("year");
+            b.Property(x => x.LastValue).HasColumnName("last_value");
+        });
 
         modelBuilder.Entity<PaymentRecord>(b =>
         {

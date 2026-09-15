@@ -31,8 +31,8 @@ public class InvoiceDownloadFlowTests : IClassFixture<PostgresFixture>
         // Hold booking
         var holdRequest = new HoldBookingRequest(
             listing.Id,
-            new DateOnly(2026, 7, 10),
-            new DateOnly(2026, 7, 15),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(35),
             NumGuests: 2);
         var holdResponse = await guest.PostAsJsonAsync("/api/bookings/hold", holdRequest);
         var holdDto = (await holdResponse.Content.ReadFromJsonAsync<HoldBookingResponse>())!;
@@ -90,8 +90,8 @@ public class InvoiceDownloadFlowTests : IClassFixture<PostgresFixture>
         // Hold booking
         var holdRequest = new HoldBookingRequest(
             listing.Id,
-            new DateOnly(2026, 7, 10),
-            new DateOnly(2026, 7, 15),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(35),
             NumGuests: 2);
         var holdResponse = await guest.PostAsJsonAsync("/api/bookings/hold", holdRequest);
         var holdDto = (await holdResponse.Content.ReadFromJsonAsync<HoldBookingResponse>())!;
@@ -126,8 +126,8 @@ public class InvoiceDownloadFlowTests : IClassFixture<PostgresFixture>
         // Hold booking
         var holdRequest = new HoldBookingRequest(
             listing.Id,
-            new DateOnly(2026, 7, 10),
-            new DateOnly(2026, 7, 15),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(35),
             NumGuests: 2);
         var holdResponse = await guest.PostAsJsonAsync("/api/bookings/hold", holdRequest);
         var holdDto = (await holdResponse.Content.ReadFromJsonAsync<HoldBookingResponse>())!;
@@ -162,8 +162,8 @@ public class InvoiceDownloadFlowTests : IClassFixture<PostgresFixture>
         // Hold booking
         var holdRequest = new HoldBookingRequest(
             listing.Id,
-            new DateOnly(2026, 7, 10),
-            new DateOnly(2026, 7, 15),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(35),
             NumGuests: 2);
         var holdResponse = await guest.PostAsJsonAsync("/api/bookings/hold", holdRequest);
         var holdDto = (await holdResponse.Content.ReadFromJsonAsync<HoldBookingResponse>())!;
