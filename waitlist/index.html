@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DodoStays — Join the waitlist</title>
+    <meta
+      name="description"
+      content="DodoStays is a small Mauritian booking site: real rupees, verified hosts, no foreign-currency surprises. Join the waitlist for early access."
+    />
+    <link rel="canonical" href="https://dodostays.mu/" />
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="DodoStays — Join the waitlist" />
+    <meta
+      property="og:description"
+      content="Honestly priced stays in Mauritius. Real rupees, verified hosts. Be first through the door."
+    />
+    <meta property="og:url" content="https://dodostays.mu/" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1573548842355-73bb50e50323?w=1200&q=80" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="DodoStays home">
+        <svg class="dodo-mark" width="20" height="16" viewBox="0 0 44 36" aria-hidden="true">
+          <path
+            d="M8 22 C8 14, 14 9, 22 9 C28 9, 32 12, 33 16 C34 16.5, 36 17, 37.5 18 C39 19, 40 20.5, 39 21.5 C38 22.5, 35.5 22, 34 21.5 C33.5 24, 32 26, 30 27.5 L31.5 32 L28 32 L27 28.5 C25.5 29, 23.5 29, 22 28.7 L21 32.5 L17.5 32.5 L18.5 28 C13 26, 9.5 24, 8 22 Z"
+            fill="currentColor"
+          />
+          <path d="M37 17.5 C38.5 17, 40 17.5, 41 18.5 C40 18.8, 39 18.7, 38 18.2 Z" fill="currentColor" />
+        </svg>
+        <span>DodoStays</span>
+      </a>
+      <span class="header-tag">Launching soon</span>
+    </header>
+
+    <main>
+      <!-- HERO -------------------------------------------------------------->
+      <section class="hero" aria-label="Join the DodoStays waitlist">
+        <!-- Hero background. Swap this src for your own Mauritius shot (or replace
+             the <img> with a self-hosted <video autoplay muted loop playsinline>). -->
+        <img
+          class="hero-image"
+          src="https://images.unsplash.com/photo-1573548842355-73bb50e50323?w=2400&q=80"
+          alt="A turquoise Mauritian lagoon meeting a mountainous coastline"
+          fetchpriority="high"
+        />
+        <div class="hero-scrim" aria-hidden="true"></div>
+        <div class="peach-orb" aria-hidden="true"></div>
+
+        <div class="hero-grid">
+          <!-- Editorial column -->
+          <div class="hero-copy">
+            <p class="eyebrow">The Indian Ocean · Mauritius</p>
+            <h1 class="display">
+              Find your kind of <span class="italic">Mauritius</span> — before everyone else.
+            </h1>
+            <p class="lede">
+              DodoStays is a small Mauritian booking site. Real rupees, KYC-verified hosts, no
+              foreign-currency surprises at checkout. Join the waitlist for early access.
+            </p>
+            <ul class="hero-points">
+              <li>Honest pricing in rupees — no surge, no hidden fees</li>
+              <li>Verified local hosts who know the island</li>
+              <li>Be first in when we open bookings</li>
+            </ul>
+          </div>
+
+          <!-- Form card -->
+          <div class="card" id="form-card">
+            <form id="waitlist-form" novalidate>
+              <h2 class="card-title">Join the waitlist</h2>
+
+              <fieldset class="audience">
+                <legend class="label">I want to</legend>
+                <div class="segmented" role="radiogroup" aria-label="What do you want to do?">
+                  <input
+                    type="radio"
+                    name="audience"
+                    id="aud-traveller"
+                    value="Traveller"
+                    checked
+                  />
+                  <label for="aud-traveller">Book stays</label>
+                  <input type="radio" name="audience" id="aud-host" value="Host" />
+                  <label for="aud-host">List my place</label>
+                </div>
+                <p class="help" id="audience-help"></p>
+              </fieldset>
+
+              <div class="field">
+                <label class="label" for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  autocomplete="email"
+                  inputmode="email"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label" for="name">
+                  Name <span class="optional">optional</span>
+                </label>
+                <input type="text" id="name" name="name" autocomplete="name" placeholder="First name" />
+              </div>
+
+              <div class="field">
+                <label class="label" for="region" id="region-label">
+                  Where do you want to stay? <span class="optional">optional</span>
+                </label>
+                <select id="region" name="region">
+                  <option value="">Anywhere / not sure yet</option>
+                  <option value="grand-baie">Grand Baie</option>
+                  <option value="trou-aux-biches">Trou aux Biches</option>
+                  <option value="pereybere">Péreybère</option>
+                  <option value="tamarin">Tamarin</option>
+                  <option value="black-river">Black River (Rivière Noire)</option>
+                  <option value="le-morne">Le Morne</option>
+                  <option value="flic-en-flac">Flic en Flac</option>
+                  <option value="belle-mare">Belle Mare</option>
+                  <option value="trou-deau-douce">Trou d'Eau Douce</option>
+                  <option value="mahebourg">Mahébourg</option>
+                  <option value="blue-bay">Blue Bay</option>
+                  <option value="port-louis">Port Louis</option>
+                </select>
+              </div>
+
+              <details class="note">
+                <summary>Add a note <span class="optional">optional</span></summary>
+                <div class="field">
+                  <label class="label sr-only" for="message">Your message</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows="3"
+                    maxlength="2000"
+                    placeholder="Anything you'd like us to know?"
+                  ></textarea>
+                </div>
+              </details>
+
+              <button type="submit" class="pill" id="submit-btn">Join the waitlist</button>
+
+              <p class="status" id="status" role="alert" aria-live="assertive" hidden></p>
+              <p class="social-proof" id="social-proof" aria-live="polite"></p>
+              <p class="fineprint">No spam — one email when we open. Unsubscribe any time.</p>
+            </form>
+
+            <!-- Success state -->
+            <div class="success" id="success" hidden>
+              <div class="success-check" aria-hidden="true">✓</div>
+              <h2 class="card-title" id="success-title">You're on the list.</h2>
+              <p class="success-body" id="success-body"></p>
+              <button type="button" class="pill ghost" id="join-other" hidden></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VALUE PROPS ------------------------------------------------------->
+      <section class="values">
+        <div class="values-inner">
+          <article>
+            <p class="values-num">01</p>
+            <h3>Real rupees</h3>
+            <p>Prices set in MUR by the host. No surge, no category cuts, no checkout surprises.</p>
+          </article>
+          <article>
+            <p class="values-num">02</p>
+            <h3>Verified hosts</h3>
+            <p>Every host is KYC-verified. You know who you're renting from before you book.</p>
+          </article>
+          <article>
+            <p class="values-num">03</p>
+            <h3>Made in Mauritius</h3>
+            <p>Built by a small team on the island — local advice comes standard.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="foot-mark">DodoStays</p>
+      <p class="foot-line">Honestly priced stays in Mauritius · All prices in MUR</p>
+      <p class="foot-line muted">
+        &copy; <span id="year"></span> DodoStays ·
+        <a href="mailto:hello@dodostays.mu">hello@dodostays.mu</a>
+      </p>
+    </footer>
+  </body>
+</html>

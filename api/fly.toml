@@ -20,6 +20,10 @@ primary_region = "sin"  # Singapore — ~150ms latency to Mauritius
   Cors__AllowedOrigins__0 = "https://dodostays-web.fly.dev"
   Cors__AllowedOrigins__1 = "https://dodostays.com"
   Cors__AllowedOrigins__2 = "https://www.dodostays.com"
+  # Cloudflare Pages waitlist landing page + custom domain
+  Cors__AllowedOrigins__3 = "https://dodostays.mu"
+  Cors__AllowedOrigins__4 = "https://www.dodostays.mu"
+  Cors__AllowedOrigins__5 = "https://dodostays-waitlist.pages.dev"
 
   # Third-party providers (InMemory/Log for MVP, real providers when ready)
   Payments__Provider = "InMemory"

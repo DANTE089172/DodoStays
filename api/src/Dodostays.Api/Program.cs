@@ -8,6 +8,7 @@ using Dodostays.Api.Modules.Identity;
 using Dodostays.Api.Modules.Listings;
 using Dodostays.Api.Modules.Payments;
 using Dodostays.Api.Modules.Search;
+using Dodostays.Api.Modules.Waitlist;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,7 @@ builder.Services.AddSearchModule(builder.Configuration);
 builder.Services.AddListingsModule(builder.Configuration);
 builder.Services.AddBookingsModule(builder.Configuration);
 builder.Services.AddPaymentsModule(builder.Configuration);
+builder.Services.AddWaitlistModule(builder.Configuration);
 
 const string CorsPolicyName = "DodostaysFrontend";
 builder.Services.AddCors(opts =>
@@ -98,6 +100,7 @@ app.MapListingsEndpoints();
 app.MapBookingsEndpoints();
 app.MapPaymentsEndpoints();
 app.MapSearchEndpoints();
+app.MapWaitlistEndpoints();
 
 app.Run();
 
