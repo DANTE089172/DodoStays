@@ -227,6 +227,72 @@ AAAA   api.dodostays.com    → <api IPv6>
 
 Redeploy both apps after config changes.
 
+## Cloudflare
+
+DodoStays uses Cloudflare in two independent roles: **R2** for durable object storage (invoice
+PDFs and listing photos), and optionally the Cloudflare **edge** (CDN + WAF + DNS) in front of the
+Fly.io apps.
+
+### Cloudflare R2 storage (durable invoices + photos)
+
+By default the API stores invoice PDFs and photos on the Fly volume, which does **not** survive
+machine replacement. R2 (S3-compatible) makes them durable.
+
+1. **Create buckets** (Cloudflare dashboard → R2 → Create bucket): e.g. `dodostays-invoices`
+   (keep private) and `dodostays-photos` (attach a public r2.dev or custom domain).
+
+2. **Create an R2 API token** (R2 → Manage API Tokens) with Object Read & Write on those buckets.
+   Note the Access Key ID, Secret Access Key, and your Account ID.
+
+3. **Set the secrets** on the API app:
+   ```bash
+   flyctl secrets set --app dodostays-api \
+     Invoicing__R2AccountId="<account-id>" \
+     Invoicing__R2AccessKeyId="<access-key-id>" \
+     Invoicing__R2SecretAccessKey="<secret-access-key>" \
+     Invoicing__R2Bucket="dodostays-invoices" \
+     PhotoStorage__R2AccountId="<account-id>" \
+     PhotoStorage__R2AccessKeyId="<access-key-id>" \
+     PhotoStorage__R2SecretAccessKey="<secret-access-key>" \
+     PhotoStorage__R2Bucket="dodostays-photos"
+   ```
+
+4. **Enable the R2 providers** in `api/fly.toml` (`[env]`) and redeploy:
+   ```toml
+   Invoicing__StorageProvider  = "R2"
+   PhotoStorage__Provider      = "R2"
+   PhotoStorage__PublicBaseUrl = "https://<your-photos-public-domain>"
+   ```
+
+The R2 code path is verified in CI by `R2InvoicePdfStorageTests`, which round-trips a PDF through a
+MinIO container (MinIO and R2 are both S3-compatible, so a green test means the provider stores and
+reads back correctly). Invoices are read back through the API (`/api/bookings/{id}/invoice`), so the
+invoice bucket stays private; only the photo bucket is public.
+
+### Cloudflare edge (CDN + WAF + DNS) — optional
+
+Front the Fly.io apps with Cloudflare for CDN caching, DDoS protection, and WAF rate limiting (the
+spec's 10 req/s search and 1 req/min booking limits).
+
+1. Add the domain to Cloudflare and point its nameservers at Cloudflare.
+2. Create **proxied** (orange-cloud) DNS records to the Fly apps, and keep the Fly certs
+   (`flyctl certs create …`) so origin TLS stays valid — use SSL mode **Full (strict)**:
+   ```
+   CNAME  dodostays.com   → dodostays-web.fly.dev   (proxied)
+   CNAME  www             → dodostays-web.fly.dev   (proxied)
+   CNAME  api             → dodostays-api.fly.dev   (proxied)
+   ```
+3. **Cache**: allow Cloudflare to cache Next.js static assets (`/_next/static/*`, images); add a
+   cache-bypass rule for `/api/*`.
+4. **WAF / rate limiting**: add rate-limit rules for `/api/search*` and `/api/bookings*`.
+5. **Real client IP**: behind Cloudflare the client IP arrives in `CF-Connecting-IP` /
+   `X-Forwarded-For`. Any IP-based limiting must read the forwarded header (configure ASP.NET
+   `ForwardedHeaders`, trusting only Cloudflare's published IP ranges) — otherwise every request
+   appears to originate from Cloudflare.
+
+> R2 and the edge role are independent: you can enable R2 storage now and add the CDN/WAF layer
+> later, or vice-versa.
+
 ## Database operations
 
 ### Run migrations
@@ -521,7 +587,7 @@ Scale-to-zero saves significant costs during off-peak hours but adds 3-5s latenc
 1. **Enable custom domain** (see above)
 2. **Set up monitoring** (Fly provides basic metrics; consider Sentry for errors)
 3. **Add release_command for migrations** (see Database operations)
-4. **Persist invoices** (refactor `LocalDiskInvoicePdfStorage` or add symlinks)
+4. **Persist invoices + photos** — enable Cloudflare R2 storage (see the Cloudflare section)
 5. **Secure Hangfire dashboard** (add auth or disable in production)
 6. **Set up staging environment** (create `dodostays-api-staging`, `dodostays-web-staging`)
 7. **Configure Mapbox token** (update `NEXT_PUBLIC_MAPBOX_TOKEN` in `web/fly.toml`)

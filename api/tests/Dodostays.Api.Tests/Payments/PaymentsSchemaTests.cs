@@ -110,13 +110,19 @@ public class PaymentsSchemaTests
     }
 
     [Fact]
-    public void Three_invoice_sequences_are_registered()
+    public void Invoice_counter_is_registered_with_composite_key_and_no_sequences()
     {
         using var ctx = NewContext();
-        var sequences = ctx.Model.GetSequences().Select(s => s.Name).ToHashSet();
-        sequences.Should().Contain("inv_guest_seq");
-        sequences.Should().Contain("inv_commission_seq");
-        sequences.Should().Contain("inv_credit_note_seq");
+
+        // Gap-free numbering (Mauritius VAT Act / MRA) uses a transactional counter table,
+        // NOT Postgres sequences — nextval() burns a value on rollback and would leave gaps.
+        var counter = ctx.Model.FindEntityType(typeof(InvoiceCounter));
+        counter.Should().NotBeNull();
+        counter!.FindPrimaryKey()!.Properties.Select(p => p.Name)
+            .Should().BeEquivalentTo(new[] { nameof(InvoiceCounter.Kind), nameof(InvoiceCounter.Year) });
+
+        ctx.Model.GetSequences()
+            .Should().BeEmpty("gap-free numbering must not rely on non-transactional sequences");
     }
 
     [Fact]

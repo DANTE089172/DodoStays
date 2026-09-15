@@ -20,6 +20,7 @@ public sealed class BookingService
     private readonly IInvoiceGenerator _invoiceGenerator;
     private readonly IInvoicePdfStorage _invoicePdfStorage;
     private readonly IEmailSender _emailSender;
+    private readonly AvailabilityService _availability;
     private readonly ILogger<BookingService> _logger;
 
     public BookingService(
@@ -29,6 +30,7 @@ public sealed class BookingService
         IInvoiceGenerator invoiceGenerator,
         IInvoicePdfStorage invoicePdfStorage,
         IEmailSender emailSender,
+        AvailabilityService availability,
         ILogger<BookingService> logger)
     {
         _db = db;
@@ -37,6 +39,7 @@ public sealed class BookingService
         _invoiceGenerator = invoiceGenerator;
         _invoicePdfStorage = invoicePdfStorage;
         _emailSender = emailSender;
+        _availability = availability;
         _logger = logger;
     }
 
@@ -75,6 +78,31 @@ public sealed class BookingService
                 var vat = booking.VatMur;
                 var gross = booking.TotalMur;
 
+                // Open the transaction and take the per-listing advisory lock BEFORE capturing
+                // payment, then re-validate availability. Dates that were free when the hold was
+                // taken can be claimed during the 15-minute window — an external iCal block pulled
+                // in from Airbnb/Booking.com, or another booking confirming — and confirming anyway
+                // would capture money for a double booking. Detecting the conflict here (before any
+                // payment) means there is nothing to refund; we simply release the booking.
+                // (Spec §3.3: calendar re-validation on confirm.) The lock is held across the
+                // capture so a concurrent confirm on the same listing cannot race us; it releases
+                // when the transaction ends.
+                await using var tx = await _db.Database.BeginTransactionAsync(ct);
+                await _db.Database.ExecuteSqlInterpolatedAsync(
+                    $"SELECT pg_advisory_xact_lock({BookingConcurrency.ListingLockKey(booking.ListingId)})", ct);
+
+                var availability = await _availability.CheckAsync(booking.ListingId, booking.Dates, excludeBookingId: booking.Id, ct);
+                if (!availability.IsAvailable)
+                {
+                    booking.Cancel("Dates were no longer available at confirmation (calendar conflict).");
+                    var releasedHolds = await _db.BookingHolds.Where(h => h.BookingId == bookingId).ToListAsync(ct);
+                    _db.BookingHolds.RemoveRange(releasedHolds);
+                    await _db.SaveChangesAsync(ct);
+                    await tx.CommitAsync(ct);
+                    _logger.LogWarning("Confirm rejected for booking {BookingId}: calendar conflict at confirmation time", bookingId);
+                    throw new InvalidOperationException("Dates are no longer available — the calendar changed during checkout. No payment was taken.");
+                }
+
                 // Capture payment
                 var receipt = await _paymentProcessor.AuthorizeAndCaptureAsync(
                     bookingId,
@@ -84,6 +112,11 @@ public sealed class BookingService
 
                 if (receipt.Status != PaymentStatus.Captured)
                     throw new InvalidOperationException($"Payment failed: {receipt.Status}");
+
+                // Persist the payment record, the gap-free invoice number, the invoice row and the
+                // booking state change atomically. The invoice number is allocated INSIDE this
+                // transaction (see InvoiceSequenceService), so any rollback here releases it and
+                // the invoice series stays gap-free (Mauritius VAT Act / MRA requirement).
 
                 // Create PaymentRecord
                 var paymentRecord = new PaymentRecord
@@ -131,8 +164,9 @@ public sealed class BookingService
                 var holds = await _db.BookingHolds.Where(h => h.BookingId == bookingId).ToListAsync(ct);
                 _db.BookingHolds.RemoveRange(holds);
 
-                // Commit transaction
+                // Commit transaction (payment record + invoice + booking state, all-or-nothing)
                 await _db.SaveChangesAsync(ct);
+                await tx.CommitAsync(ct);
 
                 // Send confirmation email (fire-and-forget, don't fail confirm if email fails)
                 try

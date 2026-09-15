@@ -8,6 +8,7 @@ public partial class DodostaysDbContext
     public DbSet<PaymentRecord> PaymentRecords => Set<PaymentRecord>();
     public DbSet<HostPayout> HostPayouts => Set<HostPayout>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
+    public DbSet<InvoiceCounter> InvoiceCounters => Set<InvoiceCounter>();
     public DbSet<IdempotencyKey> IdempotencyKeys => Set<IdempotencyKey>();
 
     private static void OnModelCreatingPayments(ModelBuilder modelBuilder)

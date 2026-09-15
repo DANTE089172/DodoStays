@@ -10,14 +10,29 @@ public sealed class AvailabilityService
 
     public AvailabilityService(DodostaysDbContext db) => _db = db;
 
-    public async Task<AvailabilityResponse> CheckAsync(Guid listingId, DateRange dates, CancellationToken ct)
+    public Task<AvailabilityResponse> CheckAsync(Guid listingId, DateRange dates, CancellationToken ct)
+        => CheckAsync(listingId, dates, excludeBookingId: null, ct);
+
+    /// <summary>
+    /// Checks whether <paramref name="dates"/> are free for the listing. Pass
+    /// <paramref name="excludeBookingId"/> to ignore a specific booking and its hold — used at
+    /// confirmation time so a booking does not conflict with its own hold.
+    /// </summary>
+    public async Task<AvailabilityResponse> CheckAsync(Guid listingId, DateRange dates, Guid? excludeBookingId, CancellationToken ct)
     {
         var conflicts = new List<DateRange>();
 
-        // Confirmed/CheckedIn/Completed bookings (active, non-cancelled)
+        // Only *active reservations* block the calendar. A PendingPayment booking's reservation is
+        // represented by its (expiring) hold below — counting the booking row here as well would
+        // leave dates blocked forever after an abandoned checkout, because the hold expires but the
+        // PendingPayment row lingers.
         var bookingConflicts = await _db.Bookings
             .Where(b => b.ListingId == listingId
-                && b.State != BookingState.Cancelled
+                && (b.State == BookingState.Confirmed
+                    || b.State == BookingState.CheckedIn
+                    || b.State == BookingState.Completed
+                    || b.State == BookingState.Disputed)
+                && (excludeBookingId == null || b.Id != excludeBookingId)
                 && b.CheckIn < dates.CheckOut
                 && dates.CheckIn < b.CheckOut)
             .Select(b => new { b.CheckIn, b.CheckOut })
@@ -29,6 +44,7 @@ public sealed class AvailabilityService
         var holdConflicts = await _db.BookingHolds
             .Where(h => h.ListingId == listingId
                 && h.ExpiresAt > now
+                && (excludeBookingId == null || h.BookingId != excludeBookingId)
                 && h.CheckIn < dates.CheckOut
                 && dates.CheckIn < h.CheckOut)
             .Select(h => new { h.CheckIn, h.CheckOut })

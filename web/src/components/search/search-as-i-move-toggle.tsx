@@ -1,7 +1,8 @@
 "use client";
 
 import { FormControlLabel, Switch } from "@mui/material";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 export function SearchAsIMoveToggle() {
   const router = useRouter();

@@ -34,14 +34,24 @@ primary_region = "sin"  # Singapore — ~150ms latency to Mauritius
   PhotoStorage__LocalRoot = "/data/photos"
   PhotoStorage__PublicBaseUrl = "https://dodostays-api.fly.dev/photos"
 
+  # --- Cloudflare R2 (durable, S3-compatible object storage) — recommended for production ---
+  # To enable, flip the providers to "R2" and set the R2 credentials as SECRETS (never in this
+  # file). Invoices are private (read back through the API); photos are public via PublicBaseUrl.
+  #   Invoicing__StorageProvider = "R2"
+  #   PhotoStorage__Provider     = "R2"
+  #   PhotoStorage__PublicBaseUrl = "https://<your-r2-public-domain>"
+  # Secrets to set with `flyctl secrets set` (see DEPLOY.md → Cloudflare R2 storage):
+  #   Invoicing__R2AccountId / Invoicing__R2AccessKeyId / Invoicing__R2SecretAccessKey / Invoicing__R2Bucket
+  #   PhotoStorage__R2AccountId / PhotoStorage__R2AccessKeyId / PhotoStorage__R2SecretAccessKey / PhotoStorage__R2Bucket
+
   # Email/SMS log output — mounted volume at /data
   Email__OutputDir = "/data/emails"
   Sms__OutputDir = "/data/sms"
 
-# IMPORTANT: Invoices are stored at WebRootPath/invoices (hard-coded in LocalDiskInvoicePdfStorage).
-# To persist invoices across deploys, we'll symlink /app/wwwroot → /data/wwwroot at container startup.
-# For now, invoices write to /app/wwwroot/invoices (ephemeral — survives rolling deploys but not machine replacement).
-# TODO: Add a startup command to create symlinks or refactor LocalDiskInvoicePdfStorage to read from config.
+# Invoice storage: set Invoicing__StorageProvider=R2 (see R2 block below) to store invoice PDFs
+# durably in Cloudflare R2. When left as "Local" (the default), invoices write to
+# /app/wwwroot/invoices, which is ephemeral — it survives rolling deploys but NOT machine
+# replacement — so R2 is recommended for production.
 
 [http_service]
   internal_port = 8080
@@ -76,3 +86,7 @@ primary_region = "sin"  # Singapore — ~150ms latency to Mauritius
 # - Ical__SigningKey — iCal feed signing key (32+ chars)
 # - Ical__FeedBaseUrl — "https://dodostays-api.fly.dev"
 # - NlParser__AnthropicApiKey — Claude API key (optional, InMemory parser works without it)
+#
+# Cloudflare R2 storage (only when the R2 providers above are enabled):
+# - Invoicing__R2AccountId / Invoicing__R2AccessKeyId / Invoicing__R2SecretAccessKey / Invoicing__R2Bucket
+# - PhotoStorage__R2AccountId / PhotoStorage__R2AccessKeyId / PhotoStorage__R2SecretAccessKey / PhotoStorage__R2Bucket

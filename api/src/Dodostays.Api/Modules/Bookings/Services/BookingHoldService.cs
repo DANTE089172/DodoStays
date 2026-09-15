@@ -35,13 +35,11 @@ public sealed class BookingHoldService
         if (dates.Nights < listing.MinStayNights)
             throw new InvalidOperationException($"Minimum stay is {listing.MinStayNights} night(s).");
 
-        // Postgres advisory lock keyed on listing id (truncated to int64).
-        // This serializes hold attempts on the same listing.
-        var lockKey = unchecked((long)BitConverter.ToInt64(listing.Id.ToByteArray(), 0));
-
+        // Postgres advisory lock keyed on listing id, shared with the confirm path so the two
+        // serialize on the same key.
         await using var tx = await _db.Database.BeginTransactionAsync(ct);
         await _db.Database.ExecuteSqlInterpolatedAsync(
-            $"SELECT pg_advisory_xact_lock({lockKey})", ct);
+            $"SELECT pg_advisory_xact_lock({BookingConcurrency.ListingLockKey(listing.Id)})", ct);
 
         var avail = await _availability.CheckAsync(listing.Id, dates, ct);
         if (!avail.IsAvailable)

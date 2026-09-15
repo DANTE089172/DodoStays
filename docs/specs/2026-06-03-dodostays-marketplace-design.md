@@ -4,6 +4,14 @@
 **Working brand:** DodoStays (final brand pending trademark + domain verification)
 **Status:** Design — pending user approval before implementation planning
 
+> **Revision 2026-09-15 — hosting reconciliation.** Compute moved from the originally proposed
+> **Hetzner** stack to **Fly.io (Singapore region `sin`)** with managed **Fly Postgres**.
+> **Cloudflare R2** is retained for durable object storage (invoice PDFs + listing photos,
+> config-switchable — see [DEPLOY.md](../DEPLOY.md)); the Cloudflare CDN/WAF edge is optional and
+> documented there. Sections 2 and 5 track the running system. See the data-residency note in §5:
+> because the primary datastore is hosted in Singapore rather than Mauritius, cross-border transfer
+> safeguards apply to *all* personal data, not only the third-party AI/KYC APIs.
+
 ---
 
 ## 1. Vision
@@ -40,28 +48,28 @@ DodoStays is a Mauritius-only short-term rental marketplace, operated by an Aust
 
 ### Topology
 
-Single Mauritius-domiciled web platform. Modular .NET 9 monolith (split to microservices later). PostgreSQL with PostGIS. Next.js 15 PWA frontend. Hetzner (Falkenstein) + Cloudflare for hosting and CDN.
+Single Mauritius-domiciled operating company; application infrastructure hosted on **Fly.io (Singapore region `sin`, ~150 ms to Mauritius)** — see [DEPLOY.md](../DEPLOY.md). Modular .NET 9 monolith (split to microservices later). Managed **Fly Postgres 16** with PostGIS. Next.js 15 PWA frontend. (This supersedes the original Hetzner + Cloudflare proposal; see the data-residency note in §5.)
 
 ```
-Next.js 15 PWA (EN/FR/MFE) — Hetzner + Cloudflare
+Next.js 15 PWA (EN/FR/MFE) — Fly.io (sin)
 └─ Web Speech API (voice) → AI Search Service
    │
    │ REST + WebSocket (messaging)
    ▼
-ASP.NET Core 9 API (modular monolith)
+ASP.NET Core 9 API (modular monolith) — Fly.io (sin)
 ├─ Identity & KYC
 ├─ Listings & Search
 ├─ Booking & Calendar
 ├─ Payments & Payouts
 └─ Messaging & Reviews
    │
-   ├─ PostgreSQL 16 + PostGIS (Hetzner managed)
+   ├─ PostgreSQL 16 + PostGIS (Fly Postgres, managed)
    ├─ Anthropic Claude API (search parsing, review moderation)
    ├─ MIPS (Mauritius card acquiring)
    ├─ Wise Business API (host payouts in MUR)
    ├─ Onfido (KYC for guests + hosts)
    ├─ MCB Bank (MUR settlement, business account)
-   ├─ Cloudflare R2 (image and PDF storage)
+   ├─ Cloudflare R2 (S3-compatible) — invoice PDFs + listing photos, config-switchable; Fly volume fallback
    ├─ Resend (email)
    ├─ Twilio (SMS — booking confirmations only)
    └─ Mapbox (maps)
@@ -128,20 +136,25 @@ ASP.NET Core 9 API (modular monolith)
 - **Feature flags:** simple DB-backed table (no LaunchDarkly cost at MVP scale)
 - **i18n:** `next-intl` with EN/FR/MFE bundles; FR primary for Mauritian hosts and French/Réunion tourists
 - **Observability:** OpenTelemetry → Grafana Cloud free tier (10k metrics + 50GB logs)
-- **CI/CD:** GitHub Actions → Hetzner deploy via SSH + Docker
+- **CI/CD:** GitHub Actions → Fly.io (`flyctl deploy --remote-only`); see `.github/workflows/deploy.yml` and [DEPLOY.md](../DEPLOY.md)
 
 ### Hosting & infrastructure cost (MVP)
 
+Infrastructure moved from the original Hetzner estimate to Fly.io (scale-to-zero shared VMs), which is dramatically cheaper at MVP scale. Third-party APIs are billed only once their real providers are switched on (MVP ships with `InMemory`/`Log`/`Fixed` stubs).
+
 | Component | Cost (USD/month) |
 |---|---|
-| Hetzner CX42 app server + managed Postgres | ~$70 |
-| Cloudflare (Pro tier + R2 storage) | ~$30 |
+| Fly.io API machine (shared-cpu-1x, 512 MB, scale-to-zero) | ~$2 (24/7) / $0 idle |
+| Fly.io Web machine (shared-cpu-1x, 512 MB, scale-to-zero) | ~$2 (24/7) / $0 idle |
+| Fly Postgres (shared-cpu-1x, 10 GB) | ~$2 |
+| Fly volume (5 GB — photos/emails/SMS) | ~$0.75 |
+| Cloudflare R2 (invoices + photos; 10 GB free tier) | ~$0 at MVP |
 | Mapbox (free tier covers ~50k loads/mo) | $0 |
-| Anthropic API (~10k searches/mo at Haiku) | ~$30 |
-| Resend (3k emails/mo) | $20 |
-| Twilio SMS (~500 confirmations/mo) | ~$40 |
-| Onfido (estimate 100 KYCs/mo) | ~$150 |
-| **Total** | **~$340/mo** |
+| Anthropic API (~10k searches/mo at Haiku, when enabled) | ~$30 |
+| Resend (3k emails/mo, when enabled) | ~$20 |
+| Twilio SMS (~500 confirmations/mo, when enabled) | ~$40 |
+| Onfido (~100 KYCs/mo, when enabled) | ~$150 |
+| **Infra subtotal (Fly.io)** | **~$7–15/mo** |
 
 ### Module boundaries
 
@@ -295,7 +308,7 @@ Claude Haiku extracts:
 - **Rate limits:** 10 req/sec per IP for search, 1 req/min for booking creation; Cloudflare WAF
 - **CSRF/XSS:** anti-forgery tokens on all mutations, strict Content-Security-Policy
 - **Audit log:** append-only, 7-year retention
-- **Data Protection Office** registration at incorporation; SCCs for data leaving Mauritius (e.g. Anthropic API in US)
+- **Data residency & cross-border transfer:** the company is Mauritius-domiciled, but application infrastructure and the **primary Postgres datastore are hosted on Fly.io in Singapore** (not Mauritius). Under the Data Protection Act 2017 this means *all* personal data — not just data sent to third-party AI/KYC APIs — leaves Mauritius, so an appropriate transfer safeguard (SCCs, or the data subject's consent / an adequacy basis) is required for the datastore itself. Register with the Data Protection Office at incorporation. Additional processors outside Mauritius: Anthropic (US), Onfido, Resend, Twilio, MIPS/Wise. Revisit if a Mauritius/adequate-jurisdiction hosting option becomes viable.
 - **AML:** OFAC/UN sanctions screening on host signup; STRs filed by MIPS for transactions > MUR 500k
 
 ### Concurrency & integrity
@@ -315,7 +328,7 @@ Claude Haiku extracts:
 
 ### Disaster recovery
 
-- Postgres PITR via Hetzner managed Postgres; daily snapshots → Cloudflare R2 (off-region)
+- Fly Postgres automatic daily snapshots (5-day retention) + point-in-time recovery (7 days on paid plans); off-region logical backups to object storage planned
 - **RTO:** 4 hours. **RPO:** 1 hour.
 - Funds custody: MCB business account, never in operational account; clean separation enforced in accounting
 

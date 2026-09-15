@@ -1,7 +1,7 @@
 "use client";
 
 import { Chip, Stack } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { parseSearch, filtersToSearchParams } from "@/lib/search";
 
 const EXAMPLES = [

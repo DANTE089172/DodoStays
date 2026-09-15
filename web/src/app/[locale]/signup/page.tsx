@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { RolePicker } from "./role-picker";
 import { Eyebrow } from "@/components/marketing/eyebrow";
 import { DisplayHeading } from "@/components/marketing/display-heading";
 import { PillButton } from "@/components/marketing/pill-button";
+import { Link, useRouter } from "@/i18n/navigation";
+
+/** Only allow same-site relative redirects (guards against open-redirect). */
+function safeNext(next: string | null): string {
+  return next && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
+}
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -26,7 +30,8 @@ export default function SignUpPage() {
     setSubmitting(true);
     try {
       await signUp({ email, password, displayName, preferredLanguage: language, intendedRole: role });
-      router.push("/account");
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.push(safeNext(next));
     } catch (err) {
       setError((err as Error).message);
     } finally {

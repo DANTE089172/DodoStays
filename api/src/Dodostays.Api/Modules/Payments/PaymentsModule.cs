@@ -36,7 +36,11 @@ public static class PaymentsModule
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         services.Configure<Invoices.InvoicingOptions>(configuration.GetSection(Invoices.InvoicingOptions.SectionName));
         services.AddScoped<Invoices.IInvoiceSequenceService, Invoices.InvoiceSequenceService>();
-        services.AddScoped<Invoices.IInvoicePdfStorage, Invoices.LocalDiskInvoicePdfStorage>();
+        var invoiceStorageProvider = configuration[$"{Invoices.InvoicingOptions.SectionName}:StorageProvider"] ?? "Local";
+        if (string.Equals(invoiceStorageProvider, "R2", StringComparison.OrdinalIgnoreCase))
+            services.AddScoped<Invoices.IInvoicePdfStorage, Invoices.R2InvoicePdfStorage>();
+        else
+            services.AddScoped<Invoices.IInvoicePdfStorage, Invoices.LocalDiskInvoicePdfStorage>();
         services.AddScoped<Invoices.IInvoiceGenerator, Invoices.QuestPdfInvoiceGenerator>();
 
         // Task 4.6: Email sender

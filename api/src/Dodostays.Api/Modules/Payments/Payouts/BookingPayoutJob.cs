@@ -170,6 +170,11 @@ public sealed class BookingPayoutJob
         var listing = await _db.Listings.FirstOrDefaultAsync(l => l.Id == firstBooking.ListingId, ct);
         var listingTitle = listing?.Title ?? "Batch Payout";
 
+        // Commit the payout status, the gap-free commission invoice number, the invoice row and
+        // the per-booking payout flags atomically. Allocating the number inside this transaction
+        // means a rollback releases it — the invoice series stays gap-free (MRA requirement).
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+
         var commissionInvoice = await _invoiceGenerator.GenerateHostCommissionAsync(
             new HostCommissionInvoiceInput(
                 BookingId: firstBooking.Id,
@@ -189,6 +194,7 @@ public sealed class BookingPayoutJob
         }
 
         await _db.SaveChangesAsync(ct);
+        await tx.CommitAsync(ct);
 
         // Send host receipt email (fire-and-forget with try/catch)
         try

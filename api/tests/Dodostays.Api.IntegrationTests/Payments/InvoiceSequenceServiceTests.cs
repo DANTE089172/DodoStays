@@ -79,6 +79,36 @@ public class InvoiceSequenceServiceTests : IClassFixture<PostgresFixture>
         commissionNum.Should().StartWith("DS-COM-");
     }
 
+    [Fact]
+    public async Task NextNumber_WhenTransactionRolledBack_DoesNotConsumeNumber()
+    {
+        // The whole point of the gap-free counter: a rolled-back allocation must NOT burn a
+        // number (which a Postgres sequence would). Uses CreditNote so it doesn't disturb the
+        // GuestStay/HostCommission series exercised by the other tests on this shared fixture.
+        await using var db = CreateDbContext();
+        var service = new InvoiceSequenceService(
+            db,
+            Options.Create(new InvoicingOptions { CreditNoteSequencePrefix = "DS-CN" }),
+            NullLogger<InvoiceSequenceService>.Instance);
+
+        string burned;
+        await using (var tx = await db.Database.BeginTransactionAsync())
+        {
+            burned = await service.NextNumberAsync(InvoiceKind.CreditNote, CancellationToken.None);
+            await tx.RollbackAsync();
+        }
+
+        string next;
+        await using (var tx = await db.Database.BeginTransactionAsync())
+        {
+            next = await service.NextNumberAsync(InvoiceKind.CreditNote, CancellationToken.None);
+            await tx.CommitAsync();
+        }
+
+        ExtractSequence(next).Should().Be(ExtractSequence(burned),
+            "a rolled-back allocation must release the number so the series has no gaps");
+    }
+
     private DodostaysDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<DodostaysDbContext>()

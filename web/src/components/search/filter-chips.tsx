@@ -2,7 +2,7 @@
 
 import { Chip, Stack } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { type ParsedFilters, filtersToSearchParams } from "@/lib/search";
 
 interface Props {
