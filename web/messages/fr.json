@@ -56,7 +56,8 @@
       "hosts": "Hôtes",
       "about": "À propos",
       "bookings": "Réservations",
-      "account": "Compte"
+      "account": "Compte",
+      "waitlist": "Liste d'attente"
     },
     "becomeHost": "Devenir hôte",
     "language": "Langue"

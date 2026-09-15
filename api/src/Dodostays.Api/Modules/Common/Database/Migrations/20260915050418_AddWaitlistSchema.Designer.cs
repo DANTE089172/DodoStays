@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Dodostays.Api.Modules.Common.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dodostays.Api.Modules.Common.Database.Migrations
 {
     [DbContext(typeof(DodostaysDbContext))]
-    partial class DodostaysDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260915050418_AddWaitlistSchema")]
+    partial class AddWaitlistSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +27,12 @@ namespace Dodostays.Api.Modules.Common.Database.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.HasSequence("inv_commission_seq");
+
+            modelBuilder.HasSequence("inv_credit_note_seq");
+
+            modelBuilder.HasSequence("inv_guest_seq");
 
             modelBuilder.Entity("Dodostays.Api.Modules.Bookings.Domain.Booking", b =>
                 {
@@ -757,25 +766,6 @@ namespace Dodostays.Api.Modules.Common.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Invoices");
-                });
-
-            modelBuilder.Entity("Dodostays.Api.Modules.Payments.Domain.InvoiceCounter", b =>
-                {
-                    b.Property<int>("Kind")
-                        .HasColumnType("integer")
-                        .HasColumnName("kind");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer")
-                        .HasColumnName("year");
-
-                    b.Property<long>("LastValue")
-                        .HasColumnType("bigint")
-                        .HasColumnName("last_value");
-
-                    b.HasKey("Kind", "Year");
-
-                    b.ToTable("invoice_counters", (string)null);
                 });
 
             modelBuilder.Entity("Dodostays.Api.Modules.Payments.Domain.PaymentRecord", b =>

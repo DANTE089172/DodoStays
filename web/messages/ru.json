@@ -56,7 +56,8 @@
       "hosts": "Хозяевам",
       "about": "О нас",
       "bookings": "Бронирования",
-      "account": "Аккаунт"
+      "account": "Аккаунт",
+      "waitlist": "Лист ожидания"
     },
     "becomeHost": "Стать хозяином",
     "language": "Язык"

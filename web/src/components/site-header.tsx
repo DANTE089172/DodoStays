@@ -26,9 +26,14 @@ type Messages = {
       about: string;
       bookings: string;
       account: string;
+      waitlist: string;
     };
   };
 };
+
+// External marketing site (Cloudflare Pages). Not a locale-prefixed app route,
+// so it's rendered as a plain <a>, never the next-intl <Link>.
+const WAITLIST_URL = "https://dodostays.mu";
 
 const PUBLIC_LINKS: NavLink[] = [
   { href: "/listings", labelKey: "browse" },
@@ -114,6 +119,12 @@ export function SiteHeader() {
               {t(`links.${l.labelKey}`)}
             </Link>
           ))}
+          <a
+            href={WAITLIST_URL}
+            className="text-[14px] tracking-[0.04em] text-[var(--color-primary)] transition-colors duration-200 ease-out hover:text-[var(--color-primary-hover)]"
+          >
+            {t("links.waitlist")}
+          </a>
         </nav>
 
         {/* Right — locale switcher + auth + CTA, desktop */}
@@ -201,6 +212,13 @@ export function SiteHeader() {
               {t(`links.${l.labelKey}`)}
             </Link>
           ))}
+          <a
+            href={WAITLIST_URL}
+            onClick={() => setOpen(false)}
+            className="ds-display-sm py-3 text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+          >
+            {t("links.waitlist")}
+          </a>
 
           <div className="mt-8 border-t border-[var(--color-border)] pt-8">
             {isAuthed ? (

@@ -18,5 +18,6 @@ public partial class DodostaysDbContext : IdentityDbContext<DodostaysUser, Dodos
         OnModelCreatingListings(modelBuilder);
         OnModelCreatingBookings(modelBuilder);
         OnModelCreatingPayments(modelBuilder);
+        OnModelCreatingWaitlist(modelBuilder);
     }
 }

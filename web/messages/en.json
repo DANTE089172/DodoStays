@@ -56,7 +56,8 @@
       "hosts": "Hosts",
       "about": "About",
       "bookings": "Bookings",
-      "account": "Account"
+      "account": "Account",
+      "waitlist": "Waitlist"
     },
     "becomeHost": "Become a host",
     "language": "Language"
