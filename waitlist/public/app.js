@@ -5,9 +5,9 @@
 (function () {
   "use strict";
 
-  // Local dev (served on :8788 next to a locally-run API) vs production.
-  var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  var API_BASE = isLocal ? "http://localhost:5080" : "https://dodostays-api.fly.dev";
+  // The backend runs as same-origin Cloudflare Pages Functions under /api/*,
+  // so there's no cross-origin base URL (and no CORS) in any environment.
+  var API_BASE = "";
 
   var HELP = {
     Traveller: "Early access to hand-picked stays across Mauritius — booking opens soon.",
