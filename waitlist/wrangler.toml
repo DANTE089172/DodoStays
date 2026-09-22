@@ -8,3 +8,9 @@ compatibility_date = "2025-06-01"
 binding = "DB"
 database_name = "dodostays-waitlist"
 database_id = "b0a1a170-b21a-4d20-b94f-0a40aba97c33"
+
+# Launch social-proof baseline for /api/waitlist/stats. Real signups increment
+# on top of these; change them here (no code edit) and redeploy to tune.
+[vars]
+WAITLIST_BASELINE_TRAVELLERS = "98"
+WAITLIST_BASELINE_HOSTS = "124"
