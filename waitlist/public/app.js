@@ -5,9 +5,9 @@
 (function () {
   "use strict";
 
-  // Local dev (served on :8788 next to a locally-run API) vs production.
-  var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  var API_BASE = isLocal ? "http://localhost:5080" : "https://dodostays-api.fly.dev";
+  // The backend runs as same-origin Cloudflare Pages Functions under /api/*,
+  // so there's no cross-origin base URL (and no CORS) in any environment.
+  var API_BASE = "";
 
   var HELP = {
     Traveller: "Early access to hand-picked stays across Mauritius — booking opens soon.",
@@ -41,6 +41,7 @@
     var aud = selectedAudience();
     if (helpEl) helpEl.textContent = HELP[aud];
     if (regionLabel) regionLabel.innerHTML = REGION_LABEL[aud];
+    renderStats();
   }
 
   form.querySelectorAll('input[name="audience"]').forEach(function (r) {
@@ -49,19 +50,27 @@
   syncAudienceCopy();
 
   // --- Social proof --------------------------------------------------------
-  function renderStats(total) {
+  // The counts (incl. their launch baseline) come from the API, so the number
+  // shown reflects the *selected* side — travellers vs hosts see different
+  // figures, and nothing is hard-coded in this file.
+  var latestStats = null;
+
+  function renderStats() {
     if (!socialEl) return;
-    if (typeof total !== "number") {
+    if (!latestStats) {
       socialEl.textContent = "";
       return;
     }
-    if (total <= 0) {
+    var aud = selectedAudience();
+    var noun = aud === "Host" ? "host" : "traveller";
+    var count = aud === "Host" ? latestStats.hosts : latestStats.travellers;
+    if (typeof count !== "number" || count <= 0) {
       socialEl.textContent = "Be among the first on the list.";
-    } else {
-      socialEl.innerHTML =
-        "Join <strong>" + total.toLocaleString() + "</strong> " +
-        (total === 1 ? "person" : "people") + " already on the list.";
+      return;
     }
+    socialEl.innerHTML =
+      "Join <strong>" + count.toLocaleString() + "</strong> " +
+      (count === 1 ? noun : noun + "s") + " already on the waitlist.";
   }
 
   function loadStats() {
@@ -70,7 +79,10 @@
         return r.ok ? r.json() : null;
       })
       .then(function (s) {
-        if (s && typeof s.total === "number") renderStats(s.total);
+        if (s && typeof s.travellers === "number" && typeof s.hosts === "number") {
+          latestStats = s;
+          renderStats();
+        }
       })
       .catch(function () {
         /* social proof is best-effort; stay silent on failure */

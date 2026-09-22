@@ -1,69 +1,86 @@
 # DodoStays — Waitlist landing page
 
-A **standalone, static** pre-launch landing page for [dodostays.mu](https://dodostays.mu),
-deployed to **Cloudflare Pages**. It captures two-sided waitlist signups (travellers
-+ hosts) by POSTing to the existing DodoStays API on Fly.io, which persists them to
-Postgres. No build step, no framework — just `index.html`, `styles.css`, `app.js`.
+A **standalone** pre-launch landing page for [dodostays.mu](https://dodostays.mu),
+deployed to **Cloudflare Pages** with a free **Cloudflare D1** (SQLite) backend via
+**Pages Functions**. It captures two-sided waitlist signups (travellers + hosts) and
+stores them at the edge — no separate API server, no CORS, $0/month. The page itself
+is still plain `index.html` + `styles.css` + `app.js` with no build step.
 
 ```
 waitlist/
-├── index.html      # markup
-├── styles.css      # brand styling (mirrors web/src/app/globals.css)
-├── app.js          # form logic → POST /api/waitlist, GET /api/waitlist/stats
-├── favicon.svg
-├── _headers        # Cloudflare Pages security + cache headers
+├── public/             # static site (the Pages build output)
+│   ├── index.html      # markup
+│   ├── styles.css      # brand styling (mirrors web/src/app/globals.css)
+│   ├── app.js          # form logic → POST /api/waitlist, GET /api/waitlist/stats
+│   ├── favicon.svg
+│   └── _headers        # Cloudflare Pages security + cache headers
+├── functions/          # Pages Functions (the backend)
+│   └── api/
+│       ├── waitlist.js        # POST /api/waitlist  → D1 insert (idempotent)
+│       └── waitlist/stats.js  # GET  /api/waitlist/stats → aggregate counts
+├── schema.sql          # D1 table + indexes
+├── wrangler.toml       # project name, build output dir, D1 binding
 └── README.md
 ```
 
 ## How it works
 
-- **Frontend:** this static site on Cloudflare Pages (edge-served, free tier).
-- **Backend:** `POST /api/waitlist` and `GET /api/waitlist/stats` in the .NET API
-  (`api/src/Dodostays.Api/Modules/Waitlist`), backed by the `waitlist_signups`
-  Postgres table.
-- `app.js` auto-targets `http://localhost:5080` when served from localhost, and
-  `https://dodostays-api.fly.dev` in production.
+- **Frontend:** the static site in `public/`, served on Cloudflare Pages (edge, free tier).
+- **Backend:** same-origin **Pages Functions** under `/api/*`, backed by a **D1**
+  database (`waitlist_signups`). `app.js` calls `/api/waitlist` and
+  `/api/waitlist/stats` on its own origin, so there is no cross-origin base URL and
+  no CORS to configure.
+- **Idempotent:** signing up twice with the same email+audience returns the existing
+  record (`alreadyOnList: true`). The same email may join once as a Traveller **and**
+  once as a Host.
 
 ## Local development
 
 ```powershell
-# 1. Postgres (from repo root)
-docker compose up -d
+# From the waitlist/ folder. `wrangler pages dev` serves the static site AND the
+# Functions on one port, against a local D1 database (no cloud calls).
 
-# 2. Apply migrations (creates waitlist_signups)
-dotnet ef database update --project api/src/Dodostays.Api
+# 1. Create the local D1 schema (first time only)
+npx wrangler d1 execute dodostays-waitlist --local --file=schema.sql
 
-# 3. Run the API on :5080
-dotnet run --project api/src/Dodostays.Api --urls http://localhost:5080
-
-# 4. Serve this folder on :8788 (origin is allow-listed for CORS in dev)
-python -m http.server 8788 --directory waitlist
+# 2. Run the site + functions on http://localhost:8788
+npx wrangler pages dev
 ```
 
-Open http://localhost:8788. The dev CORS allow-list (`appsettings.Development.json`)
-already includes `http://localhost:8788`.
+Open http://localhost:8788 and submit the form — rows land in the local D1 database.
 
 ## Deploy to Cloudflare Pages
 
-### Option A — Dashboard (Git-connected, auto-deploys on push)
+The project uses a Wrangler config file (`wrangler.toml`), so the static site and the
+Functions (with the D1 binding) deploy together.
 
-1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** →
-   **Connect to Git** → select `DANTE089172/DodoStays`.
-2. Build settings:
-   - **Framework preset:** `None`
-   - **Build command:** *(leave empty)*
-   - **Build output directory:** `waitlist`
-   - **Root directory:** `/`
-3. **Save and Deploy.** Production URL: `https://dodostays-waitlist.pages.dev`.
-
-### Option B — Wrangler CLI (one-off deploy)
+### One-time setup
 
 ```bash
 npm install -g wrangler
 wrangler login
+
+# Create the Pages project and the D1 database
 wrangler pages project create dodostays-waitlist --production-branch master
-wrangler pages deploy waitlist --project-name dodostays-waitlist
+wrangler d1 create dodostays-waitlist   # copy the database_id into wrangler.toml
+
+# Create the table in the production D1 database
+wrangler d1 execute dodostays-waitlist --remote --file=schema.sql
 ```
+
+### Deploy (from the `waitlist/` folder)
+
+```bash
+wrangler pages deploy --branch master        # production: dodostays-waitlist.pages.dev
+```
+
+`wrangler pages deploy` (no directory argument) reads `wrangler.toml`: it uploads
+`public/` as static assets, compiles `functions/`, and attaches the `DB` D1 binding.
+Omit `--branch master` to publish a preview deployment instead.
+
+> **Git-connected builds** (auto-deploy on push): set **Build output directory** to
+> `waitlist/public` and **Root directory** to `waitlist/`. Bindings come from
+> `wrangler.toml`, so no dashboard binding setup is needed.
 
 ## Custom domain (dodostays.mu)
 
@@ -75,26 +92,11 @@ wrangler pages deploy waitlist --project-name dodostays-waitlist
    - apex `dodostays.mu` → use Cloudflare nameservers (CNAME flattening) or an
      `ALIAS`/`ANAME` to `dodostays-waitlist.pages.dev`.
 
-## Required: allow the page's origin on the API (CORS)
+## No CORS needed
 
-The API only accepts cross-origin POSTs from allow-listed origins. These are already
-added in `api/fly.toml`:
-
-```
-Cors__AllowedOrigins__3 = "https://dodostays.mu"
-Cors__AllowedOrigins__4 = "https://www.dodostays.mu"
-Cors__AllowedOrigins__5 = "https://dodostays-waitlist.pages.dev"
-```
-
-**Redeploy the API for these to take effect:**
-
-```bash
-cd api && flyctl deploy --remote-only
-```
-
-> Preview deployments get random `*.dodostays-waitlist.pages.dev` subdomains that
-> are **not** in the allow-list, so the form only works on the production URL /
-> custom domain. Add a preview origin to the list if you need to test a preview.
+Because the backend runs as same-origin Pages Functions, there is nothing to
+allow-list — the form works on every deployment (preview URLs, `*.pages.dev`, and the
+custom domain) with no API redeploy.
 
 ## API contract
 
@@ -118,9 +120,11 @@ email may join once as a Traveller **and** once as a Host.
 
 ## Exporting signups
 
-```sql
-SELECT "Email", "Audience", "Region", "Locale", "Source", "CreatedAt"
-FROM waitlist_signups
-ORDER BY "CreatedAt" DESC;
+```bash
+# Dump every signup as JSON (audience: 0 = Traveller, 1 = Host)
+wrangler d1 execute dodostays-waitlist --remote --json \
+  --command "SELECT email, audience, region, locale, source, created_at FROM waitlist_signups ORDER BY created_at DESC"
 ```
-`Audience`: `0` = Traveller, `1` = Host.
+
+Or browse and run SQL in the Cloudflare dashboard → **Workers & Pages** → **D1** →
+`dodostays-waitlist`.
